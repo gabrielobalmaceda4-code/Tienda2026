@@ -55,7 +55,7 @@ public class Articulo {
 
     @Override
     public String toString() {
-        return "Articulo{" + "idArticulo=" + idArticulo + ", descripcion=" + descripcion + ", existencias=" + existencias + ", pvp=" + pvp + '}';
+        return idArticulo + " | " + descripcion + " | " + existencias + " | " + pvp;
     }
 
 }
