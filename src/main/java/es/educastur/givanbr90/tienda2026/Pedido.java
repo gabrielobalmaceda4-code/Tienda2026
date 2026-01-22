@@ -26,4 +26,34 @@ public class Pedido {
         this.cestaCompra = cestaCompra;
     }
 
+    public String getIdPedido() {
+        return idPedido;
+    }
+
+    public void setIdPedido(String idPedido) {
+        this.idPedido = idPedido;
+    }
+
+    public Cliente getClientePedido() {
+        return clientePedido;
+    }
+
+    public void setClientePedido(Cliente clientePedido) {
+        this.clientePedido = clientePedido;
+    }
+
+    public ArrayList<LineaPedido> getCestaCompra() {
+        return cestaCompra;
+    }
+
+    public void setCestaCompra(ArrayList<LineaPedido> cestaCompra) {
+        this.cestaCompra = cestaCompra;
+    }
+
+    @Override
+    public String toString() {
+        return idPedido + " | " + clientePedido + " | " + fechaPedido + " | " + cestaCompra;
+    }
+    
+
 }
