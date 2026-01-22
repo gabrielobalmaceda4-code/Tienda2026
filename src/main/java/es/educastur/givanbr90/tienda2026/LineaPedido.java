@@ -19,7 +19,7 @@ public class LineaPedido {
 
     @Override
     public String toString() {
-        return "LineaPedido{" + "idArticulo=" + idArticulo + ", unidades=" + unidades + '}';
+        return idArticulo + " - " + unidades;
     }
     
 }
