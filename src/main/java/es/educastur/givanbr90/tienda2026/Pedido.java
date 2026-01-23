@@ -52,7 +52,7 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return idPedido + " | " + clientePedido + " | " + fechaPedido + " | " + cestaCompra;
+        return idPedido + " / " + clientePedido + " / " + fechaPedido + " / " + cestaCompra;
     }
     
 
