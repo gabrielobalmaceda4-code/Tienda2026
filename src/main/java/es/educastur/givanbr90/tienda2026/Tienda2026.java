@@ -4,6 +4,7 @@
 package es.educastur.givanbr90.tienda2026;
 
 import java.io.Serializable;
+import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +30,12 @@ public class Tienda2026 {
     }
 
     public static void main(String[] args) {
-        
+
         Tienda2026 t = new Tienda2026();
         /*Estamos declarando el proyecto como un objeto que contiene los demás métodos, su contructor estrará formado por el cargaDatos que las va arrancar desde 0
         -En el main declaramos el objeto Tienda2026 t, por lo tanto, todos los 
         -Nos permite que los métodos no sean static ya que todos los métodos le pertenecen a ese objeto*/
-        
+
         t.cargaDatos();
         t.menu();
 
@@ -234,7 +235,6 @@ public class Tienda2026 {
 //</editor-fold>
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
     public void listarColecciones() {
         System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
@@ -260,8 +260,46 @@ public class Tienda2026 {
 
     //<editor-fold defaultstate="collapsed" desc="Gestión Artículos">
     private void altaArticulo() {
-        Scanner sc= new Scanner (System.in);
-        
+        //DEBEMOS PEDIR LOS 4 ATRIBUTOS POR TECLADO Y LUEGO AÑADIRLO AL HASHMAP
+        Scanner sc = new Scanner(System.in);
+
+        //En el caso del id tiene un formato, el primer nº es la sección (tipo de artículo) y el segundo es el artículo como tal, es necesaria un aexpresión regular para validar el id
+        String idArticulo, descripción, existencias, pvp;
+
+        System.out.println("ALTA DE NUEVO ARTICULO");
+        //ANTES: idArticulo=sc.next();
+        //AHORA DEBEMOS VALIDAR EL idArticulo CON UNA EXPRESÓN REGULAR SENCILLA
+        do {
+            System.out.println("IdArticulo (IDENTIFICADOR) : ");
+            idArticulo = sc.nextLine();
+        } while (!idArticulo.matches("[1-5][-][0-9][0-9]") || articulos.containsKey(idArticulo));
+        /*EL STRING DEBE COINCIDIR CON ESTE PATRÓN, .matches INICIALIZA LA EXPRESIÓN REGULAR
+        -NUESTRA TIENDA TIENE 5 SECCIONES-> [1-5]
+        -UN GUIÓN-> [-]
+        -UN Nº DEL 0 AL 9->[0-9] [0-9]
+        -AÑADIMOS UN O PARA EL CASO DE QUE EL ARTÍCULO YA EXISTE MEDIANTE LA IDENTIFICACIÓN DE LA CLAVE-> ||articulos.containsKey(pvp));
+        ESTO HARÁ QUE EL USUARIO ESTÉ EN EL BUCLE ETERNAMENTE HASTA TECLEAR BIEN EL FORMATO QUE HEMOS ESTABLECIDO, ESTAMOS CONTROLANDO EL FORMATP Y SI YA EXISTE*/
+
+        System.out.println("DESCRIPCIÓN");//EN ESTE CASO NO TIENE UN FARMATO DECIDIDO, POR LO TANTO, NO ES NECESARIA UNA VALIDACIÓN
+        descripción = sc.nextLine();
+
+        //EXISTENCIAS CON VALIDACIÓN DE TIPO int
+        do {
+            System.out.println("EXISTENCIAS:");
+            existencias = sc.nextLine();
+        } while (!MetodosAuxiliares.esInt(existencias));//LLAMAMOS LOS MetodosAuxiliares PARA VALIDAR EL int
+
+        //PVP CON VALIDACIÓN DE TIPO double
+        do {
+            System.out.println("PVP:");
+            pvp = sc.nextLine();
+        } while (!MetodosAuxiliares.esDouble(pvp));
+
+        //YA HEMOS VALIDADO LOS ATRIBUTOS, AHORA AÑADIMOS EL NUEVO ARTICULO A LA COLECCIÓN
+        Articulo a = new Articulo(idArticulo, descripción,
+                Integer.parseInt(existencias), Double.parseDouble(pvp));//DEBEMOS PONER EL Integer.parseInt y el Double para convertir la validación de los Strings al dato que de verdad queremos almacenar
+        articulos.put(idArticulo, a);
+        System.out.println("SE HA AÑADIDO EL NUEVO ARTICULO CORRECTAMENTE");
     }
 
     private void bajaArticulo() {
@@ -304,7 +342,6 @@ public class Tienda2026 {
     }
 
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
     private void nuevoPedido() {
 
@@ -322,14 +359,12 @@ public class Tienda2026 {
     }
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Listados con STREAM">
     private void listadosConStreams() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
     private void ordenarConStream() {
         throw new UnsupportedOperationException("Not supported yet.");
