@@ -55,7 +55,7 @@ public class Articulo {
 
     @Override
     public String toString() {
-        return idArticulo + " | " + descripcion + " | " + existencias + " | " + pvp;
+        return idArticulo + " / " + descripcion + " / " + existencias + " uds / " + pvp + " euros";
     }
 
 }
