@@ -19,7 +19,7 @@ public class LineaPedido {
 
     @Override
     public String toString() {
-        return idArticulo + " - " + unidades;
+        return idArticulo + " - " + unidades + " uds.";
     }
     
 }
