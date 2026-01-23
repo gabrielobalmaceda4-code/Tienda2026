@@ -1,7 +1,6 @@
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
-
 package es.educastur.givanbr90.tienda2026;
 
 import java.io.Serializable;
@@ -24,19 +23,24 @@ public class Tienda2026 {
     private HashMap<String, Cliente> clientes;
 
     public Tienda2026() {
-        pedidos = new ArrayList();
+        pedidos = new ArrayList();//Inicializamos los datos vacíos
         articulos = new HashMap();
         clientes = new HashMap();
     }
 
     public static void main(String[] args) {
+        
         Tienda2026 t = new Tienda2026();
-
+        /*Estamos declarando el proyecto como un objeto que contiene los demás métodos, su contructor estrará formado por el cargaDatos que las va arrancar desde 0
+        -En el main declaramos el objeto Tienda2026 t, por lo tanto, todos los 
+        -Nos permite que los métodos no sean static ya que todos los métodos le pertenecen a ese objeto*/
+        
         t.cargaDatos();
         t.menu();
 
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Métodos auxiliares">
     public void cargaDatos() {
 
         clientes.put("80580845T", new Cliente("80580845T", "ANA ", "658111111", "ana@gmail.com"));
@@ -61,14 +65,16 @@ public class Tienda2026 {
         pedidos.add(new Pedido("36347775R-002/2025", clientes.get("36347775R"), hoy.minusDays(5), new ArrayList<>(List.of(new LineaPedido("4-33", 3), new LineaPedido("2-11", 3)))));
         pedidos.add(new Pedido("63921307Y-001/2025", clientes.get("63921307Y"), hoy.minusDays(4), new ArrayList<>(List.of(new LineaPedido("2-11", 5), new LineaPedido("2-33", 3), new LineaPedido("4-33", 2)))));
     }
+//</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Menús">
     public void menu() {
         int opcion;
         do {
             System.out.println("\n\n\n\n\n\t\t\t\tMENU DE OPCIONES");
-            System.out.println("\t\t\t\t1 - GESTION DE CLIENTE");
-            System.out.println("\t\t\t\t2 - GESTION DE PEDIDO");
-            System.out.println("\t\t\t\t3 - GESTION DE LINEA PEDIDO");
+            System.out.println("\t\t\t\t1 - ARTICULO");
+            System.out.println("\t\t\t\t2 - CLIENTE");
+            System.out.println("\t\t\t\t3 - PEDIDOS");
             System.out.println("\t\t\t\t4 - LISTAR COLECCIONES");
             System.out.println("\t\t\t\t5 - LISTAR COLECCIONES CON STREAMS");
             System.out.println("\t\t\t\t6 - ORDENAR COLECCIONES CON STREAMS");
@@ -79,15 +85,15 @@ public class Tienda2026 {
 
             switch (opcion) {
                 case 1: {
-                    //gestionCliente();
+                    menuArticulo();
                     break;
                 }
                 case 2: {
-                    //gestionPedido();
+                    menuCliente();
                     break;
                 }
                 case 3: {
-                    //gestionLineaPedido();
+                    menuPedido();
                     break;
                 }
                 case 4: {
@@ -95,11 +101,11 @@ public class Tienda2026 {
                     break;
                 }
                 case 5: {
-                    //listadosConStreams();
+                    listadosConStreams();
                     break;
                 }
                 case 6: {
-                    //ordenarConStream();
+                    ordenarConStream();
                     break;
                 }
 
@@ -118,6 +124,118 @@ public class Tienda2026 {
           9- Permite salir del bucle del menú*/
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Menú Artículos">
+    public void menuArticulo() {
+        int opcion;
+        do {
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE ARTICULOS");
+            System.out.println("\t\t\t\t1 - ALTA");
+            System.out.println("\t\t\t\t2 - BAJA");
+            System.out.println("\t\t\t\t3 - REPOSICIÓN");
+            System.out.println("\t\t\t\t4 - LISTAR ARTICULOS");
+            System.out.println("\t\t\t\t9 - SALIR");
+            System.out.println("\t\t\t\t¿Qué opción quieres ejecurtar?");
+
+            opcion = sc.nextInt();
+
+            switch (opcion) {
+                case 1: {
+                    altaArticulo();
+                    break;
+                }
+                case 2: {
+                    bajaArticulo();
+                    break;
+                }
+                case 3: {
+                    reposicionArticulo();
+                    break;
+                }
+                case 4: {
+                    listarArticulos();
+                    break;
+                }
+
+            }
+
+        } while (opcion != 9);
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Menú Cliente">
+    public void menuCliente() {
+        int opcion;
+        do {
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE CLIENTES");
+            System.out.println("\t\t\t\t1 - ALTA");
+            System.out.println("\t\t\t\t2 - BAJA");
+            System.out.println("\t\t\t\t3 - MODIFICACION CLIENTE");
+            System.out.println("\t\t\t\t4 - LISTAR CLIENTES");
+            System.out.println("\t\t\t\t9 - SALIR");
+            System.out.println("\t\t\t\t¿Qué opción quieres ejecurtar?");
+
+            opcion = sc.nextInt();
+
+            switch (opcion) {
+                case 1: {
+                    altaCliente();
+                    break;
+                }
+                case 2: {
+                    bajaCliente();
+                    break;
+                }
+                case 3: {
+                    modificarDatos();
+                    break;
+                }
+                case 4: {
+                    listarClientes();
+                    break;
+                }
+
+            }
+
+        } while (opcion != 9);
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Menú Pedido">
+    public void menuPedido() {
+        int opcion;
+        do {
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE PEDIDOS");
+            System.out.println("\t\t\t\t1 - NUUEVO PEDIDO");
+            System.out.println("\t\t\t\t2 - LISTADO DE PEDIDOS");
+            System.out.println("\t\t\t\t3 - TOTAL PEDIDO");
+            System.out.println("\t\t\t\t9 - SALIR");
+            System.out.println("\t\t\t\t¿Qué opción quieres ejecurtar?");
+
+            opcion = sc.nextInt();
+
+            switch (opcion) {
+                case 1: {
+                    nuevoPedido();
+                    break;
+                }
+                case 2: {
+                    listadoPedido();
+                    break;
+                }
+                case 3: {
+                    totalPedido();
+                    break;
+                }
+
+            }
+
+        } while (opcion != 9);
+    }
+//</editor-fold>
+
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
     public void listarColecciones() {
         System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
         for (Cliente c : clientes.values()) {
@@ -129,7 +247,7 @@ public class Tienda2026 {
         System.out.println("Vamos a mostrar los articulos de la tienda: ");
         for (Articulo a : articulos.values()) {
             System.out.println(a);
-            //System.out.print("\n" + u.getDni() + "/" + u.getNombre() + "/" + u.getEmail() + "/" + u.getTelefono());
+            //System.out.print("\n" + a.getidArticulo() + "/" + a.getdescripción() + "/" + a.getexistencias() + "/" + a.getpvp());
         }
         System.out.println("");
 
@@ -138,60 +256,83 @@ public class Tienda2026 {
             System.out.println(p);
         }
     }
+//</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Gestión de Clientes">
-    public static void gestionCliente() {
-        //<editor-fold defaultstate="collapsed" desc="Menú Cliente">
-        int opcion;
-        do {
-            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE OPCIONES");
-            System.out.println("\t\t\t\t1 - NUEVO CLIENTE");
-            System.out.println("\t\t\t\t2 - LISTAR CLIENTES");
-            System.out.println("\t\t\t\t3 - MODIFICAR CLIENTE");
-            System.out.println("\t\t\t\t4 - ELIMINAR CLIENTE");
-            System.out.println("\t\t\t\t9 - SALIR");
-            System.out.println("\t\t\t\t¿Qué opción quieres ejecurtar?");
-
-            opcion = sc.nextInt();
-
-            switch (opcion) {
-                case 1: {
-                    //nuevoCliente();
-
-                    break;
-                }
-                case 2: {
-                    //listarClientes();
-                    break;
-                }
-                case 3: {
-                    //modificarCliente();
-                    break;
-                }
-                case 4: {
-                    //eliminarCliente();
-                    break;
-                }
-
-            }
-
-        } while (opcion != 9);
-        //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Gestión Artículos">
+    private void altaArticulo() {
+        Scanner sc= new Scanner (System.in);
+        
     }
 
-    /*public static void nuevoCliente() {
-        System.out.println("\n\nVamos a introducir un nuevo CLIENTE mediante el teclado");//Las variables que vamos a declarar es mejor llamarlas igual que los atributos de la clase para evitar la confusión
-        System.out.println("\n\nID del nuevo CLIENTE: ");
-        String idCliente = sc.next();
-        System.out.println("Nombre: ");
-        String nombre = sc.next();
-        System.out.println("Teléfono: ");
-        String telefono = sc.next();
-        System.out.println("Email: ");
-        String email = sc.next();
+    private void bajaArticulo() {
+        /*Solo tiene sentido guardar la información de dichos artículos ya sean activos=se venden, inactivos=no se venden, porque nos intereza tener guardados los artículos que he vendio anteriormente
+        más que borar esos datos, los desactivo y los almaceno en un histórico para estén accesibles en el caso de ser necesarios, aunque no estén en el catálogo de ventas actual*/
+    }
 
-        libros.add(new Libro(isbn, titulo, autor, genero, ejemplares));//Solo se usa add para añadir un nuevo objeto
-        System.out.println("Se ha añadido un nuevo Libro");
-    }*/
+    private void reposicionArticulo() {
+
+    }
+
+    private void listarArticulos() {
+        System.out.println("Vamos a mostrar los articulos de la tienda: ");
+        for (Articulo a : articulos.values()) {
+            System.out.println(a);
+            //System.out.print("\n" + a.getidArticulo() + "/" + a.getdescripción() + "/" + a.getexistencias() + "/" + a.getpvp());
+        }
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Gestión de Clientes">
+    private void altaCliente() {
+
+    }
+
+    private void bajaCliente() {
+
+    }
+
+    private void modificarDatos() {
+
+    }
+
+    private void listarClientes() {
+        System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
+        for (Cliente c : clientes.values()) {
+            System.out.println(c);
+            //System.out.print("\n" + l.getIsbn() + "/" + l.getTitulo() + "/" + l.getAutor() + "/" + l.getGenero());
+        }
+    }
+
     //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
+    private void nuevoPedido() {
+
+    }
+
+    private void listadoPedido() {
+        System.out.println("Vamos a mostrar los pedidos de la tienda: ");
+        for (Pedido p : pedidos) {
+            System.out.println(p);
+        }
+    }
+
+    private void totalPedido() {
+
+    }
+
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Listados con STREAM">
+    private void listadosConStreams() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
+    private void ordenarConStream() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+//</editor-fold>
 }
