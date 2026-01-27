@@ -206,7 +206,7 @@ public class Tienda2026 {
         int opcion;
         do {
             System.out.println("\n\n\n\n\n\t\t\t\tMENU DE PEDIDOS");
-            System.out.println("\t\t\t\t1 - NUUEVO PEDIDO");
+            System.out.println("\t\t\t\t1 - NUEVO PEDIDO");
             System.out.println("\t\t\t\t2 - LISTADO DE PEDIDOS");
             System.out.println("\t\t\t\t3 - TOTAL PEDIDO");
             System.out.println("\t\t\t\t9 - SALIR");
@@ -235,6 +235,7 @@ public class Tienda2026 {
 //</editor-fold>
 
 //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
     public void listarColecciones() {
         System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
@@ -342,9 +343,66 @@ public class Tienda2026 {
     }
 
     //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
+    public String generaIdPedido(String idCliente){
+        String nuevoId;
+        int contador=0;
+        //Calculo el numero de pedidos de la persona
+        for (Pedido p : pedidos) {
+            if (p.getClientePedido().getIdCliente().equalsIgnoreCase(idCliente)) {
+               contador++;
+            }
+        }
+        //Hemos calculado cuúantos pedidos tiene el cliente aportado con el contador
+        
+        contador++;//Sumamos 1 al contador para el nuevo pedido
+        
+        nuevoId= idCliente + "-" + String.format("%03d", contador) + "/" + LocalDate.now().getYear();
+        
+        return nuevoId;
+    }
+    
     private void nuevoPedido() {
-
+        String idCliente;
+        do {
+            System.out.println("DNI CLIENTE:");
+            idCliente=sc.nextLine().toUpperCase();
+        } while (!MetodosAuxiliares.validarDni(idCliente));
+        
+        
+        //Controlamos que solo se pidan artículos de la tienda y de clientes de la tienda
+        ArrayList<LineaPedido> cestaCompra=new ArrayList();
+        String idArticulo;
+        int unidades=0;
+        do {
+            System.out.print("\nTeclee el ID del articulo deseado (FIN para terminar la compra)");
+            idArticulo=sc.nextLine();
+            System.out.print("\nTeclee las unidades deseadas: ");
+            unidades=sc.nextInt();
+            cestaCompra.add(new LineaPedido(idArticulo,unidades));
+            
+        } while (idArticulo.equalsIgnoreCase("FIN"));
+        
+        
+        
+        
+        //generaIdPedido(idCliente);//Con esto ya lo tenemos, pero aún no ha hecho el pedido, no necesitamos el id aún porque no hay pedido, hace falta cestaCompra, hace falta rellenar ese ArrayList
+        
+        Pedido p=new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra);
+        /*Pedimos uno a uno los atributos del pedido, son las cosas que necesitamos para realizar un pedido
+        -Generamos el id de ese pedido mediante la llamada al método generaIdPedido anterior
+        -Lo asociamos a un cliente
+        -Obtenemos la fecha del pedido
+        -Hace falta rellenar el ArrayList del pedido*/
+        pedidos.add(p);
+        
+        
+        /*System.out.println(generaIdPedido("80580845T"));
+        System.out.println(generaIdPedido("36347775R"));
+        System.out.println(generaIdPedido("02337565Y"));
+        PRUBA DE QUE GENERA UN ID DE PEDIDO PARA ESOS idCliente*/
+                
     }
 
     private void listadoPedido() {
@@ -359,12 +417,14 @@ public class Tienda2026 {
     }
 
 //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Listados con STREAM">
     private void listadosConStreams() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
 //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
     private void ordenarConStream() {
         throw new UnsupportedOperationException("Not supported yet.");
