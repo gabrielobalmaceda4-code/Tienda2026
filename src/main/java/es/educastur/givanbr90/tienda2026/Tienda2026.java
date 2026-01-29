@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.attribute.HashAttributeSet;
 
 /**
@@ -65,6 +67,20 @@ public class Tienda2026 {
         pedidos.add(new Pedido("36347775R-001/2025", clientes.get("36347775R"), hoy.minusDays(3), new ArrayList<>(List.of(new LineaPedido("4-22", 1), new LineaPedido("2-22", 3)))));
         pedidos.add(new Pedido("36347775R-002/2025", clientes.get("36347775R"), hoy.minusDays(5), new ArrayList<>(List.of(new LineaPedido("4-33", 3), new LineaPedido("2-11", 3)))));
         pedidos.add(new Pedido("63921307Y-001/2025", clientes.get("63921307Y"), hoy.minusDays(4), new ArrayList<>(List.of(new LineaPedido("2-11", 5), new LineaPedido("2-33", 3), new LineaPedido("4-33", 2)))));
+    }
+
+    private void stock(String idArticulo, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
+        //Cuando no quedan unidades lanza esta alarma, dando la info del throw
+        if (articulos.get(idArticulo).getExistencias() == 0) {
+            throw new StockCero("0 unidades disponibles de:"
+                    + articulos.get(idArticulo).getDescripcion());
+        }
+
+        //Cuando nos piden más unidades de las que tenemos
+        if (articulos.get(idArticulo).getExistencias() < unidades) {
+            throw new StockInsuficiente("Sólo hay" + articulos.get(idArticulo).getExistencias() + " unidades disponibles de: "
+                    + articulos.get(idArticulo).getDescripcion());
+        }
     }
 //</editor-fold>
 
@@ -235,8 +251,10 @@ public class Tienda2026 {
 //</editor-fold>
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
+    /**
+     * Lstado de colecciones con for each
+     */
     public void listarColecciones() {
         System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
         for (Cliente c : clientes.values()) {
@@ -260,6 +278,9 @@ public class Tienda2026 {
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Gestión Artículos">
+    /**
+     * Agregamos un nuevo artículo a la tienda
+     */
     private void altaArticulo() {
         //DEBEMOS PEDIR LOS 4 ATRIBUTOS POR TECLADO Y LUEGO AÑADIRLO AL HASHMAP
         Scanner sc = new Scanner(System.in);
@@ -343,68 +364,119 @@ public class Tienda2026 {
     }
 
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
-    public String generaIdPedido(String idCliente){
+    /**
+     * Generación de IdPedido
+     *
+     * @param idCliente
+     * @return
+     */
+    public String generaIdPedido(String idCliente) {
         String nuevoId;
-        int contador=0;
+        int contador = 0;
         //Calculo el numero de pedidos de la persona
         for (Pedido p : pedidos) {
             if (p.getClientePedido().getIdCliente().equalsIgnoreCase(idCliente)) {
-               contador++;
+                contador++;
             }
         }
         //Hemos calculado cuúantos pedidos tiene el cliente aportado con el contador
-        
+
         contador++;//Sumamos 1 al contador para el nuevo pedido
-        
-        nuevoId= idCliente + "-" + String.format("%03d", contador) + "/" + LocalDate.now().getYear();
-        
+
+        nuevoId = idCliente + "-" + String.format("%03d", contador) + "/" + LocalDate.now().getYear();
+
         return nuevoId;
     }
-    
+
+    /**
+     * Generamos un nuevo pedido teniendo en cuenta el método anterior
+     */
     private void nuevoPedido() {
+        sc.nextLine();
         String idCliente;
         do {
-            System.out.println("DNI CLIENTE:");
-            idCliente=sc.nextLine().toUpperCase();
+            System.out.println("DNI (id) CLIENTE:");
+            idCliente = sc.next().toUpperCase();
+            if (!clientes.containsKey(idCliente)) {
+                System.out.println("No es cliente de la tienda." + " Desea darse de alta o comprar como invitado ");
+            }
         } while (!MetodosAuxiliares.validarDni(idCliente));
-        
-        
+
         //Controlamos que solo se pidan artículos de la tienda y de clientes de la tienda
-        ArrayList<LineaPedido> cestaCompra=new ArrayList();
+        ArrayList<LineaPedido> cestaCompra = new ArrayList();
         String idArticulo;
-        int unidades=0;
-        do {
-            System.out.print("\nTeclee el ID del articulo deseado (FIN para terminar la compra)");
-            idArticulo=sc.nextLine();
+        int unidades = 0;
+
+        System.out.print("\nTeclee el ID del articulo deseado (FIN para terminar la compra):");
+        idArticulo = sc.next();
+
+        while (idArticulo.equalsIgnoreCase("FIN"));
+        {
+            //Es mejor utilizar un while en lugar de un do while como en el commit anterior, con el do while estamos obligando a la persona a seguir con los atributos aunque no quiera comprar, se ve abajo del todo con do while
             System.out.print("\nTeclee las unidades deseadas: ");
-            unidades=sc.nextInt();
-            cestaCompra.add(new LineaPedido(idArticulo,unidades));
+            unidades = sc.nextInt();//Debemos valorar las execepciones llamando al método stock
             
-        } while (idArticulo.equalsIgnoreCase("FIN"));
-        
-        
-        
-        
+            try {
+                stock(idArticulo, unidades); //Debemos darle a la penúltima sugenrecia
+                cestaCompra.add(new LineaPedido(idArticulo, unidades));//Si no pasa nada de las excepciones añadimos la linea a cestaCompra
+                
+                //Si damos por hecho que el pediddo se va cerrar, esto debería ir al final del código cuando estamnos seguros que se va afectuar el pedido
+                //articulos.get(idArticulo).setExistencias(articulos.get(idArticulo).getExistencias()-unidades);
+            } catch (StockCero ex) {
+                System.out.println(ex.getMessage());//Nos muestra el mensaje que fijamos en el método de stock cuando salta la excepción
+            } catch (StockInsuficiente ex) {
+                System.out.println(ex.getMessage());//Aparte de mostrar el mensaje lo podemos matizar aún más
+                System.out.println("Las quieres (SI/NO)");
+                String respuesta=sc.next();
+                if (respuesta.equalsIgnoreCase("SI")) {
+                    cestaCompra.add(new LineaPedido(idArticulo,articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
+                    articulos.get(idArticulo).setExistencias(0);
+                }
+            }
+            System.out.println("\nTeclee el ID del artículo deseado (FIN para terminar la compra)");
+            idArticulo = sc.next();
+            
+            if (!cestaCompra.isEmpty()) {
+                System.out.println("Este es tu pedido");
+                for (LineaPedido l:cestaCompra) {
+                    System.out.println( l.getIdArticulo()+ "-" +
+                            articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades());
+                }
+                pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente),LocalDate.now(), cestaCompra));
+            }
+        }
+        //Solo hacemos el pedido si la persona metió algo en la cesta
+        if (cestaCompra.size() > 0) {//()cestaCompra.isEmpty
+
+            Pedido p = new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra);
+            /*Pedimos uno a uno los atributos del pedido, son las cosas que necesitamos para realizar un pedido
+                -Generamos el id de ese pedido mediante la llamada al método generaIdPedido anterior
+                -Lo asociamos a un cliente
+                -Obtenemos la fecha del pedido
+                -Hace falta rellenar el ArrayList del pedido*/
+            pedidos.add(p);
+        }
         //generaIdPedido(idCliente);//Con esto ya lo tenemos, pero aún no ha hecho el pedido, no necesitamos el id aún porque no hay pedido, hace falta cestaCompra, hace falta rellenar ese ArrayList
-        
-        Pedido p=new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra);
-        /*Pedimos uno a uno los atributos del pedido, son las cosas que necesitamos para realizar un pedido
-        -Generamos el id de ese pedido mediante la llamada al método generaIdPedido anterior
-        -Lo asociamos a un cliente
-        -Obtenemos la fecha del pedido
-        -Hace falta rellenar el ArrayList del pedido*/
-        pedidos.add(p);
-        
-        
+
         /*System.out.println(generaIdPedido("80580845T"));
         System.out.println(generaIdPedido("36347775R"));
         System.out.println(generaIdPedido("02337565Y"));
         PRUBA DE QUE GENERA UN ID DE PEDIDO PARA ESOS idCliente*/
-                
+ /*do {            
+            System.out.println("Teclea el ID del articulo deseado (FIN para terminar la compra) ");
+            idArticulo=sc.nextLine();
+            System.err.println("\nTeclea las unidades deseadas: ");
+            unidades=sc.nextInt();
+            cestaCompra.add(new LineaPedido(idArticulo,unidades));
+        } while (!idArticulo.equalsIgnoreCase("FIN"));
+        Pedido p = new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra);
+        pedidos.add(p);*/
     }
 
+    /**
+     * Lista los pedidos con for each
+     */
     private void listadoPedido() {
         System.out.println("Vamos a mostrar los pedidos de la tienda: ");
         for (Pedido p : pedidos) {
@@ -417,14 +489,12 @@ public class Tienda2026 {
     }
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Listados con STREAM">
     private void listadosConStreams() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
     private void ordenarConStream() {
         throw new UnsupportedOperationException("Not supported yet.");
