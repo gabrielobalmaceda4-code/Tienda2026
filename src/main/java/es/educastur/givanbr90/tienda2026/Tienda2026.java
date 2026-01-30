@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -78,7 +79,7 @@ public class Tienda2026 {
 
         //Cuando nos piden más unidades de las que tenemos
         if (articulos.get(idArticulo).getExistencias() < unidades) {
-            throw new StockInsuficiente("Sólo hay" + articulos.get(idArticulo).getExistencias() + " unidades disponibles de: "
+            throw new StockInsuficiente("Sólo hay " + articulos.get(idArticulo).getExistencias() + " unidades disponibles de: "
                     + articulos.get(idArticulo).getDescripcion());
         }
     }
@@ -224,7 +225,6 @@ public class Tienda2026 {
             System.out.println("\n\n\n\n\n\t\t\t\tMENU DE PEDIDOS");
             System.out.println("\t\t\t\t1 - NUEVO PEDIDO");
             System.out.println("\t\t\t\t2 - LISTADO DE PEDIDOS");
-            System.out.println("\t\t\t\t3 - TOTAL PEDIDO");
             System.out.println("\t\t\t\t9 - SALIR");
             System.out.println("\t\t\t\t¿Qué opción quieres ejecurtar?");
 
@@ -237,10 +237,6 @@ public class Tienda2026 {
                 }
                 case 2: {
                     listadoPedido();
-                    break;
-                }
-                case 3: {
-                    totalPedido();
                     break;
                 }
 
@@ -399,7 +395,8 @@ public class Tienda2026 {
             System.out.println("DNI (id) CLIENTE:");
             idCliente = sc.next().toUpperCase();
             if (!clientes.containsKey(idCliente)) {
-                System.out.println("No es cliente de la tienda." + " Desea darse de alta o comprar como invitado ");
+                System.out.println("No es cliente de la tienda."
+                        + " Desea darse de alta o comprar como invitado ");
             }
         } while (!MetodosAuxiliares.validarDni(idCliente));
 
@@ -411,16 +408,15 @@ public class Tienda2026 {
         System.out.print("\nTeclee el ID del articulo deseado (FIN para terminar la compra):");
         idArticulo = sc.next();
 
-        while (idArticulo.equalsIgnoreCase("FIN"));
-        {
+        while (!idArticulo.equalsIgnoreCase("FIN")) {
             //Es mejor utilizar un while en lugar de un do while como en el commit anterior, con el do while estamos obligando a la persona a seguir con los atributos aunque no quiera comprar, se ve abajo del todo con do while
             System.out.print("\nTeclee las unidades deseadas: ");
             unidades = sc.nextInt();//Debemos valorar las execepciones llamando al método stock
-            
+
             try {
                 stock(idArticulo, unidades); //Debemos darle a la penúltima sugenrecia
                 cestaCompra.add(new LineaPedido(idArticulo, unidades));//Si no pasa nada de las excepciones añadimos la linea a cestaCompra
-                
+
                 //Si damos por hecho que el pediddo se va cerrar, esto debería ir al final del código cuando estamnos seguros que se va afectuar el pedido
                 //articulos.get(idArticulo).setExistencias(articulos.get(idArticulo).getExistencias()-unidades);
             } catch (StockCero ex) {
@@ -428,35 +424,61 @@ public class Tienda2026 {
             } catch (StockInsuficiente ex) {
                 System.out.println(ex.getMessage());//Aparte de mostrar el mensaje lo podemos matizar aún más
                 System.out.println("Las quieres (SI/NO)");
-                String respuesta=sc.next();
+                String respuesta = sc.next();
                 if (respuesta.equalsIgnoreCase("SI")) {
-                    cestaCompra.add(new LineaPedido(idArticulo,articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
-                    articulos.get(idArticulo).setExistencias(0);
+                    cestaCompra.add(new LineaPedido(idArticulo, articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
+                    //articulos.get(idArticulo).setExistencias(0);
                 }
             }
             System.out.println("\nTeclee el ID del artículo deseado (FIN para terminar la compra)");
             idArticulo = sc.next();
-            
-            if (!cestaCompra.isEmpty()) {
-                System.out.println("Este es tu pedido");
-                for (LineaPedido l:cestaCompra) {
-                    System.out.println( l.getIdArticulo()+ "-" +
-                            articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades());
-                }
-                pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente),LocalDate.now(), cestaCompra));
+
+        }
+
+        if (!cestaCompra.isEmpty()) {
+            System.out.println("Este es tu pedido:\n");
+            double totalLinea = 0;
+            double totalPedido = 0;
+            for (LineaPedido l : cestaCompra) {//Recorremos el hashmap para almacenar la iformación de dicho pedido respecto al precio
+                totalLinea = l.getUnidades() * articulos.get(l.getIdArticulo()).getPvp();//Calculamos el precio del pedido multiplicando las unidades por el precio del artículo
+                totalPedido += totalLinea;//Aumentamos el total pedido en si aumenta la línea
+                System.out.println(l.getIdArticulo() + " - "
+                        + articulos.get(l.getIdArticulo()).getDescripcion() + " - "
+                        + l.getUnidades() + " uds " + " - "
+                        + articulos.get(l.getIdArticulo()).getPvp() + " euros cada uno");
             }
+            System.out.println("\t\tEl precio total del pedido es " + totalPedido);
+            System.out.println("\nProcedemos con la compra (SI/NO)");
+
+            for (LineaPedido l : cestaCompra) {
+                System.out.println(l.getIdArticulo() + "-"
+                        + articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades());
+            }
+
+            System.out.println("Desea proceder con la compra (SI/NO) ");
+            String respuesta = sc.next();
+
+            if (respuesta.equalsIgnoreCase("SI")) {
+                pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente),
+                        LocalDate.now(), cestaCompra));
+                for (LineaPedido l : cestaCompra) {
+                    articulos.get(l.getIdArticulo())
+                            .setExistencias(articulos.get(l.getIdArticulo()).getExistencias() - l.getUnidades());
+                }
+            }
+            //pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra));
         }
         //Solo hacemos el pedido si la persona metió algo en la cesta
-        if (cestaCompra.size() > 0) {//()cestaCompra.isEmpty
+        /*if (cestaCompra.size() > 0) {//()cestaCompra.isEmpty
 
             Pedido p = new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra);
             /*Pedimos uno a uno los atributos del pedido, son las cosas que necesitamos para realizar un pedido
                 -Generamos el id de ese pedido mediante la llamada al método generaIdPedido anterior
                 -Lo asociamos a un cliente
                 -Obtenemos la fecha del pedido
-                -Hace falta rellenar el ArrayList del pedido*/
+                -Hace falta rellenar el ArrayList del pedido
             pedidos.add(p);
-        }
+        }*/
         //generaIdPedido(idCliente);//Con esto ya lo tenemos, pero aún no ha hecho el pedido, no necesitamos el id aún porque no hay pedido, hace falta cestaCompra, hace falta rellenar ese ArrayList
 
         /*System.out.println(generaIdPedido("80580845T"));
@@ -473,6 +495,7 @@ public class Tienda2026 {
         Pedido p = new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra);
         pedidos.add(p);*/
     }
+    //pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra));
 
     /**
      * Lista los pedidos con for each
@@ -480,15 +503,19 @@ public class Tienda2026 {
     private void listadoPedido() {
         System.out.println("Vamos a mostrar los pedidos de la tienda: ");
         for (Pedido p : pedidos) {
-            System.out.println(p);
+            System.out.println(p + "- Total: " + totalPedido(p));
         }
     }
 
-    private void totalPedido() {
-
+    private double totalPedido(Pedido p) {
+        double totalPedido = 0;
+        for (LineaPedido l : p.getCestaCompra()) {
+            totalPedido += l.getUnidades() * articulos.get(l.getIdArticulo()).getPvp();
+        }
+        return totalPedido;
     }
-
 //</editor-fold>
+
     //<editor-fold defaultstate="collapsed" desc="Listados con STREAM">
     private void listadosConStreams() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -497,7 +524,21 @@ public class Tienda2026 {
 //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
     private void ordenarConStream() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("Listado de pedidos ordenados de menor a mayor total: ");
+        pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido))
+                .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
+
+        System.out.println("\nListado de pedidos ordenados de mayor a menor total: ");
+        pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido).reversed())
+                .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
+
+        System.out.println("\nListado de pedidos ordenados usando como criterio un método de - a +: ");
+        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido(p)))
+                .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
+
+        System.out.println("\nListado de pedidos ordenados usando como criterio un método de + a -: ");
+        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido)p)).reversed())
+                .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
     }
 //</editor-fold>
 }
