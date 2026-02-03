@@ -15,7 +15,7 @@ public class Pedido {
 
     private String idPedido;
     private Cliente clientePedido;
-    private final LocalDate fechaPedido;
+    private LocalDate fechaPedido;
     private ArrayList<LineaPedido> cestaCompra;
 
     public Pedido(String idPedido, Cliente clientePedido, LocalDate fechaPedido,
@@ -50,10 +50,21 @@ public class Pedido {
         this.cestaCompra = cestaCompra;
     }
 
+    public LocalDate getFechaPedido() {
+        return fechaPedido;
+    }
+
+    public void setFechaPedido(LocalDate fechaPedido) {
+        this.fechaPedido = fechaPedido;
+    }
+        
+    
     @Override
     public String toString() {
-        return idPedido + " / " + clientePedido + " / " + fechaPedido + " / " + cestaCompra;
+        return idPedido + " / " + clientePedido + " / " + getFechaPedido() + " / " + cestaCompra;
     }
+
+  
     
 
 }
