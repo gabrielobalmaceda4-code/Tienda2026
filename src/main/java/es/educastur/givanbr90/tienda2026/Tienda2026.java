@@ -41,6 +41,11 @@ public class Tienda2026 {
 
         t.cargaDatos();
         t.menu();
+        //Si hacemos los métodos estáticos podemos llamarlos de la siguiente manera, sin necesidad del menú, esto es lo que va haber que entregar
+        /*uno();
+        -private static void uno(){
+        }
+        */
 
     }
 
@@ -70,6 +75,13 @@ public class Tienda2026 {
         pedidos.add(new Pedido("63921307Y-001/2025", clientes.get("63921307Y"), hoy.minusDays(4), new ArrayList<>(List.of(new LineaPedido("2-11", 5), new LineaPedido("2-33", 3), new LineaPedido("4-33", 2)))));
     }
 
+    /**
+     * Este método valora las posibles excepciones de stock
+     * @param idArticulo
+     * @param unidades
+     * @throws StockCero
+     * @throws StockInsuficiente 
+     */
     private void stock(String idArticulo, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
         //Cuando no quedan unidades lanza esta alarma, dando la info del throw
         if (articulos.get(idArticulo).getExistencias() == 0) {
@@ -247,9 +259,10 @@ public class Tienda2026 {
 //</editor-fold>
 
 //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
     /**
-     * Lstado de colecciones con for each
+     * Listado de colecciones con for each
      */
     public void listarColecciones() {
         System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
@@ -335,6 +348,29 @@ public class Tienda2026 {
             System.out.println(a);
             //System.out.print("\n" + a.getidArticulo() + "/" + a.getdescripción() + "/" + a.getexistencias() + "/" + a.getpvp());
         }
+        
+        System.out.println("\nVamos a nostrar los artículos con streams: ");
+        articulos.values().stream()
+                .forEach(a->System.out.println(a));//Imprime los values de dicho hashmap
+        
+        System.out.println("\n");
+        articulos.values().stream()
+                .forEach(a->System.out.println(a));
+        
+        //Lo convertimos en ArrayList
+        System.out.println("\nLo convertimos a ArrayList y declaramos criterios de ordenaión");
+        ArrayList<Articulo> articulosAux=new ArrayList(articulos.values());
+        
+        System.out.println("");
+        articulosAux.stream()
+                .filter(a->a.getPvp()<100)
+                .sorted(Comparator.comparing(Articulo::getPvp).reversed())//CUANDO SON ATRIBUTOS, CLASE::ATRIBUO, CON MÉTODOS, EN PREDICADOS
+                .forEach(a->System.out.println(a));
+        
+        System.out.println("\nListado tradicional con FOR EACH");
+        for (Articulo a : articulos.values()) {//Cuidado despúes del punto, como es HashMap siempre lleva .values, si no lo lleva da error el código
+            System.out.println(a);
+        }
     }
 //</editor-fold>
 
@@ -360,6 +396,7 @@ public class Tienda2026 {
     }
 
     //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
     /**
      * Generación de IdPedido
@@ -522,10 +559,15 @@ public class Tienda2026 {
     }
 
 //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
+    
+    /**
+     * Ordenamos pedidos con streams y criterios de organización: atributo y método
+     */
     private void ordenarConStream() {
         System.out.println("Listado de pedidos ordenados de menor a mayor total: ");
-        pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido))
+        pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido))//El criterio de ordenación es el que está en el paréntesis después del .comparing, en ese caso usamos un atributo como pedido
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
 
         System.out.println("\nListado de pedidos ordenados de mayor a menor total: ");
@@ -539,6 +581,14 @@ public class Tienda2026 {
         System.out.println("\nListado de pedidos ordenados usando como criterio un método de + a -: ");
         pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido)p)).reversed())
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
+        
+        //VAMOS A MOSTRAR SOLO LOS PEDIDOS MAYORES DE MIL EUROS
+        //FILTER SIEMPRE LO PRIMERO
+        System.out.println("\n");
+        /*pedidos.stream().filter(pedidos->totalPedido(p)>1000)
+                .sorted(Comparator.comparing(Pedido::getFechaPedido))
+                .forEach(pedidos->System.out.println(p " - " + totalPedido(p)));*/
+        
     }
 //</editor-fold>
 }
