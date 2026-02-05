@@ -45,7 +45,7 @@ public class Tienda2026 {
         /*uno();
         -private static void uno(){
         }
-        */
+         */
 
     }
 
@@ -77,10 +77,11 @@ public class Tienda2026 {
 
     /**
      * Este método valora las posibles excepciones de stock
+     *
      * @param idArticulo
      * @param unidades
      * @throws StockCero
-     * @throws StockInsuficiente 
+     * @throws StockInsuficiente
      */
     private void stock(String idArticulo, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
         //Cuando no quedan unidades lanza esta alarma, dando la info del throw
@@ -94,6 +95,19 @@ public class Tienda2026 {
             throw new StockInsuficiente("Sólo hay " + articulos.get(idArticulo).getExistencias() + " unidades disponibles de: "
                     + articulos.get(idArticulo).getDescripcion());
         }
+    }
+    
+    private int udsVendidas (Articulo a){
+        int total=0;
+        for (Pedido p : pedidos) {
+            for (LineaPedido l : p.getCestaCompra()) {
+                if (l.getIdArticulo().equalsIgnoreCase(a.getIdArticulo())) {
+                    total+=l.getUnidades();
+                }
+            }
+        }
+        return total;
+        
     }
 //</editor-fold>
 
@@ -259,7 +273,6 @@ public class Tienda2026 {
 //</editor-fold>
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
     /**
      * Listado de colecciones con for each
@@ -343,7 +356,7 @@ public class Tienda2026 {
     }
 
     private void listarArticulos() {
-        System.out.println("Vamos a mostrar los articulos de la tienda: ");
+        /*System.out.println("Vamos a mostrar los articulos de la tienda: ");
         for (Articulo a : articulos.values()) {
             System.out.println(a);
             //System.out.print("\n" + a.getidArticulo() + "/" + a.getdescripción() + "/" + a.getexistencias() + "/" + a.getpvp());
@@ -370,7 +383,42 @@ public class Tienda2026 {
         System.out.println("\nListado tradicional con FOR EACH");
         for (Articulo a : articulos.values()) {//Cuidado despúes del punto, como es HashMap siempre lleva .values, si no lo lleva da error el código
             System.out.println(a);
-        }
+        }*/
+
+        //EJERCICIO UNO DEL 05/02/2026
+        System.out.println("SECCION A LISTAR: ");
+        String seccion = sc.next();
+        System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
+        articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith(seccion))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo))
+                .forEach(a -> System.out.println(a));
+
+        //EJERCICO DOS
+        System.out.println("\nPERIFERICOS");
+        articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("1"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+        System.out.println("\nALMACENAMIENTO");
+        articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("2"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+        System.out.println("\nIMPRESORAS");
+        articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("3"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+        System.out.println("\nMONITORES");
+        articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("4"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+
+        //EJERCICO CUATRO
+        System.out.println("\nLISTADO DE ARTICULOS - UNIDADES VENDIDAS:");
+        articulos.values().stream()
+                .sorted(Comparator.comparing(a->udsVendidas((Articulo) a)).reversed())
+                .forEach(a->System.out.println(
+                a.getIdArticulo()+ " - " +
+                a.getDescripcion()+" - vendidas " + udsVendidas(a)));
     }
 //</editor-fold>
 
@@ -388,15 +436,56 @@ public class Tienda2026 {
     }
 
     private void listarClientes() {
-        System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
+        /*System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
         for (Cliente c : clientes.values()) {
             System.out.println(c);
             //System.out.print("\n" + l.getIsbn() + "/" + l.getTitulo() + "/" + l.getAutor() + "/" + l.getGenero());
+        }*/
+        
+        //EJERCICIO 3
+        System.out.println("Introduce el DNI del cliente:");
+        String dni = sc.next();
+        double totalGastado = 0;
+        System.out.println("\nPEDIDOS DEL CLIENTE " + dni);
+        for (Pedido p : pedidos) {
+            if (p.getClientePedido().getIdCliente().equalsIgnoreCase(dni)) {
+                double total = totalPedido(p);
+                System.out.println(p + " - TOTAL: " + total);
+                totalGastado += total;
+            }
+        }
+        System.out.println("\nTOTAL GASTADO POR EL CLIENTE: " + totalGastado + "euros");
+
+        /*clientesAux.stream()
+                .filter(c->c.getIdCliente().equals(dni))
+                .forEach(p->totalPedido(Pedido p));
+                //.sorted(Comparator.comparing(c->totalPedido(p)));
+        /*clientes.values().stream()
+                .filter(c->c.getIdCliente().equalsIgnoreCase(dni))
+                .sorted(Comparator.comparing(Cliente::getIdCliente))
+                .forEach(c->System.out.println(c));*/
+        
+        //EJERCICIO 5
+        ArrayList<Cliente> clientesNoPedidos =new ArrayList<>();
+        for (Cliente c : clientes.values()) {
+            int contador=0;
+            for (Pedido p: pedidos) {
+                if (p.getClientePedido().getIdCliente().equalsIgnoreCase(c.getIdCliente())) {
+                    contador++;
+                }
+            }
+            
+            if (contador==0) {
+                clientesNoPedidos.add(c);
+            }
+        }
+        System.out.println("CLIENTE SIN PEDIDOS:");
+            for (Cliente c : clientesNoPedidos) {
+                System.out.println(c);
         }
     }
 
     //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
     /**
      * Generación de IdPedido
@@ -559,11 +648,10 @@ public class Tienda2026 {
     }
 
 //</editor-fold>
-    
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
-    
     /**
-     * Ordenamos pedidos con streams y criterios de organización: atributo y método
+     * Ordenamos pedidos con streams y criterios de organización: atributo y
+     * método
      */
     private void ordenarConStream() {
         System.out.println("Listado de pedidos ordenados de menor a mayor total: ");
@@ -579,16 +667,16 @@ public class Tienda2026 {
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
 
         System.out.println("\nListado de pedidos ordenados usando como criterio un método de + a -: ");
-        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido)p)).reversed())
+        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido) p)).reversed())
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
-        
+
         //VAMOS A MOSTRAR SOLO LOS PEDIDOS MAYORES DE MIL EUROS
         //FILTER SIEMPRE LO PRIMERO
         System.out.println("\n");
         /*pedidos.stream().filter(pedidos->totalPedido(p)>1000)
                 .sorted(Comparator.comparing(Pedido::getFechaPedido))
                 .forEach(pedidos->System.out.println(p " - " + totalPedido(p)));*/
-        
+
     }
 //</editor-fold>
 }
