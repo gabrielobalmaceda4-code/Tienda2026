@@ -386,9 +386,21 @@ public class Tienda2026 {
         }*/
 
         //EJERCICIO UNO DEL 05/02/2026
+        
+        /*
+        ESTO ES PARA MOSTRAR EN LA CABECERA LA SECCIÓN QUE SE HA TECLEADO
+        String[] Secciones={"", "PERIFERICOS", "ALMACENAMIENTO", "MONITORES", "IMPRESORAS"};*/
         System.out.println("SECCION A LISTAR: ");
         String seccion = sc.next();
         System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
+        
+        /*
+        SOLUCIÓN EDU
+        for (Articulo a: articulos.values()) {
+            if (a.getIdArticulo().startsWith(seccion)) {
+                System.out.println(a);
+            }
+        }*/
         articulos.values().stream()
                 .filter(a -> a.getIdArticulo().startsWith(seccion))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo))
