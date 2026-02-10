@@ -32,6 +32,19 @@ public class Tienda2026 {
         clientes = new HashMap();
     }
 
+    public ArrayList<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public HashMap<String, Articulo> getArticulos() {
+        return articulos;
+    }
+
+    public HashMap<String, Cliente> getClientes() {
+        return clientes;
+    }
+    
+
     public static void main(String[] args) {
 
         Tienda2026 t = new Tienda2026();
@@ -645,7 +658,7 @@ public class Tienda2026 {
         }
     }
 
-    private double totalPedido(Pedido p) {
+    public double totalPedido(Pedido p) { //Cambiamos a public para probarlo en los test de JUNIT 5
         double totalPedido = 0;
         for (LineaPedido l : p.getCestaCompra()) {
             totalPedido += l.getUnidades() * articulos.get(l.getIdArticulo()).getPvp();
