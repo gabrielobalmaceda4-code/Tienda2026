@@ -43,7 +43,6 @@ public class Tienda2026 {
     public HashMap<String, Cliente> getClientes() {
         return clientes;
     }
-    
 
     public static void main(String[] args) {
 
@@ -64,28 +63,28 @@ public class Tienda2026 {
 
     //<editor-fold defaultstate="collapsed" desc="Métodos auxiliares">
     public void cargaDatos() {
-
         clientes.put("80580845T", new Cliente("80580845T", "ANA ", "658111111", "ana@gmail.com"));
         clientes.put("36347775R", new Cliente("36347775R", "LOLA", "649222222", "lola@gmail.com"));
         clientes.put("63921307Y", new Cliente("63921307Y", "JUAN", "652333333", "juan@gmail.com"));
         clientes.put("02337565Y", new Cliente("02337565Y", "EDU", "634567890", "edu@gmail.com"));
 
-        articulos.put("1-11", new Articulo("1-11", "RATON LOGITECH ST ", 14, 15));//El primer nº es la sección y el siguiente el artículo
-        articulos.put("1-22", new Articulo("1-22", "TECLADO STANDARD  ", 9, 18));
-        articulos.put("2-11", new Articulo("2-11", "HDD SEAGATE 1 TB  ", 16, 80));
+        articulos.put("1-11", new Articulo("1-11", "RATON LOGITECH ST ", 0, 15));
+        articulos.put("1-22", new Articulo("1-22", "TECLADO STANDARD  ", 5, 18));
+        articulos.put("2-11", new Articulo("2-11", "HDD SEAGATE 1 TB  ", 15, 80));
         articulos.put("2-22", new Articulo("2-22", "SSD KINGSTOM 256GB", 9, 70));
         articulos.put("2-33", new Articulo("2-33", "SSD KINGSTOM 512GB", 0, 200));
+        articulos.put("3-11", new Articulo("3-11", "HP LASERJET HP800 ", 2, 200));
         articulos.put("3-22", new Articulo("3-22", "EPSON PRINT XP300 ", 5, 80));
         articulos.put("4-11", new Articulo("4-11", "ASUS  MONITOR  22 ", 5, 100));
         articulos.put("4-22", new Articulo("4-22", "HP MONITOR LED 28 ", 5, 180));
         articulos.put("4-33", new Articulo("4-33", "SAMSUNG ODISSEY G5", 12, 580));
 
         LocalDate hoy = LocalDate.now();
-        pedidos.add(new Pedido("80580845T-001/2025", clientes.get("80580845T"), hoy.minusDays(1), new ArrayList<>(List.of(new LineaPedido("1-11", 3), new LineaPedido("4-22", 3)))));
-        pedidos.add(new Pedido("80580845T-002/2025", clientes.get("80580845T"), hoy.minusDays(2), new ArrayList<>(List.of(new LineaPedido("4-11", 3), new LineaPedido("4-22", 2), new LineaPedido("4-33", 4)))));
-        pedidos.add(new Pedido("36347775R-001/2025", clientes.get("36347775R"), hoy.minusDays(3), new ArrayList<>(List.of(new LineaPedido("4-22", 1), new LineaPedido("2-22", 3)))));
-        pedidos.add(new Pedido("36347775R-002/2025", clientes.get("36347775R"), hoy.minusDays(5), new ArrayList<>(List.of(new LineaPedido("4-33", 3), new LineaPedido("2-11", 3)))));
-        pedidos.add(new Pedido("63921307Y-001/2025", clientes.get("63921307Y"), hoy.minusDays(4), new ArrayList<>(List.of(new LineaPedido("2-11", 5), new LineaPedido("2-33", 3), new LineaPedido("4-33", 2)))));
+        pedidos.add(new Pedido("80580845T-001/2025", clientes.get("80580845T"), hoy.minusDays(1), new ArrayList<>(List.of(new LineaPedido(articulos.get("1-11"), 3), new LineaPedido(articulos.get("4-22"), 3)))));
+        pedidos.add(new Pedido("80580845T-002/2025", clientes.get("80580845T"), hoy.minusDays(2), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-11"), 3), new LineaPedido(articulos.get("4-22"), 2), new LineaPedido(articulos.get("4-33"), 4)))));
+        pedidos.add(new Pedido("36347775R-001/2025", clientes.get("36347775R"), hoy.minusDays(3), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-22"), 1), new LineaPedido(articulos.get("2-22"), 3)))));
+        pedidos.add(new Pedido("36347775R-002/2025", clientes.get("36347775R"), hoy.minusDays(5), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-33"), 3), new LineaPedido(articulos.get("2-11"), 3)))));
+        pedidos.add(new Pedido("63921307Y-001/2025", clientes.get("63921307Y"), hoy.minusDays(4), new ArrayList<>(List.of(new LineaPedido(articulos.get("2-11"), 5), new LineaPedido(articulos.get("2-33"), 3), new LineaPedido(articulos.get("4-33"), 2)))));
     }
 
     /**
@@ -109,18 +108,18 @@ public class Tienda2026 {
                     + articulos.get(idArticulo).getDescripcion());
         }
     }
-    
-    private int udsVendidas (Articulo a){
-        int total=0;
+
+    private int udsVendidas(Articulo a) {
+        int total = 0;
         for (Pedido p : pedidos) {
             for (LineaPedido l : p.getCestaCompra()) {
-                if (l.getIdArticulo().equalsIgnoreCase(a.getIdArticulo())) {
-                    total+=l.getUnidades();
+                if (l.getArticulo().equals(a)) {
+                    total += l.getUnidades();
                 }
             }
         }
         return total;
-        
+
     }
 //</editor-fold>
 
@@ -399,14 +398,13 @@ public class Tienda2026 {
         }*/
 
         //EJERCICIO UNO DEL 05/02/2026
-        
         /*
         ESTO ES PARA MOSTRAR EN LA CABECERA LA SECCIÓN QUE SE HA TECLEADO
         String[] Secciones={"", "PERIFERICOS", "ALMACENAMIENTO", "MONITORES", "IMPRESORAS"};*/
         System.out.println("SECCION A LISTAR: ");
         String seccion = sc.next();
         System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
-        
+
         /*
         SOLUCIÓN EDU
         for (Articulo a: articulos.values()) {
@@ -440,10 +438,10 @@ public class Tienda2026 {
         //EJERCICO CUATRO
         System.out.println("\nLISTADO DE ARTICULOS - UNIDADES VENDIDAS:");
         articulos.values().stream()
-                .sorted(Comparator.comparing(a->udsVendidas((Articulo) a)).reversed())
-                .forEach(a->System.out.println(
-                a.getIdArticulo()+ " - " +
-                a.getDescripcion()+" - vendidas " + udsVendidas(a)));
+                .sorted(Comparator.comparing(a -> udsVendidas((Articulo) a)).reversed())
+                .forEach(a -> System.out.println(
+                a.getIdArticulo() + " - "
+                + a.getDescripcion() + " - vendidas " + udsVendidas(a)));
     }
 //</editor-fold>
 
@@ -466,7 +464,7 @@ public class Tienda2026 {
             System.out.println(c);
             //System.out.print("\n" + l.getIsbn() + "/" + l.getTitulo() + "/" + l.getAutor() + "/" + l.getGenero());
         }*/
-        
+
         //EJERCICIO 3
         System.out.println("Introduce el DNI del cliente:");
         String dni = sc.next();
@@ -489,24 +487,23 @@ public class Tienda2026 {
                 .filter(c->c.getIdCliente().equalsIgnoreCase(dni))
                 .sorted(Comparator.comparing(Cliente::getIdCliente))
                 .forEach(c->System.out.println(c));*/
-        
         //EJERCICIO 5
-        ArrayList<Cliente> clientesNoPedidos =new ArrayList<>();
+        ArrayList<Cliente> clientesNoPedidos = new ArrayList<>();
         for (Cliente c : clientes.values()) {
-            int contador=0;
-            for (Pedido p: pedidos) {
+            int contador = 0;
+            for (Pedido p : pedidos) {
                 if (p.getClientePedido().getIdCliente().equalsIgnoreCase(c.getIdCliente())) {
                     contador++;
                 }
             }
-            
-            if (contador==0) {
+
+            if (contador == 0) {
                 clientesNoPedidos.add(c);
             }
         }
         System.out.println("CLIENTE SIN PEDIDOS:");
-            for (Cliente c : clientesNoPedidos) {
-                System.out.println(c);
+        for (Cliente c : clientesNoPedidos) {
+            System.out.println(c);
         }
     }
 
@@ -566,7 +563,7 @@ public class Tienda2026 {
 
             try {
                 stock(idArticulo, unidades); //Debemos darle a la penúltima sugenrecia
-                cestaCompra.add(new LineaPedido(idArticulo, unidades));//Si no pasa nada de las excepciones añadimos la linea a cestaCompra
+                cestaCompra.add(new LineaPedido(articulos.get(idArticulo), unidades)); //Si no pasa nada de las excepciones añadimos la linea a cestaCompra
 
                 //Si damos por hecho que el pediddo se va cerrar, esto debería ir al final del código cuando estamnos seguros que se va afectuar el pedido
                 //articulos.get(idArticulo).setExistencias(articulos.get(idArticulo).getExistencias()-unidades);
@@ -577,7 +574,7 @@ public class Tienda2026 {
                 System.out.println("Las quieres (SI/NO)");
                 String respuesta = sc.next();
                 if (respuesta.equalsIgnoreCase("SI")) {
-                    cestaCompra.add(new LineaPedido(idArticulo, articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
+                    cestaCompra.add(new LineaPedido(articulos.get(idArticulo),articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
                     //articulos.get(idArticulo).setExistencias(0);
                 }
             }
@@ -591,30 +588,22 @@ public class Tienda2026 {
             double totalLinea = 0;
             double totalPedido = 0;
             for (LineaPedido l : cestaCompra) {//Recorremos el hashmap para almacenar la iformación de dicho pedido respecto al precio
-                totalLinea = l.getUnidades() * articulos.get(l.getIdArticulo()).getPvp();//Calculamos el precio del pedido multiplicando las unidades por el precio del artículo
+                totalLinea = l.getUnidades() * l.getArticulo().getPvp();//Calculamos el precio del pedido multiplicando las unidades por el precio del artículo
                 totalPedido += totalLinea;//Aumentamos el total pedido en si aumenta la línea
-                System.out.println(l.getIdArticulo() + " - "
-                        + articulos.get(l.getIdArticulo()).getDescripcion() + " - "
-                        + l.getUnidades() + " uds " + " - "
-                        + articulos.get(l.getIdArticulo()).getPvp() + " euros cada uno");
+                System.out.println(l.getArticulo() + " - "
+                        + l.getUnidades() + " uds " + " - " + totalLinea);
+                     
             }
             System.out.println("\t\tEl precio total del pedido es " + totalPedido);
             System.out.println("\nProcedemos con la compra (SI/NO)");
-
-            for (LineaPedido l : cestaCompra) {
-                System.out.println(l.getIdArticulo() + "-"
-                        + articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades());
-            }
-
-            System.out.println("Desea proceder con la compra (SI/NO) ");
             String respuesta = sc.next();
 
             if (respuesta.equalsIgnoreCase("SI")) {
                 pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente),
                         LocalDate.now(), cestaCompra));
                 for (LineaPedido l : cestaCompra) {
-                    articulos.get(l.getIdArticulo())
-                            .setExistencias(articulos.get(l.getIdArticulo()).getExistencias() - l.getUnidades());
+                    articulos.get(l.getArticulo())
+                            .setExistencias(articulos.get(l.getArticulo()).getExistencias() - l.getUnidades());
                 }
             }
             //pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra));
@@ -658,10 +647,10 @@ public class Tienda2026 {
         }
     }
 
-    public double totalPedido(Pedido p) { //Cambiamos a public para probarlo en los test de JUNIT 5
+    private double totalPedido(Pedido p) { //Cambiamos a public para probarlo en los test de JUNIT 5
         double totalPedido = 0;
         for (LineaPedido l : p.getCestaCompra()) {
-            totalPedido += l.getUnidades() * articulos.get(l.getIdArticulo()).getPvp();
+            totalPedido += l.getUnidades() * articulos.get(l.getArticulo()).getPvp(); //SE CAMBIA DE l.getIdArticulo a l.getArticulo porque cambiamos la clase de LineaPedido, NOS PERMITE ACCEDER AL ARTICULO DIRECTAMENTE
         }
         return totalPedido;
     }
