@@ -1,4 +1,4 @@
-/*
+             /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -50,7 +50,7 @@ public class MetodosAuxiliares {
      */
     public static boolean validarDni(String dni) {
         //Verificar que el DNI tiene un formato válido
-        if (dni.isBlank() || !dni.matches("\\d{8} [A-HJ-NP-TV-Z]")) { //Expresión regular de un DNI, 8 números y solo las letras elegidas
+        if (dni.isBlank() || !dni.matches("\\d{8}[A-HJ-NP-TV-Z]")) { //Expresión regular de un DNI, 8 números y solo las letras elegidas
             return false;
         }
 
