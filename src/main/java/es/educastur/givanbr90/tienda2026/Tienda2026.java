@@ -727,7 +727,15 @@ public class Tienda2026 {
 
     //<editor-fold defaultstate="collapsed" desc="Listados con STREAM">
     private void listadosConStreams() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("Vamos a listar articulos con streams");
+        articulos.values().stream()
+                .forEach(a->System.out.println(a));
+        
+        clientes.values().stream()
+                .forEach(c->System.out.println(c));
+        
+        pedidos.stream()
+                .forEach(pedidos->System.out.println(pedidos));
     }
 
 //</editor-fold>
