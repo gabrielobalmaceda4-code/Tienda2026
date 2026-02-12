@@ -58,6 +58,9 @@ public class Tienda2026 {
         -private static void uno(){
         }
          */
+        System.out.println(t.udsVendidas1 (t.articulos.get("4-33")));
+        System.out.println(t.udsVendidas2 (t.articulos.get("4-33")));
+        System.out.println(t.udsVendidas3 (t.articulos.get("4-33")));
 
     }
 
@@ -285,6 +288,7 @@ public class Tienda2026 {
 //</editor-fold>
 
 //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
     /**
      * Listado de colecciones con for each
@@ -443,6 +447,70 @@ public class Tienda2026 {
                 a.getIdArticulo() + " - "
                 + a.getDescripcion() + " - vendidas " + udsVendidas(a)));
     }
+
+    //EVOLUCIÓN DE PROGRAMACIÓN TRADICIONAL A FUNCIONAL PARA CALCULAR LAS UNIDADES VENDIDAS
+    /**
+     * Calcula las unidades vendidas con bucles anidados
+     *
+     * @param a
+     * @return c= unidades vendidas
+     *
+     * Muy estructurado pero requiere de hacerlo todo de forma manual
+     */
+    private int udsVendidas1(Articulo a) {
+        int c = 0;
+        for (Pedido p : pedidos) {
+            for (LineaPedido l : p.getCestaCompra()) {
+                if (l.getArticulo().equals(a)) {
+                    c += l.getUnidades();
+                }
+            }
+        }
+        return c;
+    }
+
+    /**
+     * Calcula las unidades vendidas mediante streams, filter y mapToInt
+     *
+     * @param a
+     * @return total
+     *
+     * Simplifica la utilización de los bucles FOR EACH con streams aplicando
+     * filter
+     */
+    private int udsVendidas2(Articulo a) {
+        int total = 0;
+        for (Pedido p : pedidos) {
+            total += p.getCestaCompra().stream().filter(l -> l.getArticulo().equals(a))
+                    .mapToInt(LineaPedido::getUnidades).sum();
+        }
+        return total;
+
+    }
+
+    /**
+     * Calculamos las unidades vendidas aplanando el stream con flatMap
+     *
+     * @param a
+     * @return
+     */
+    private int udsVendidas3(Articulo a) {
+        /*                                                  FLATMAP
+        flatMap nos permite procesar todas las LineaPedido de la CestaCompra de cada Pedido de la tienda
+        -Es decir saltamos de CestaCompra a LineaPedido de todos los pedidos de la tienda, nos da acceso a una coleccion dentro de otra, es decir,
+        acceder individualmente a cada atributo CestaCompra como un stream para pdoer procesarlo Linea a Linea.
+        -Antes del flatMap solo tenemos los bucles anidades de for (Pedido p : pedidos)
+        -Tras el flatMap tenemos los 2 bucles anidados, estamos pasando a nivel de LineaPedido:
+            for (Pedido p : pedidos) {
+            for (LineaPedido l : p.getCestaCompra())
+        -Aplicamos lo que queremos hacer con toda esa info a nivel de LineaPedido: .filter y mapToInt
+        -NO PODEMOS APLICAR LOS FILTROS SIN EL FLATMAP*/
+        return pedidos.stream() //Nivel de pedido
+                .flatMap(pedidos -> pedidos.getCestaCompra().stream()) //Nivel CestaCompra
+                .filter(l -> l.getArticulo().equals(a)) //Nivel LineaPedido
+                .mapToInt(LineaPedido::getUnidades).sum();
+
+    }
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Gestión de Clientes">
@@ -508,6 +576,7 @@ public class Tienda2026 {
     }
 
     //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
     /**
      * Generación de IdPedido
@@ -574,7 +643,7 @@ public class Tienda2026 {
                 System.out.println("Las quieres (SI/NO)");
                 String respuesta = sc.next();
                 if (respuesta.equalsIgnoreCase("SI")) {
-                    cestaCompra.add(new LineaPedido(articulos.get(idArticulo),articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
+                    cestaCompra.add(new LineaPedido(articulos.get(idArticulo), articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
                     //articulos.get(idArticulo).setExistencias(0);
                 }
             }
@@ -592,7 +661,7 @@ public class Tienda2026 {
                 totalPedido += totalLinea;//Aumentamos el total pedido en si aumenta la línea
                 System.out.println(l.getArticulo() + " - "
                         + l.getUnidades() + " uds " + " - " + totalLinea);
-                     
+
             }
             System.out.println("\t\tEl precio total del pedido es " + totalPedido);
             System.out.println("\nProcedemos con la compra (SI/NO)");
@@ -662,6 +731,7 @@ public class Tienda2026 {
     }
 
 //</editor-fold>
+    
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
     /**
      * Ordenamos pedidos con streams y criterios de organización: atributo y
