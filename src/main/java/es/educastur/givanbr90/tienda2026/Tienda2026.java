@@ -58,9 +58,9 @@ public class Tienda2026 {
         -private static void uno(){
         }
          */
-        System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
+        /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
-        System.out.println(t.udsVendidas3(t.articulos.get("4-33")));
+        System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
 
     }
 
@@ -730,12 +730,14 @@ public class Tienda2026 {
         System.out.println("Vamos a listar articulos con streams");
         articulos.values().stream()
                 .forEach(a -> System.out.println(a));
-
+        
+        System.out.println("\nVamos a listar clientes con streams");
         clientes.values().stream()
                 .forEach(c -> System.out.println(c));
-
+        
+        System.out.println("\nVamos a listar pedidos con streams");
         pedidos.stream()
-                .forEach(pedidos -> System.out.println(pedidos));
+                .forEach(p -> System.out.println(pedidos));
 
         //LISTADOS DE EDUARDO
         //EJEMPLOS SENCILLOS CON filter() - sorted() - forEach()
