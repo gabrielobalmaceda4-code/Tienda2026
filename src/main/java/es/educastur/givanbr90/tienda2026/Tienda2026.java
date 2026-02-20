@@ -25,6 +25,7 @@ import javax.print.attribute.HashAttributeSet;
 public class Tienda2026 {
 
     static Scanner sc = new Scanner(System.in);
+
     private ArrayList<Pedido> pedidos;
     private HashMap<String, Articulo> articulos; //String es la clave primaria de la base de datos, es obligatorio ponerlo, luego ponemos el objeto completo
     private HashMap<String, Cliente> clientes;
@@ -55,7 +56,12 @@ public class Tienda2026 {
         -Nos permite que los métodos no sean static ya que todos los métodos le pertenecen a ese objeto*/
 
         t.cargaDatos();
-        t.menu();
+        //t.menu();
+        t.uno();
+        t.dos();
+        t.tres();
+        t.cuatro();
+        t.cinco();
         //Si hacemos los métodos estáticos podemos llamarlos de la siguiente manera, sin necesidad del menú, esto es lo que va haber que entregar
         /*uno();
         -private static void uno(){
@@ -775,6 +781,7 @@ public class Tienda2026 {
         pedidos.stream().filter(p -> totalPedido(p) > 1000)
                 .sorted(Comparator.comparing(Pedido::getFechaPedido))
                 .forEach(p -> System.out.println(p + "- Total: " + p.getFechaPedido()));
+
     }
 
 //</editor-fold>
@@ -914,7 +921,7 @@ public class Tienda2026 {
                 }
             }
 
-        // TODOS LOS ARTÍCULOS VENDIDOS (sin repetir)
+            // TODOS LOS ARTÍCULOS VENDIDOS (sin repetir)
             System.out.println("\nTODOS LOS ARTÍCULOS VENDIDOS\n");
 
             Set<Articulo> articulosVendidos = pedidos.stream()
@@ -924,7 +931,7 @@ public class Tienda2026 {
 
             articulosVendidos.forEach(a -> System.out.println(a));
 
-        // TOTAL DE UNIDADES VENDIDAS DE CADA ARTÍCULO
+            // TOTAL DE UNIDADES VENDIDAS DE CADA ARTÍCULO
             System.out.println("\nTOTAL DE UNIDADES VENDIDAS POR ARTÍCULO\n");
 
             Map<Articulo, Integer> unidadesPorArticulo = pedidos.stream()
@@ -978,6 +985,69 @@ public class Tienda2026 {
              * unidadesPorArticulo.get(a)); } }
              */
         }
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Examen 20/02">
+    private void uno() {
+        System.out.println("\nCLIENTES ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar gastoCliente())");
+        clientes.values().stream().sorted(Comparator.comparing(this::gastoCliente).reversed())
+                .forEach(c -> System.out.println(c + " Total GASTADO: "+ gastoCliente(c)));
+
+    }
+
+    private double gastoCliente(Cliente c) {
+
+        return pedidos.stream().filter(p -> p.getClientePedido().equals(c))
+                .mapToDouble(this::totalPedido)
+                .sum();
+
+    }
+
+    private void dos() {
+        System.out.println("\nSECCION A LISTAR: ");
+        String seccion = sc.next();
+        System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
+
+        for (Articulo a: articulos.values()) {
+            if (a.getIdArticulo().startsWith(seccion)&a.getExistencias()>0) {
+                System.out.println(a);
+            }
+        }
+    }
+
+    private void tres() {
+        System.out.println("\nARTICULOS NO VENDIDOS");
+        Set<Articulo> vendidos = pedidos.stream()
+                .flatMap(p->p.getCestaCompra().stream())
+                .map(LineaPedido::getArticulo).collect(Collectors.toSet());
+        
+        Set<Articulo> articulosNoVendidos= articulos.values().stream()
+                .filter(a-> !vendidos.contains(a))
+                .collect(Collectors.toSet());
+        
+        articulosNoVendidos.forEach(System.out::println);
+    }
+
+    private void cuatro() {
+        System.out.println("\nTOTAL FACTURADO EN LOS ULTIMOS 5 DIAS:");
+        LocalDate cincoD= LocalDate.now().minusDays(5);
+        
+        double total= pedidos.stream().filter(p->!p.getFechaPedido().isBefore(cincoD))
+                .mapToDouble(this::totalPedido)
+                .sum();
+        
+        System.out.println("Total facturado entre " + cincoD + " y " + LocalDate.now() + ": " + total + " euros");
+    }
+
+    private void cinco() {
+        System.out.println("\nIMPORTE MEDIO DE PEDIDOS DE LA TIENDA:");
+        double medio= pedidos.stream()
+                .mapToDouble(this::totalPedido)
+                .average()
+                .orElse(0);
+        
+        System.out.println("Importe Medio Pedidos TIENDA: " + medio);
     }
 //</editor-fold>
 }
