@@ -36,15 +36,15 @@ public class Tienda2026 {
         clientes = new HashMap();
     }
 
-    public ArrayList<Pedido> getPedidos() {
+    public ArrayList<Pedido> getPedidos() { //SIN ESTOS GET NO PODEMOS HACER TESTS DE JUNIT
         return pedidos;
     }
 
-    public HashMap<String, Articulo> getArticulos() {
+    public HashMap<String, Articulo> getArticulos() {   //SIN ESTOS GET NO PODEMOS HACER TESTS DE JUNIT
         return articulos;
     }
 
-    public HashMap<String, Cliente> getClientes() {
+    public HashMap<String, Cliente> getClientes() { //SIN ESTOS GET NO PODEMOS HACER TESTS DE JUNIT
         return clientes;
     }
 
@@ -107,17 +107,20 @@ public class Tienda2026 {
      * @throws StockCero
      * @throws StockInsuficiente
      */
-    private void stock(String idArticulo, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
+    private void stock(Articulo a, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
+        
+        //SE ACTUALIZA EL MÉTODO DE STOCK ENVIANDO DIRECTAMENTE EL ARTICULO COMO OBJETO ENTERO EN LUGAR DEL ID, SE SIMPLIFICA EL CÓDIGO Y SE HACE MÁS ELEGANTE (24/02/2026)
+       
         //Cuando no quedan unidades lanza esta alarma, dando la info del throw
-        if (articulos.get(idArticulo).getExistencias() == 0) {
+        if (a.getExistencias() == 0) {
             throw new StockCero("0 unidades disponibles de:"
-                    + articulos.get(idArticulo).getDescripcion());
+                    + a.getDescripcion());
         }
 
         //Cuando nos piden más unidades de las que tenemos
-        if (articulos.get(idArticulo).getExistencias() < unidades) {
-            throw new StockInsuficiente("Sólo hay " + articulos.get(idArticulo).getExistencias() + " unidades disponibles de: "
-                    + articulos.get(idArticulo).getDescripcion());
+        if (a.getExistencias() < unidades) {
+            throw new StockInsuficiente("Sólo hay " + a.getExistencias() + " unidades disponibles de: "
+                    + a.getDescripcion());
         }
     }
 
@@ -132,6 +135,12 @@ public class Tienda2026 {
         }
         return total;
 
+    }
+
+    //Total gastado por un Cliente
+    public double totalCliente2(Cliente c) {
+        return pedidos.stream().filter(p -> p.getClientePedido().equals(c))
+                .mapToDouble(p -> totalPedido(p)).sum();
     }
 //</editor-fold>
 
@@ -648,7 +657,9 @@ public class Tienda2026 {
             unidades = sc.nextInt();//Debemos valorar las execepciones llamando al método stock
 
             try {
-                stock(idArticulo, unidades); //Debemos darle a la penúltima sugenrecia
+                stock(articulos.get(idArticulo), unidades); //Debemos darle a la penúltima sugenrecia
+                //CAMBIAMOS DE IDARTICULO A EL OBJETO COMPLETO COMO ARTICULO
+                
                 cestaCompra.add(new LineaPedido(articulos.get(idArticulo), unidades)); //Si no pasa nada de las excepciones añadimos la linea a cestaCompra
 
                 //Si damos por hecho que el pediddo se va cerrar, esto debería ir al final del código cuando estamnos seguros que se va afectuar el pedido
@@ -733,7 +744,7 @@ public class Tienda2026 {
         }
     }
 
-    private double totalPedido(Pedido p) { //Cambiamos a public para probarlo en los test de JUNIT 5
+    public double totalPedido(Pedido p) { //Cambiamos a public para probarlo en los test de JUNIT 5
         double totalPedido = 0;
         for (LineaPedido l : p.getCestaCompra()) {
             totalPedido += l.getUnidades() * l.getArticulo().getPvp(); //SE CAMBIA DE l.getIdArticulo a l.getArticulo porque cambiamos la clase de LineaPedido, NOS PERMITE ACCEDER AL ARTICULO DIRECTAMENTE
@@ -990,63 +1001,76 @@ public class Tienda2026 {
 
     //<editor-fold defaultstate="collapsed" desc="Examen 20/02">
     private void uno() {
-        System.out.println("\nCLIENTES ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar gastoCliente())");
-        clientes.values().stream().sorted(Comparator.comparing(this::gastoCliente).reversed())
-                .forEach(c -> System.out.println(c + " Total GASTADO: "+ gastoCliente(c)));
+        System.out.println("\nCLIENTES ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar totalCliente())");
+        clientes.values().stream()
+                .sorted(Comparator.comparing(this::totalCliente).reversed())//Sorted ordenamos, Comparator.comparing declara el método de ordenación
+                //this quiere decir que a los clientes le aplicamos el criterio que está después de los puntos = c->totalCliente((Cliente) c)
+                .forEach(c -> System.out.println(c + "\tTotal GASTADO: " + totalCliente(c)));//For each para mostrar los clientes, el ToString + totalPedido respectivamente
 
     }
 
-    private double gastoCliente(Cliente c) {
-
+    public double totalCliente(Cliente c) {
         return pedidos.stream().filter(p -> p.getClientePedido().equals(c))
-                .mapToDouble(this::totalPedido)
-                .sum();
-
+                .flatMap(p -> p.getCestaCompra().stream())
+                .mapToDouble(l-> l.getArticulo().getPvp() * l.getUnidades()).sum();
+               
     }
 
     private void dos() {
         System.out.println("\nSECCION A LISTAR: ");
         String seccion = sc.next();
         System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
+        
+        articulos.values().stream().filter(a->a.getIdArticulo().startsWith(seccion)&&a.getExistencias()>0)
+                .sorted(Comparator.comparing(Articulo::getPvp).reversed())
+                .forEach(a->System.out.println(a));
 
-        for (Articulo a: articulos.values()) {
-            if (a.getIdArticulo().startsWith(seccion)&a.getExistencias()>0) {
+        /*ESTO MAL, SE TENÍA QUE HACER CON STREAMS
+        for (Articulo a : articulos.values()) {
+            if (a.getIdArticulo().startsWith(seccion) & a.getExistencias() > 0) {
                 System.out.println(a);
             }
-        }
+        }*/
     }
 
     private void tres() {
         System.out.println("\nARTICULOS NO VENDIDOS");
         Set<Articulo> vendidos = pedidos.stream()
-                .flatMap(p->p.getCestaCompra().stream())
-                .map(LineaPedido::getArticulo).collect(Collectors.toSet());
-        
-        Set<Articulo> articulosNoVendidos= articulos.values().stream()
-                .filter(a-> !vendidos.contains(a))
+                .flatMap(p -> p.getCestaCompra().stream())
+                .map(LineaPedido::getArticulo)
+                .collect(Collectors.toSet());//Estamos guardando los datos en una nueva colección, en este caso el set no admite repeticiones
+
+        Set<Articulo> articulosNoVendidos = articulos.values().stream()
+                .filter(a -> !vendidos.contains(a))
                 .collect(Collectors.toSet());
-        
+
         articulosNoVendidos.forEach(System.out::println);
     }
 
+    //SE DEBE CORREGIR, CALCULAS MAL
     private void cuatro() {
         System.out.println("\nTOTAL FACTURADO EN LOS ULTIMOS 5 DIAS:");
-        LocalDate cincoD= LocalDate.now().minusDays(5);
-        
-        double total= pedidos.stream().filter(p->!p.getFechaPedido().isBefore(cincoD))
+        LocalDate cincoD = LocalDate.now().minusDays(5);
+
+        double total5= pedidos.stream().filter(p->p.getFechaPedido().isAfter(cincoD))
+                .flatMap(p->p.getCestaCompra().stream())
+                .mapToDouble(lp->lp.getArticulo().getPvp() * lp.getUnidades()).sum();
+        /*double total = pedidos.stream()
+                .filter(p -> !p.getFechaPedido().isBefore(cincoD))//p->p.getFechaPedido().isAfter(cincoD)
                 .mapToDouble(this::totalPedido)
-                .sum();
-        
+                .sum();*/
+
         System.out.println("Total facturado entre " + cincoD + " y " + LocalDate.now() + ": " + total + " euros");
     }
 
+    //EL DE EDU MEJOR
     private void cinco() {
         System.out.println("\nIMPORTE MEDIO DE PEDIDOS DE LA TIENDA:");
-        double medio= pedidos.stream()
+        double medio = pedidos.stream()
                 .mapToDouble(this::totalPedido)
                 .average()
                 .orElse(0);
-        
+
         System.out.println("Importe Medio Pedidos TIENDA: " + medio);
     }
 //</editor-fold>
