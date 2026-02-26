@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -56,14 +57,14 @@ public class Tienda2026 {
         -Nos permite que los métodos no sean static ya que todos los métodos le pertenecen a ese objeto*/
 
         t.cargaDatos();
-        //t.menu();
-        t.uno();
+        t.menu();
+        /*t.uno();
         t.dos();
         t.tres();
         t.cuatro();
         t.cinco();
         //Si hacemos los métodos estáticos podemos llamarlos de la siguiente manera, sin necesidad del menú, esto es lo que va haber que entregar
-        /*uno();
+        uno();
         -private static void uno(){
         }
          */
@@ -108,9 +109,8 @@ public class Tienda2026 {
      * @throws StockInsuficiente
      */
     private void stock(Articulo a, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
-        
+
         //SE ACTUALIZA EL MÉTODO DE STOCK ENVIANDO DIRECTAMENTE EL ARTICULO COMO OBJETO ENTERO EN LUGAR DEL ID, SE SIMPLIFICA EL CÓDIGO Y SE HACE MÁS ELEGANTE (24/02/2026)
-       
         //Cuando no quedan unidades lanza esta alarma, dando la info del throw
         if (a.getExistencias() == 0) {
             throw new StockCero("0 unidades disponibles de:"
@@ -157,7 +157,8 @@ public class Tienda2026 {
             System.out.println("\t\t\t\t6 - ORDENAR COLECCIONES CON STREAMS");
             System.out.println("\t\t\t\t7 - EJERCICIOS PUENTE");
             System.out.println("\t\t\t\t8 - EJERCICIOS FLATMAP");
-            System.out.println("\t\t\t\t9 - SALIR");
+            System.out.println("\t\t\t\t9 - EJERCICIOS COLECCIONES");
+            System.out.println("\t\t\t\t10 - SALIR");
             System.out.println("\t\t\t\t¿Qué opción quieres ejecurtar?");
 
             opcion = sc.nextInt();
@@ -195,10 +196,14 @@ public class Tienda2026 {
                     ejsFlatMap();
                     break;
                 }
+                case 9: {
+                    coleccion();
+                    break;
+                }
 
             }
 
-        } while (opcion != 9);
+        } while (opcion != 10);
 
         /* Estamos creando un menú de opciones, dichas opciones son introducidas por teclado y están contenidas en los diferentes métodos para actualizar la información de la agenda
           - Se debe declarar una variable de tipo int para poder navegar en el menú
@@ -659,7 +664,7 @@ public class Tienda2026 {
             try {
                 stock(articulos.get(idArticulo), unidades); //Debemos darle a la penúltima sugenrecia
                 //CAMBIAMOS DE IDARTICULO A EL OBJETO COMPLETO COMO ARTICULO
-                
+
                 cestaCompra.add(new LineaPedido(articulos.get(idArticulo), unidades)); //Si no pasa nada de las excepciones añadimos la linea a cestaCompra
 
                 //Si damos por hecho que el pediddo se va cerrar, esto debería ir al final del código cuando estamnos seguros que se va afectuar el pedido
@@ -828,7 +833,7 @@ public class Tienda2026 {
     }
 //</editor-fold>
 
-//<editor-fold defaultstate="collapsed" desc="Ejercicios del puente">
+    //<editor-fold defaultstate="collapsed" desc="Ejercicios del puente">
     private void ejsPuente() {
 
         //EJERCICIOS CON MÉTODOS DEL API PARA REALIZAR CALCULOS count() map() mapToInt() .collect(Collectors.groupingBy) ...
@@ -1007,30 +1012,44 @@ public class Tienda2026 {
                 //this quiere decir que a los clientes le aplicamos el criterio que está después de los puntos = c->totalCliente((Cliente) c)
                 .forEach(c -> System.out.println(c + "\tTotal GASTADO: " + totalCliente(c)));//For each para mostrar los clientes, el ToString + totalPedido respectivamente
 
+        /*                                  SOLUCIÓN EDUARDO
+        clientes.values().stream()
+                .sorted(Comparator.comparing(c-> totalCliente((Cliente) c)).reversed())
+                .forEach(c-> System.out.println(c + "\t\t Total GASTADO: " +  totalCliente(c))); */
     }
 
     public double totalCliente(Cliente c) {
         return pedidos.stream().filter(p -> p.getClientePedido().equals(c))
                 .flatMap(p -> p.getCestaCompra().stream())
-                .mapToDouble(l-> l.getArticulo().getPvp() * l.getUnidades()).sum();
-               
+                .mapToDouble(l -> l.getArticulo().getPvp() * l.getUnidades()).sum();
+
     }
 
     private void dos() {
         System.out.println("\nSECCION A LISTAR: ");
         String seccion = sc.next();
         System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
-        
-        articulos.values().stream().filter(a->a.getIdArticulo().startsWith(seccion)&&a.getExistencias()>0)
+
+        articulos.values().stream().filter(a -> a.getIdArticulo().startsWith(seccion) && a.getExistencias() > 0)
                 .sorted(Comparator.comparing(Articulo::getPvp).reversed())
-                .forEach(a->System.out.println(a));
+                .forEach(a -> System.out.println(a));
 
         /*ESTO MAL, SE TENÍA QUE HACER CON STREAMS
         for (Articulo a : articulos.values()) {
             if (a.getIdArticulo().startsWith(seccion) & a.getExistencias() > 0) {
                 System.out.println(a);
             }
-        }*/
+        }
+        
+                                            SOLUCIÓN EDUARDO
+        System.out.println("SECCION A LISTAR:");
+        String sec=sc.next();
+       
+        articulos.values().stream()
+                .filter(a->a.getIdArticulo().startsWith(sec)&&a.getExistencias()>0)
+                .sorted(Comparator.comparing(Articulo::getPvp).reversed())
+                .forEach(a->System.out.println(a));
+         */
     }
 
     private void tres() {
@@ -1045,6 +1064,20 @@ public class Tienda2026 {
                 .collect(Collectors.toSet());
 
         articulosNoVendidos.forEach(System.out::println);
+
+        /*                                  SOLUCIÓN EDUARDO
+        Set<Articulo> vendidos
+                = pedidos.stream()
+                        .flatMap(p -> p.getCestaCompra().stream())
+                        .map(LineaPedido::getArticulo)
+                        .collect(Collectors.toSet());
+
+        List<Articulo> noVendidos
+                = articulos.values().stream()
+                        .filter(a -> !vendidos.contains(a))
+                        .toList();
+        System.out.println("\n");
+        noVendidos.stream().forEach(a -> System.out.println(a));*/
     }
 
     //SE DEBE CORREGIR, CALCULAS MAL
@@ -1052,15 +1085,23 @@ public class Tienda2026 {
         System.out.println("\nTOTAL FACTURADO EN LOS ULTIMOS 5 DIAS:");
         LocalDate cincoD = LocalDate.now().minusDays(5);
 
-        double total5= pedidos.stream().filter(p->p.getFechaPedido().isAfter(cincoD))
-                .flatMap(p->p.getCestaCompra().stream())
-                .mapToDouble(lp->lp.getArticulo().getPvp() * lp.getUnidades()).sum();
+        double total5 = pedidos.stream().filter(p -> p.getFechaPedido().isAfter(cincoD))
+                .flatMap(p -> p.getCestaCompra().stream())
+                .mapToDouble(lp -> lp.getArticulo().getPvp() * lp.getUnidades()).sum();
         /*double total = pedidos.stream()
                 .filter(p -> !p.getFechaPedido().isBefore(cincoD))//p->p.getFechaPedido().isAfter(cincoD)
                 .mapToDouble(this::totalPedido)
                 .sum();*/
 
-        System.out.println("Total facturado entre " + cincoD + " y " + LocalDate.now() + ": " + total + " euros");
+        System.out.println("Total facturado entre " + cincoD + " y " + LocalDate.now() + ": " + total5 + " euros");
+
+        /*                                  SOLUCIÓN EDUARDO
+        LocalDate fecha1 = LocalDate.now().minusDays(5);
+        double total5dias = pedidos.stream()
+            .filter(p -> p.getFechaPedido().isAfter(fecha1))
+               .flatMap(p -> p.getCestaCompra().stream())
+                .mapToDouble(lp -> lp.getArticulo().getPvp() * lp.getUnidades()).sum();
+        System.out.println("\nTotal facturado los ultimos 5 dias: " + total5dias);*/
     }
 
     //EL DE EDU MEJOR
@@ -1072,6 +1113,114 @@ public class Tienda2026 {
                 .orElse(0);
 
         System.out.println("Importe Medio Pedidos TIENDA: " + medio);
+
+        /*                                  SOLUCIÓN EDUARDO
+        double importePedidos = pedidos.stream()
+            .flatMap(p -> p.getCestaCompra().stream())
+              .mapToDouble(lp -> lp.getArticulo().getPvp() * lp.getUnidades()).sum();
+        
+        System.out.println("\nImporte Medio Pedidos TIENDA: " + importePedidos/pedidos.size()); */
+    }
+//</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Colecciones-Almecenado">
+    private void coleccion() {
+        System.out.println("Pedidos ordenados por fecha de + reciente a - sin colección");
+        List<Pedido> pedidosOrdenadosFecha //Pasamos de pedidos a esta lista
+                = pedidos.stream()
+                        .sorted(Comparator.comparing(Pedido::getFechaPedido).reversed())
+                        .collect(Collectors.toList());//En lugar de imprimir los datos los guardamos en un una lista con el collect
+
+        pedidos.stream().forEach(p -> System.out.println(p.getIdPedido() + " [" + p.getFechaPedido() + "] "));
+        System.out.println("\nPedidos ordenados por fecha de + reciente a - con colección");
+        pedidosOrdenadosFecha.stream().forEach(p -> System.out.println(p.getIdPedido() + " [" + p.getFechaPedido() + "] "));
+
+        //Tenemos que crear un mapa que tenga com clave el total del pedido y como value el pedido, coger pedido, calcular el total y pedir pedido como value
+        System.out.println("\nVamos a listar pedidos en un mapa que tenga como clave el total del pedido y como value el pedido");
+
+        //Si ponemos TREEMAP ordenamos la clave de - a + en el segundo bucle después de pedidosConTotales.
+        TreeMap<Double, Pedido> pedidosConTotales = new TreeMap();
+        for (Pedido p : pedidos) {
+            pedidosConTotales.put(totalPedido(p), p);
+            //System.out.println(p.getIdPedido() + " IMPORTE= "+ totalPedido(p));  Mostramos la colecció antigua
+        }
+
+        //Mostramos la nueva colección
+        for (Double total : pedidosConTotales.descendingKeySet()) { //.key_ nos permite hacer de todo, son los criterios de ordenación 
+            //forEach con claves, nos permiten acceder al value directamente
+            System.out.println(pedidosConTotales.get(total).getIdPedido() + " - " + total);//Mostramos la nueva colección
+        }
+
+        /*HashMap <Double,Pedido> pedidosConTotales=new HashMap();
+        for (Pedido p : pedidos) {
+            pedidosConTotales.put(totalPedido(p), p);
+            //System.out.println(p.getIdPedido() + " IMPORTE= "+ totalPedido(p));  Mostramos la colecció antigua
+        }
+        
+        //Mostramos la nueva colección
+        for (Double total : pedidosConTotales.keySet()) { //.key_ nos permite hacer de todo, son los criterios de ordenación 
+            //forEach con claves, nos permiten acceder al value directamente
+            System.out.println(pedidosConTotales.get(total).getIdPedido() + " - "+ total);//Mostramos la nueva colección
+        }*/
+        System.out.println("\nVamos a crear una colección de clientes en un mapa cuya clave sea el total y como value el cliente");
+        TreeMap<Double, Cliente> clientesConTotales = new TreeMap();
+        for (Cliente c : clientes.values()) { //Cogemos los values y los metemos en un TreeMap
+            //Aquí podríamos peoner un if (totalC (c)>0) para que sol imoprima los que ya tengan gastos
+            clientesConTotales.put(totalCliente(c), c);
+        }
+
+        for (Double totalC : clientesConTotales.descendingKeySet()) {
+            System.out.println(clientesConTotales.get(totalC).getIdCliente() + " - " + clientesConTotales.get(totalC).getNombre() + " - " + totalC);
+        }
+
+        //Vamos hacer una lista para cada sección y llevamos los artículos correspondientes a sus respectivas listas
+        System.out.println("\nCrear una colección List con los artículos de cada secciòn");
+        List<Articulo> perifericos, almacenamiento, monitores, impresoras;
+
+        //Forma actualizada con streams y collect
+        perifericos = articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("1"))
+                .collect(Collectors.toList());
+        almacenamiento = articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("2"))
+                .collect(Collectors.toList());
+        impresoras = articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("3"))
+                .collect(Collectors.toList());
+        monitores = articulos.values().stream()
+                .filter(a -> a.getIdArticulo().startsWith("4"))
+                .collect(Collectors.toList());
+        
+        System.out.println("\n" + perifericos + "\n" + almacenamiento + "\n" + impresoras + "\n" + monitores);
+
+        //Forma tradicional
+        for (Articulo a : articulos.values()) {
+            //Para que funcione el switch debemos declarar 4 ArrayList diferentes para cada sección, ahora funciona porque ya están declaradas las listas de arriba con streams, sin los stream son necesarios los Array
+            switch (a.getIdArticulo().charAt(0)) {
+                case 'l':
+                    perifericos.add(a);
+                    break;
+                case '2':
+                    almacenamiento.add(a);
+                    break;
+                case '3':
+                    impresoras.add(a);
+                    break;
+                case '4':
+                    monitores.add(a);
+                    break;
+            }
+        }
+        System.out.println("\n" + perifericos + "\n" + almacenamiento + "\n" + impresoras + "\n" + monitores);
+        
+        //Borrando elementos
+        articulos.values().removeIf(a->a.getIdArticulo().startsWith("3")); //Borramos solo la condición, articulos de la sección impresoras
+        System.out.println("\n");
+        articulos.values().stream()
+                .forEach(a->System.out.println(a));
+        
+        //BORRAR LOS PEDIDOS 
+        //LAS COLECCIONES DE TIPO LISTA NO ACEPTAN REMOVEIF
     }
 //</editor-fold>
 }
