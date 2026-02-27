@@ -3,11 +3,17 @@
  */
 package es.educastur.givanbr90.tienda2026;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +63,8 @@ public class Tienda2026 {
         -Nos permite que los métodos no sean static ya que todos los métodos le pertenecen a ese objeto*/
 
         t.cargaDatos();
-        t.menu();
+        t.archivos();
+        //t.menu();
         /*t.uno();
         t.dos();
         t.tres();
@@ -1190,7 +1197,7 @@ public class Tienda2026 {
         monitores = articulos.values().stream()
                 .filter(a -> a.getIdArticulo().startsWith("4"))
                 .collect(Collectors.toList());
-        
+
         System.out.println("\n" + perifericos + "\n" + almacenamiento + "\n" + impresoras + "\n" + monitores);
 
         //Forma tradicional
@@ -1212,15 +1219,126 @@ public class Tienda2026 {
             }
         }
         System.out.println("\n" + perifericos + "\n" + almacenamiento + "\n" + impresoras + "\n" + monitores);
-        
+
         //Borrando elementos
-        articulos.values().removeIf(a->a.getIdArticulo().startsWith("3")); //Borramos solo la condición, articulos de la sección impresoras
+        articulos.values().removeIf(a -> a.getIdArticulo().startsWith("3")); //Borramos solo la condición, articulos de la sección impresoras
         System.out.println("\n");
         articulos.values().stream()
-                .forEach(a->System.out.println(a));
-        
+                .forEach(a -> System.out.println(a));
+
         //BORRAR LOS PEDIDOS 
-        //LAS COLECCIONES DE TIPO LISTA NO ACEPTAN REMOVEIF
+        //LAS COLECCIONES DE TIPO LISTA NO ACEPTAN REMOVEIF                         HACE FALTA REVISAR LOS APUNTES DEL 26/02 DE TEAMS
+        /*ARCHIVOS -> Pasamos de un carga datos a almacenarlos para que estén permanentemente en funcionamiento, es necesario hacer copias de seguridad de estos mismo datos para evitar perder datos.
+        Posteriormente llegaremos a enlazar las bases de datos con el programa, solo nuestro programa puede leer estos archivos, esto genera una dependencia, el mismo programa que cree los archivos es el único que puede leerlos,
+        sin embargo, hoy en día la mayoría de bases de datos se pueden utilizar en diferentes programas (MySQL), esto se debe a detrás de toda aplicación web hay una base de datos, debido a esto se sincronizan los estudiso de
+        Bases de datos y Programación.
+        
+        Ahora vamos a crear "TUBERÍAS" para poder acceder a los archivos desde nuestro programa hacia donde se encuentren los datos, todo esto mediante el scanner, nos va permitir conectarnos de foram remota a dichos archivos.
+        Vamos aprender: Crear carpetas, cambiar el nombre del archivo etc. Todo esto desde dentro del programa con el objeto File...
+        
+        FILE: con ella podemos declarar/crear un nuevo archivo [File f= new File("libros.txt")]. Crea el archivo en la carpeta en la que estamos trabajando, es decir donde se alamacena el proyecto de java, también podemos asignar
+        nostros dónde se almacena el archivo:
+        
+        LA CLASE FILE Se usa para crear, eliminar y obtener información sobre archivos y directorios. En general para realizar todas las operaciones básicas a nivel de Sistema de Archivos en un Sistema Operativo.
+        Un objeto de la clase Java File representa un archivo o directorio. La clase tiene varios constructores, pero nos limitaremos a ver el más sencillo, que nos permitirá crear un objeto File asociado al archivo
+        o directorio especificado como parámetro: 
+        (1) File f = new File("libros.txt"); La ruta o path dónde se va a crear el archivo “archivo1.txt” puede ser: 
+        
+        -Directorio actual de trabajo (1) - cuando sólo se especifica un nombre de archivo. 
+        -Relativa (2) - (una subcarpeta a partir del directorio actual). [File f = new File("pruebas/libros.txt");]
+        -Absoluta (3)  - (una subcarpeta de la que se especifica su ruta completa desde la raíz del sistema de archivos. [File f = new File("c:/documentos/pruebas/libros.txt");] */
+    }
+
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="Archivos">
+    private void archivos() {
+
+        System.out.println("Vamos a almacenar los clientes en un archivo de texto");
+        File f = new File("Clientes.txt");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
+
+            for (Cliente c : clientes.values()) {
+                bw.write(c.toString());
+                bw.newLine();
+            }
+
+            System.out.println("Nombre: " + f.getName());
+            System.out.println("Ruta: " + f.getAbsolutePath());
+            System.out.println("Tamaño en Bytes: " + f.length());
+            System.out.println("Fecha Última modificación: " + new Date(f.lastModified()));
+
+        } catch (IOException e) {
+            System.out.println("No se ha podido escribir en el fichero");
+        }
+
+        System.out.println("\nMostramos la lista de Clientes:");
+        try (Scanner scf = new Scanner(new File("Clientes.txt"))) {
+            while (scf.hasNextLine()) {
+                System.out.println(scf.nextLine());
+            }
+        } catch (FileNotFoundException E) {
+            System.out.println("El archivo NO EXISTE");
+
+        }
+
+        System.out.println("\nVamos almacenar los artículos en un archivo de texto");
+        File g = new File("Articulos.txt");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(g))) {
+
+            for (Articulo a : articulos.values()) {
+                bw.write(a.getIdArticulo()+ " - " + a.getDescripcion()+ "= " + a.getPvp() + " euros");
+                bw.newLine();
+            }
+
+            System.out.println("Nombre: " + g.getName());
+            System.out.println("Ruta: " + g.getAbsolutePath());
+            System.out.println("Tamaño en Bytes: " + g.length());
+            System.out.println("Fecha Última modificación: " + new Date(g.lastModified()));
+
+        } catch (IOException e) {
+            System.out.println("No se ha podido escribir en el fichero");
+        }
+
+        System.out.println("\nMostramos la lista de Articulos:");
+        try (Scanner scf = new Scanner(new File("Articulos.txt"))) {
+            while (scf.hasNextLine()) {
+                System.out.println(scf.nextLine());
+            }
+        } catch (FileNotFoundException E) {
+            System.out.println("El archivo NO EXISTE");
+
+        }
+
+        System.out.println("\nVamos almacenar los pedidos en un archivo de texto");
+        //File h = new File("Pedidos.txt"); declaración innecesaria, declaramos dentro del paréntesis del FileWriter
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("Pedidos.txt"))) {
+
+            for (Pedido p : pedidos) {
+                bw.write(p.toString());
+                bw.newLine();
+            }
+
+            /*System.out.println("Nombre: " + h.getName());
+            System.out.println("Ruta: " + h.getAbsolutePath());
+            System.out.println("Tamaño en Bytes: " + h.length());
+            System.out.println("Fecha Última modificación: " + new Date(h.lastModified()));*/
+
+        } catch (IOException e) {
+            System.out.println("No se ha podido escribir en el fichero");
+        }
+
+        System.out.println("\nMostramos la lista de Pedidos:");
+        try (Scanner scf = new Scanner(new File("Pedidos.txt"))) {
+            while (scf.hasNextLine()) {
+                System.out.println(scf.nextLine());
+            }
+        } catch (FileNotFoundException E) {
+            System.out.println("El archivo NO EXISTE");
+
+        }
     }
 //</editor-fold>
 }
