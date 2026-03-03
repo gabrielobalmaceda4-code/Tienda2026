@@ -115,7 +115,7 @@ public class Tienda2026 {
      * @throws StockCero
      * @throws StockInsuficiente
      */
-    private void stock(Articulo a, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
+    public void stock(Articulo a, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
 
         //SE ACTUALIZA EL MÉTODO DE STOCK ENVIANDO DIRECTAMENTE EL ARTICULO COMO OBJETO ENTERO EN LUGAR DEL ID, SE SIMPLIFICA EL CÓDIGO Y SE HACE MÁS ELEGANTE (24/02/2026)
         //Cuando no quedan unidades lanza esta alarma, dando la info del throw
