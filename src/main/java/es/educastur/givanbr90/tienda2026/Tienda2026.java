@@ -64,6 +64,8 @@ public class Tienda2026 {
 
         t.cargaDatos();
         t.archivos();
+        t.leeCliente();
+        t.gauardaArtPorSeccion();
         //t.menu();
         /*t.uno();
         t.dos();
@@ -1250,7 +1252,7 @@ public class Tienda2026 {
     }
 
 //</editor-fold>
-//<editor-fold defaultstate="collapsed" desc="Archivos">
+    //<editor-fold defaultstate="collapsed" desc="Archivos">
     private void archivos() {
 
         System.out.println("Vamos a almacenar los clientes en un archivo de texto");
@@ -1288,7 +1290,7 @@ public class Tienda2026 {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(g))) {
 
             for (Articulo a : articulos.values()) {
-                bw.write(a.getIdArticulo()+ " - " + a.getDescripcion()+ "= " + a.getPvp() + " euros");
+                bw.write(a.getIdArticulo() + " - " + a.getDescripcion() + "= " + a.getPvp() + " euros");
                 bw.newLine();
             }
 
@@ -1325,7 +1327,6 @@ public class Tienda2026 {
             System.out.println("Ruta: " + h.getAbsolutePath());
             System.out.println("Tamaño en Bytes: " + h.length());
             System.out.println("Fecha Última modificación: " + new Date(h.lastModified()));*/
-
         } catch (IOException e) {
             System.out.println("No se ha podido escribir en el fichero");
         }
@@ -1338,6 +1339,97 @@ public class Tienda2026 {
         } catch (FileNotFoundException E) {
             System.out.println("El archivo NO EXISTE");
 
+        }
+        System.out.println("");
+
+        //Debemos copiar y pegar la dirección de memoria dónde querenos crear el archivo
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.csv"))) {
+            for (Cliente c : clientes.values()) {
+                bw.write(c.getIdCliente() + ", " + c.getNombre() + ", " + c.getTelefono() + ", " + c.getEmail() + "\n");
+            }
+            System.out.println("Archivo clientes.csv creado correctamente");
+        } catch (Exception e) {
+            System.out.println("No se ha podido crear el archivo clientes.csv");
+        }
+        System.out.println("");
+    }
+
+    private void leeCliente() {
+        System.out.println("Vamos a leer el archivo clientes.txt:");
+
+        //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
+        try (Scanner scClientes = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.txt"))) {
+            while (scClientes.hasNextLine()) {
+                System.out.println(scClientes.nextLine());
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+
+        System.out.println("\n\n");
+        //CREAR UNA NUEVA COLECCIÓN DE TIPO HASHMAP A PARTIR DEL ARCHIVO clientes.csv
+        HashMap<String, Cliente> clientesAux = new HashMap();
+        try (Scanner scClientes = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.csv"))) {
+            while (scClientes.hasNextLine()) {
+                String[] atributos = scClientes.nextLine().split("[,]");
+                Cliente c = new Cliente(atributos[0], atributos[1], atributos[2], atributos[3]);
+                clientesAux.put(atributos[0], c);
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        System.out.println("\nListado de Clientes del nuevo HashMap clientesAux\n");
+        clientesAux.values().forEach(System.out::println);
+        //Art de cada seccion a un archivo para cada sección dando una sola vuelta de articulos, 4 buffer writer separados por comas
+    }
+
+    private void gauardaArtPorSeccion() {
+        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv"));
+             BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv"));
+             BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv"));
+             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))         
+            ) {
+            for (Articulo a : articulos.values()) {
+                switch (a.getIdArticulo().charAt(0)) {
+                    case '1':
+                        bwPerifericos.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        break;
+                        
+                    case '2':
+                        bwAlmacenamiento.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        break;
+                        
+                    case '3':
+                        bwImpresoras.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        break;
+                        
+                    case '4':
+                        bwMonitores.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        break;
+                    default:
+                        throw new AssertionError();
+                }
+                
+            }
+            System.out.println("Archivos creados correctamente");
+        } catch (Exception e) {
+            System.out.println("No se han podido crear los archivos");
+        }
+        System.out.println("\nAhora vamos a leer cada archivo de sección");
+        
+        //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
+        try (Scanner scPerifericos = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv"));
+            (Scanner scAlmacenamiento  = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv"));
+            (Scanner scImpresoras  = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv"));
+            (Scanner scMonitores  = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"));
+                
+                
+                ) {            
+                while (scPerifericos.hasNextLine()) {
+                System.out.println(sc.nextLine());
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
         }
     }
 //</editor-fold>
