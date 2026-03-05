@@ -1387,50 +1387,72 @@ public class Tienda2026 {
         try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv"));
              BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv"));
              BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv"));
-             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))         
-            ) {
+             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
             for (Articulo a : articulos.values()) {
                 switch (a.getIdArticulo().charAt(0)) {
                     case '1':
-                        bwPerifericos.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        bwPerifericos.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
                         break;
-                        
+
                     case '2':
-                        bwAlmacenamiento.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        bwAlmacenamiento.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
                         break;
-                        
+
                     case '3':
-                        bwImpresoras.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        bwImpresoras.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
                         break;
-                        
+
                     case '4':
-                        bwMonitores.write(a.getIdArticulo()+", " + a.getDescripcion()+", " +a.getExistencias()+", " +a.getPvp()+ "\n");
+                        bwMonitores.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
                         break;
                     default:
                         throw new AssertionError();
                 }
-                
+
             }
             System.out.println("Archivos creados correctamente");
         } catch (Exception e) {
             System.out.println("No se han podido crear los archivos");
+            File f = new File("D:/perifericos.csv");//Borramos el archivo solo se ejecuta si hay algún problema en el try con la conexxión con esos archivos
+            f.delete();
+            f = new File("D:/almacenamiento.csv");
+            f.delete();
+            f = new File("D:/impresoras.csv");
+            f.delete();
+            f = new File("D:/monitores.csv");
+            f.delete();
         }
         System.out.println("\nAhora vamos a leer cada archivo de sección");
-        
+
         //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
-        try (Scanner scPerifericos = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv"));
-            (Scanner scAlmacenamiento  = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv"));
-            (Scanner scImpresoras  = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv"));
-            (Scanner scMonitores  = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"));
-                
-                
-                ) {            
+        try (Scanner scPerifericos = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); 
+                Scanner scAlmacenamiento = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv"));
+                Scanner scImpresoras = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv"));
+                Scanner scMonitores = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv")))
+            {
+            
+                System.out.println("\nPeriféricos:");
                 while (scPerifericos.hasNextLine()) {
-                System.out.println(sc.nextLine());
-            }
-        } catch (Exception e) {
+                    System.out.println(scPerifericos.nextLine());
+                }
+
+                System.out.println("\nAlmacenamiento:");
+                while (scAlmacenamiento.hasNextLine()) {
+                    System.out.println(scAlmacenamiento.nextLine());
+                }
+                
+                System.out.println("\nImpresoras:");
+                while (scImpresoras.hasNextLine()) {
+                    System.out.println(scImpresoras.nextLine());
+                }
+                
+                System.out.println("\nMonitores:");
+                while (scMonitores.hasNextLine()) {
+                    System.out.println(scMonitores.nextLine());
+                }
+            }catch (Exception e) {
             System.out.println(e.toString());
-        }
+            }
     }
 //</editor-fold>
-}
+    }
