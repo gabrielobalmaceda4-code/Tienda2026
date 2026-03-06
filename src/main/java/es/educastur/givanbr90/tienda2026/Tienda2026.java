@@ -5,9 +5,15 @@ package es.educastur.givanbr90.tienda2026;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.sql.SQLOutput;
 import java.time.LocalDate;
@@ -66,6 +72,9 @@ public class Tienda2026 {
         t.archivos();
         t.leeCliente();
         t.gauardaArtPorSeccion();
+        t.leeArticulosPorSeccion();
+        t.exportarColecciones();
+        t.importarColecciones();
         //t.menu();
         /*t.uno();
         t.dos();
@@ -80,6 +89,18 @@ public class Tienda2026 {
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
+ 
+        /*
+    Persistencia de toda la tienda, archivos binarios que empaquetan todas las referencias de memoria de todos los objetos de la tienda, es demasiado tosco hacerlo todo de una vez, es mejor hacerlo de objeto a objeto
+        try (ObjectOutputStream oosTienda = new ObjectOutputStream(new FileOutputStream("tienda.dat"))) {
+        oosTienda.writeObject(t);
+            System.out.println("TODO OK");
+            
+        } catch (Exception ex) {
+            System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
+            File f= new File("tienda.dat");
+            f.delete();
+        }*/
 
     }
 
@@ -1384,10 +1405,7 @@ public class Tienda2026 {
     }
 
     private void gauardaArtPorSeccion() {
-        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv"));
-             BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv"));
-             BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv"));
-             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
+        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv")); BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv")); BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
             for (Articulo a : articulos.values()) {
                 switch (a.getIdArticulo().charAt(0)) {
                     case '1':
@@ -1425,34 +1443,126 @@ public class Tienda2026 {
         System.out.println("\nAhora vamos a leer cada archivo de sección");
 
         //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
-        try (Scanner scPerifericos = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); 
-                Scanner scAlmacenamiento = new Scanner (new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv"));
-                Scanner scImpresoras = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv"));
-                Scanner scMonitores = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv")))
-            {
-            
-                System.out.println("\nPeriféricos:");
-                while (scPerifericos.hasNextLine()) {
-                    System.out.println(scPerifericos.nextLine());
-                }
+        try (Scanner scPerifericos = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); Scanner scAlmacenamiento = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv")); Scanner scImpresoras = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv")); Scanner scMonitores = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
 
-                System.out.println("\nAlmacenamiento:");
-                while (scAlmacenamiento.hasNextLine()) {
-                    System.out.println(scAlmacenamiento.nextLine());
-                }
-                
-                System.out.println("\nImpresoras:");
-                while (scImpresoras.hasNextLine()) {
-                    System.out.println(scImpresoras.nextLine());
-                }
-                
-                System.out.println("\nMonitores:");
-                while (scMonitores.hasNextLine()) {
-                    System.out.println(scMonitores.nextLine());
-                }
-            }catch (Exception e) {
-            System.out.println(e.toString());
+            System.out.println("\nPeriféricos:");
+            while (scPerifericos.hasNextLine()) {
+                System.out.println(scPerifericos.nextLine());
             }
+
+            System.out.println("\nAlmacenamiento:");
+            while (scAlmacenamiento.hasNextLine()) {
+                System.out.println(scAlmacenamiento.nextLine());
+            }
+
+            System.out.println("\nImpresoras:");
+            while (scImpresoras.hasNextLine()) {
+                System.out.println(scImpresoras.nextLine());
+            }
+
+            System.out.println("\nMonitores:");
+            while (scMonitores.hasNextLine()) {
+                System.out.println(scMonitores.nextLine());
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    private void leeArticulosPorSeccion() {
+        HashMap<String, Articulo> articulosAux = new HashMap();
+        String lineaArchivo; //para ir leyendo cada línea en los archivos
+        String[] atributos; //Para "romper" cada línea en los atributos separados por ,
+
+        try (Scanner scPerifericos = new Scanner(new File("perifericos.csv")); Scanner scAlmacenamiento = new Scanner(new File("almacenamiento.csv")); Scanner scImpresoras = new Scanner(new File("impresoras.csv")); Scanner scMonitores = new Scanner(new File("monitores.csv"))) {
+            /* ADEMÁS DE MOSTRAR POR PANTALLA EL CONTENIDO DE LOS 4 ARCHIVOS CREADOS
+            APROVECHAMOS PARA RECONSTRUIR UN HashMap CON LOS ARTICULOS DE LOS 4 ARCHIVOS */
+
+            System.out.println("\nPERIFERICOS:");
+            while (scPerifericos.hasNextLine()) {
+                //leo una línea del archivo
+                lineaArchivo = scPerifericos.nextLine();
+                //Imprimo línea por pantalla
+                System.out.println(lineaArchivo);
+                //con esa línea creamos un nuevo Articulo para añadir al HashMap articulosAux
+                atributos = lineaArchivo.split("[,]");
+                articulosAux.put(atributos[0],
+                        new Articulo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), Double.parseDouble(atributos[3])));
+
+            }
+            System.out.println("\nALMACENAMIENTO:");
+            while (scAlmacenamiento.hasNextLine()) {
+                lineaArchivo = scAlmacenamiento.nextLine();
+                System.out.println(lineaArchivo);
+                atributos = lineaArchivo.split("[,]");
+                articulosAux.put(atributos[0],
+                        new Articulo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), Double.parseDouble(atributos[3])));
+            }
+            System.out.println("\nIMPRESORAS:");
+            while (scImpresoras.hasNextLine()) {
+                lineaArchivo = scImpresoras.nextLine();
+                System.out.println(lineaArchivo);
+                atributos = lineaArchivo.split("[,]");
+                articulosAux.put(atributos[0],
+                        new Articulo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), Double.parseDouble(atributos[3])));
+            }
+            System.out.println("\nMONITORES:");
+            while (scMonitores.hasNextLine()) {
+                lineaArchivo = scMonitores.nextLine();
+                System.out.println(lineaArchivo);
+                atributos = lineaArchivo.split("[,]");
+                articulosAux.put(atributos[0],
+                        new Articulo(atributos[0], atributos[1], Integer.parseInt(atributos[2]), Double.parseDouble(atributos[3])));
+
+            }
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+
+        //MOSTRAMOS POR PANTALLA EL CONTENIDO DEL HASHMAP articulosAux QUE HEMOS IDO CREANDO CON LOS ARTICULOS DE LOS 4 ARCHIVOS
+        System.out.println("");
+        for (Articulo a : articulosAux.values()) {
+            System.out.println(a);
+        }
+    }
+    
+    public void exportarColecciones() {
+        try (ObjectOutputStream oosArticulos=new ObjectOutputStream(new FileOutputStream("articulos.dat"));//OOS= ObjectOutputStream
+            ObjectOutputStream oosClientes=new ObjectOutputStream(new FileOutputStream("clientes.dat"));
+            ObjectOutputStream oosPedidos=new ObjectOutputStream(new FileOutputStream("pedidos.dat")))
+        {
+            for (Articulo a : articulos.values()) {
+                oosArticulos.writeObject(a);
+            }
+            
+            for (Cliente c : clientes.values()) {
+                oosClientes.writeObject(c);
+            }
+            
+            for (Pedido p : pedidos) {
+                oosPedidos.writeObject(p);
+            }
+            
+        } catch (IOException ex) {
+            System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
+            File f= new File("articulos.dat");
+            f.delete();
+            f= new File("clientes.dat");
+            f.delete();
+            f=new File("pedidos.dat");
+            f.delete();
+        }
+    }
+    
+    public void importarColecciones() {
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("articulos.dat"))){
+            Articulo a;
+                while ((a=(Articulo)oisArticulos.readObject()) !=null) {
+                articulos.put(a.getIdArticulo(), a);
+                
+            }
+        } catch (Exception ex) {
+        }
     }
 //</editor-fold>
-    }
+}
