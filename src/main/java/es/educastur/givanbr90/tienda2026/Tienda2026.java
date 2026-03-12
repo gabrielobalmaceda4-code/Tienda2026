@@ -4,6 +4,7 @@
 package es.educastur.givanbr90.tienda2026;
 
 import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,9 +36,9 @@ import javax.print.attribute.HashAttributeSet;
  *
  * @author 1dawd17
  */
-public class Tienda2026 {
+public class Tienda2026 implements Serializable {
 
-    static Scanner sc = new Scanner(System.in);
+    public static transient Scanner sc = new Scanner(System.in);
 
     private ArrayList<Pedido> pedidos;
     private HashMap<String, Articulo> articulos; //String es la clave primaria de la base de datos, es obligatorio ponerlo, luego ponemos el objeto completo
@@ -68,14 +69,22 @@ public class Tienda2026 {
         -En el main declaramos el objeto Tienda2026 t, por lo tanto, todos los 
         -Nos permite que los métodos no sean static ya que todos los métodos le pertenecen a ese objeto*/
 
-        t.cargaDatos();
-        t.archivos();
-        t.leeCliente();
-        t.gauardaArtPorSeccion();
-        t.leeArticulosPorSeccion();
-        t.exportarColecciones();
+ /*
+        1-t.cargaDatos con importar comentado
+        2-exportar siempre lo último para evitar guardar las collecciones sin datos
+        3-Una vez hehco el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
+        De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
+        //t.cargaDatos();
+        //t.archivos();
+        //t.leeCliente();
+        //t.gauardaArtPorSeccion();
+        //t.leeArticulosPorSeccion();
         t.importarColecciones();
-        //t.menu();
+        t.menu();
+        t.exportarColecciones();
+        //t.importarSeccion();
+        //t.leerSecciones();
+        t.exportarSeccion();
         /*t.uno();
         t.dos();
         t.tres();
@@ -89,19 +98,18 @@ public class Tienda2026 {
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
- 
-        /*
-    Persistencia de toda la tienda, archivos binarios que empaquetan todas las referencias de memoria de todos los objetos de la tienda, es demasiado tosco hacerlo todo de una vez, es mejor hacerlo de objeto a objeto
-        try (ObjectOutputStream oosTienda = new ObjectOutputStream(new FileOutputStream("tienda.dat"))) {
-        oosTienda.writeObject(t);
+
+ /*Persistencia de toda la tienda, archivos binarios que empaquetan todas las referencias de memoria de todos los objetos de la tienda, es demasiado tosco hacerlo todo de una vez, es mejor hacerlo de objeto a objeto
+        Esto no es recomendable porque se pueden perder datos por el camino haciendo que pueda fallar el ejercicio*/
+        try (ObjectOutputStream oosTienda = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\tienda.dat"))) {
+            oosTienda.writeObject(t);
             System.out.println("TODO OK");
-            
+
         } catch (Exception ex) {
             System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
-            File f= new File("tienda.dat");
+            File f = new File("tienda.dat");
             f.delete();
-        }*/
-
+        }
     }
 
     //<editor-fold defaultstate="collapsed" desc="Métodos auxiliares">
@@ -1431,13 +1439,13 @@ public class Tienda2026 {
             System.out.println("Archivos creados correctamente");
         } catch (Exception e) {
             System.out.println("No se han podido crear los archivos");
-            File f = new File("D:/perifericos.csv");//Borramos el archivo solo se ejecuta si hay algún problema en el try con la conexxión con esos archivos
+            File f = new File("perifericos.csv");//Borramos el archivo solo se ejecuta si hay algún problema en el try con la conexxión con esos archivos
             f.delete();
-            f = new File("D:/almacenamiento.csv");
+            f = new File("almacenamiento.csv");
             f.delete();
-            f = new File("D:/impresoras.csv");
+            f = new File("impresoras.csv");
             f.delete();
-            f = new File("D:/monitores.csv");
+            f = new File("monitores.csv");
             f.delete();
         }
         System.out.println("\nAhora vamos a leer cada archivo de sección");
@@ -1525,44 +1533,244 @@ public class Tienda2026 {
             System.out.println(a);
         }
     }
-    
+
     public void exportarColecciones() {
-        try (ObjectOutputStream oosArticulos=new ObjectOutputStream(new FileOutputStream("articulos.dat"));//OOS= ObjectOutputStream
-            ObjectOutputStream oosClientes=new ObjectOutputStream(new FileOutputStream("clientes.dat"));
-            ObjectOutputStream oosPedidos=new ObjectOutputStream(new FileOutputStream("pedidos.dat")))
-        {
+
+        //Para poder serializarlos debemos añadir implements Serilizable en las clases de las colecciones de que queremos guardar
+        try (ObjectOutputStream oosArticulos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\articulos.dat"));//OOS= ObjectOutputStream
+                ObjectOutputStream oosClientes = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.dat"));//1
+                ObjectOutputStream oosPedidos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\pedidos.dat"))) {
+
+            //Nos conectamos objeto a objeto y los empaquetamos en 3 archivos de distintos, accede a la referencia en la memoria y los empaqueta.
+            //En el examen solo tendremos que agregar nuevos archivos siguiendo los criterios de los ejercicios que nos harán cambiar los bucles por dentro para acceder a información más específica. ejemplo archivo con clientes con pedidos superiores a 100 euros
             for (Articulo a : articulos.values()) {
                 oosArticulos.writeObject(a);
             }
-            
+
             for (Cliente c : clientes.values()) {
                 oosClientes.writeObject(c);
             }
-            
+
             for (Pedido p : pedidos) {
                 oosPedidos.writeObject(p);
             }
-            
+            System.out.println("Copia de seguridad realizada con éxito");
+
+            //IOException para cualquier cosa rara.
         } catch (IOException ex) {
             System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
-            File f= new File("articulos.dat");
+            File f = new File("articulos.dat");
             f.delete();
-            f= new File("clientes.dat");
+            f = new File("clientes.dat");
             f.delete();
-            f=new File("pedidos.dat");
+            f = new File("pedidos.dat");
             f.delete();
         }
+    }
+
+    public void importarColecciones() {
+        /* HAY QUE LEER DESDE CADA ARCHIVO POR SEPARADO PORQUE SI INTENTAMOS METERLO TODO EN EL MISMO
+        TRY-CATCH AL LLEGAR AL FINAL DEL PRIMER ARCHIVO SE PRODUCE LA EOFException Y SÓLO SE 
+        LEERÍA BIEN EL PRIMER ARCHIVO, EL RESTO NO */
+
+        // A la hora de la lectura hay que hacerlo archivo a archivo, es decir un try catch para cada archivo con su respectivo bucle
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\articulos.dat"))) {
+            Articulo a;
+            while ((a = (Articulo) oisArticulos.readObject()) != null) {
+                articulos.put(a.getIdArticulo(), a);
+                /*Mientras al leer el objeto no sea null convierte lo que estás leyendo lo empaquetas en el HashMap a, lo estamos regrenerando. SIEMPRE seguidos de los 3 catch
+                NUNCA AÑADIR EL THROW*/
+
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+            System.out.println("Finalizada la lectura del archivo articulos.dat");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }
+
+        try (ObjectInputStream oisClientes = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.dat"))) {
+            Cliente c;
+            while ((c = (Cliente) oisClientes.readObject()) != null) {
+                clientes.put(c.getIdCliente(), c);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+            System.out.println("Finalizada la lectura del archivo clientes.dat");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }
+
+        try (ObjectInputStream oisPedidos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\pedidos.dat"))) {
+            Pedido p;
+            while ((p = (Pedido) oisPedidos.readObject()) != null) {
+                pedidos.add(p);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+            System.out.println("Finalizada la lectura del archivo pedidos.dat");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }
+
+        /*TEXTO: Bufferwriter es canal
+        BINARIOS: ObjectInpit stream es el canal
+        
+        EXAMEN 19
+        Vamos a hacer consultas ya se a por texto y proceimeintos, debemos crear los canalas de comunincación adecuados para cada archivo*/
+    }
+
+    //VAMOS A CREAR POSIBLES EJEMPLOS DE ARCHIVOS SERIALIZABLES PARA EL EXAMEN
+    //Guardar en 4 archivos cada una de las secciones en .dat
+    public void exportarSeccion() {
+
+        try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"));//OOS= ObjectOutputStream, solo hace falta poner el nombre del archivo
+                ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.dat")); 
+                ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.dat"));
+                ObjectOutputStream oosMonitores = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.dat"))) {
+
+            //Nos conectamos objeto a objeto y los empaquetamos en 3 archivos de distintos, accede a la referencia en la memoria y los empaqueta.
+            //En el examen solo tendremos que agregar nuevos archivos siguiendo los criterios de los ejercicios que nos harán cambiar los bucles por dentro para acceder a información más específica. ejemplo archivo con clientes con pedidos superiores a 100 euros
+            for (Articulo a : articulos.values()) {
+                switch (a.getIdArticulo().charAt(0)) {
+                    case '1':
+                        oosPerifericos.writeObject(a);
+                        break;
+
+                    case '2':
+                        oosAlmacenamiento.writeObject(a);
+                        break;
+
+                    case '3':
+                        oosImpresoras.writeObject(a);
+                        break;
+
+                    case '4':
+                        oosMonitores.writeObject(a);
+                        break;
+                    default:
+                        throw new AssertionError();
+                }
+
+                //oosArticulos.writeObject(a);
+            }
+            System.out.println("Copia de seguridad de las secciones de artículos realizada con éxito");
+
+            //IOException para cualquier cosa rara.
+        } catch (IOException ex) {
+            System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
+            File f = new File("periferico.dat");
+            f.delete();
+            f = new File("almacenamiento.dat");
+            f.delete();
+            f = new File("impresoras.dat");
+            f.delete();
+            f = new File("monitores.dat");
+            f.delete();
+        }       
     }
     
-    public void importarColecciones() {
-        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("articulos.dat"))){
+    public void importarSeccion(){
+        try (ObjectInputStream oisPerifericos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"))) {
             Articulo a;
-                while ((a=(Articulo)oisArticulos.readObject()) !=null) {
+            while ((a = (Articulo) oisPerifericos.readObject()) != null) {
                 articulos.put(a.getIdArticulo(), a);
-                
+                /*Mientras al leer el objeto no sea null convierte lo que estás leyendo lo empaquetas en el HashMap a, lo estamos regrenerando. SIEMPRE seguidos de los 3 catch
+                NUNCA AÑADIR EL THROW*/
+
             }
-        } catch (Exception ex) {
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+            System.out.println("Finalizada la lectura del archivo perifericos.dat");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
         }
+
+        try (ObjectInputStream oisAlmacenamiento = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.dat"))) {
+            Articulo a;
+            while ((a = (Articulo) oisAlmacenamiento.readObject()) != null) {
+                articulos.put(a.getIdArticulo(), a);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+            System.out.println("Finalizada la lectura del archivo almacenamiento.dat");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }
+
+        try (ObjectInputStream oisImpresoras = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.dat"))) {
+            Articulo a;
+            while ((a = (Articulo) oisImpresoras.readObject()) != null) {
+                articulos.put(a.getIdArticulo(), a);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+            System.out.println("Finalizada la lectura del archivo impresoras.dat");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }
+        
+        try (ObjectInputStream oisMonitores = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.dat"))) {
+            Articulo a;
+            while ((a = (Articulo) oisMonitores.readObject()) != null) {
+                articulos.put(a.getIdArticulo(), a);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+            System.out.println("Finalizada la lectura del archivo monitores.dat");
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }
+        
+        //Pedir por teclado la sección y luego mostrar dicho archivo por pantalla
+        
     }
+    
+    /*public void leerSecciones(){
+        System.out.println("Introduce la sección que quieres ver:");
+        String seccion = sc.next();
+
+        int opcion;
+        do {
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE SECCIONES");
+            System.out.println("\t\t\t\t1 - PERIFERICOS");
+            System.out.println("\t\t\t\t2 - ALMACENAMIENTO");
+            System.out.println("\t\t\t\t3 - IMPRESORAS");
+            System.out.println("\t\t\t\t4 - MONITORES");
+            System.out.println("\t\t\t\t9 - SALIR");
+            System.out.println("\t\t\t\t¿Qué opción quieres ejecurtar?");
+
+            opcion = sc.nextInt();
+
+            switch (opcion) {
+                case 1: {
+                    altaArticulo();
+                    break;
+                }
+                case 2: {
+                    bajaArticulo();
+                    break;
+                }
+                case 3: {
+                    reposicionArticulo();
+                    break;
+                }
+                case 4: {
+                    listarArticulos();
+                    break;
+                }
+
+            }
+
+        } while (opcion != 9);
+    }*/
+
 //</editor-fold>
 }
