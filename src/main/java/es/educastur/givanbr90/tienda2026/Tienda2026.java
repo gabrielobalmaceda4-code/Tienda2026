@@ -85,6 +85,7 @@ public class Tienda2026 implements Serializable {
         //t.importarSeccion();
         //t.leerSecciones();
         t.exportarSeccion();
+        t.leerSeccion();
         /*t.uno();
         t.dos();
         t.tres();
@@ -1624,7 +1625,7 @@ public class Tienda2026 implements Serializable {
     }
 
     //VAMOS A CREAR POSIBLES EJEMPLOS DE ARCHIVOS SERIALIZABLES PARA EL EXAMEN
-    //Guardar en 4 archivos cada una de las secciones en .dat
+    //Guardar en 4 archivos cada una de las secciones en .dat esto no se ejecuta si no salimos del menú, hasta que no salga del menú no se exportan los archivos ni pide la sección por teclado
     public void exportarSeccion() {
 
         try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"));//OOS= ObjectOutputStream, solo hace falta poner el nombre del archivo
@@ -1670,8 +1671,83 @@ public class Tienda2026 implements Serializable {
             f.delete();
             f = new File("monitores.dat");
             f.delete();
-        }       
+            
+        /* PARA COMPROBAR QUE FUNCIONA, VERIFICAMOS QUE SE HAN CREADO LOS 4 ARCHIVOS EN LA CARPETA
+        RAÍZ DEL PROYECTO CON LA FECHA Y HORA ACTUAL - 
+        ... Y PARA COMPROBAR EL CONTENIDO DE LOS ARCHIVOS LEEREMOS/IMPRIMIREMOS "AL VUELO" SÓLO 1 DE ELLOS
+         CUYA SECCION SOLICITAMOS POR TECLADO
+        */
+        }
+        
+        System.out.println("Teclea la Seccion de los articulos CUYO ARCHIVO QUIERES COMPROBAR:");
+        char seccion = sc.next().charAt(0);
+        String nombreArchivo = null;
+        switch (seccion) {
+            case '1':
+                nombreArchivo = "Perifericos.dat";
+                break;
+            case '2':
+                nombreArchivo = "Almacenamiento.dat";
+                break;
+            case '3':
+                nombreArchivo = "Impresoras.dat";
+                break;
+            case '4':
+                nombreArchivo = "Monitores.dat";
+                break;
+        }
+        Articulo a;
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
+            while ((a = (Articulo) oisArticulos.readObject()) != null) {
+                System.out.println(a);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }
     }
+    
+    //No se ejecuta hasta que salgamos del menú
+    public void leerSeccion() {
+    System.out.println("Teclea la Seccion de los articulos CUYO ARCHIVO QUIERES COMPROBAR:");
+    String seccion = sc.next();
+
+    String nombreArchivo = "";
+
+    switch (seccion) {
+        case "1":
+            nombreArchivo = "perifericos.dat";
+            break;
+        case "2":
+            nombreArchivo = "almacenamiento.dat";
+            break;
+        case "3":
+            nombreArchivo = "impresoras.dat";
+            break;
+        case "4":
+            nombreArchivo = "monitores.dat";
+            break;
+        default:
+            System.out.println("Sección no válida");
+            return;
+    }
+
+    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
+
+        while (true) {
+            Articulo a = (Articulo) ois.readObject();
+            System.out.println(a);
+        }
+
+    } catch (EOFException e) {
+        System.out.println("Fin del archivo");
+    } catch (Exception e) {
+        System.out.println("Error al leer el archivo");
+    }
+}
     
     public void importarSeccion(){
         try (ObjectInputStream oisPerifericos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"))) {
