@@ -74,21 +74,22 @@ public class Tienda2026 implements Serializable {
         2-exportar siempre lo último para evitar guardar las collecciones sin datos
         3-Una vez hehco el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
-        //t.cargaDatos();
+        t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
         //t.archivos();
         //t.leeCliente();
         //t.gauardaArtPorSeccion();
         //t.leeArticulosPorSeccion();
-        t.importarColecciones();
-        t.menu();
-        t.exportarColecciones();
+        //t.importarColecciones(); hay que descomentarlos luego
+        //t.menu(); hay que descomentarlos luego
+        //t.exportarColecciones(); hay que descomentarlos luego
         //t.importarSeccion();
         //t.leerSecciones();
-        t.exportarSeccion();
-        t.leerSeccion();
+        //t.exportarSeccion(); hay que descomentarlos luego
+        //t.leerSeccion(); hay que descomentarlos luego
         /*t.uno();
         t.dos();
         t.tres();
+        
         t.cuatro();
         t.cinco();
         //Si hacemos los métodos estáticos podemos llamarlos de la siguiente manera, sin necesidad del menú, esto es lo que va haber que entregar
@@ -96,6 +97,11 @@ public class Tienda2026 implements Serializable {
         -private static void uno(){
         }
          */
+        //t.uno1();
+        t.dos2();
+        t.tres3();
+        t.cuatro4();
+        t.cinco5();
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
@@ -114,12 +120,22 @@ public class Tienda2026 implements Serializable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="Métodos auxiliares">
+    /**
+     * Carga datos de prueba en las colecciones principales de la tienda
+     * 
+     * Inicializa clientes, artículos y pedidos con información ya preparada
+     * para poder probar el programa sin necesidad de introducir todos los datos
+     * por teclado al arrancar la aplicación.
+     */
     public void cargaDatos() {
-        clientes.put("80580845T", new Cliente("80580845T", "ANA", "658111111", "ana@gmail.com"));
+        
+        //Añadimos clientes al HashMap usando el DNI como clave
         clientes.put("36347775R", new Cliente("36347775R", "LOLA", "649222222", "lola@gmail.com"));
         clientes.put("63921307Y", new Cliente("63921307Y", "JUAN", "652333333", "juan@gmail.com"));
+        clientes.put("80580845T", new Cliente("80580845T", "ANA", "658111111", "ana@gmail.com"));
         clientes.put("02337565Y", new Cliente("02337565Y", "EDU", "634567890", "edu@gmail.com"));
 
+        //Añadimos artículos al catálogo usando el idArticulo como clave
         articulos.put("1-11", new Articulo("1-11", "RATON LOGITECH ST ", 0, 15));
         articulos.put("1-22", new Articulo("1-22", "TECLADO STANDARD  ", 5, 18));
         articulos.put("2-11", new Articulo("2-11", "HDD SEAGATE 1 TB  ", 15, 80));
@@ -132,20 +148,26 @@ public class Tienda2026 implements Serializable {
         articulos.put("4-33", new Articulo("4-33", "SAMSUNG ODISSEY G5", 12, 580));
 
         LocalDate hoy = LocalDate.now();
-        pedidos.add(new Pedido("80580845T-001/2025", clientes.get("80580845T"), hoy.minusDays(1), new ArrayList<>(List.of(new LineaPedido(articulos.get("1-11"), 3), new LineaPedido(articulos.get("4-22"), 3)))));
-        pedidos.add(new Pedido("80580845T-002/2025", clientes.get("80580845T"), hoy.minusDays(2), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-11"), 3), new LineaPedido(articulos.get("4-22"), 2), new LineaPedido(articulos.get("4-33"), 4)))));
-        pedidos.add(new Pedido("36347775R-001/2025", clientes.get("36347775R"), hoy.minusDays(3), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-22"), 1), new LineaPedido(articulos.get("2-22"), 3)))));
-        pedidos.add(new Pedido("36347775R-002/2025", clientes.get("36347775R"), hoy.minusDays(5), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-33"), 3), new LineaPedido(articulos.get("2-11"), 3)))));
-        pedidos.add(new Pedido("63921307Y-001/2025", clientes.get("63921307Y"), hoy.minusDays(4), new ArrayList<>(List.of(new LineaPedido(articulos.get("2-11"), 5), new LineaPedido(articulos.get("2-33"), 3), new LineaPedido(articulos.get("4-33"), 2)))));
+        //Creamos pedidos de ejemplo asociados a clientes y artículos y existentes
+        pedidos.add(new Pedido("80580845T-001/2026", clientes.get("80580845T"), LocalDate.parse("2026-01-05"), new ArrayList<>(List.of(new LineaPedido(articulos.get("1-11"), 3), new LineaPedido(articulos.get("4-22"), 3)))));
+        pedidos.add(new Pedido("80580845T-002/2026", clientes.get("80580845T"), LocalDate.parse("2026-01-10"), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-11"), 3), new LineaPedido(articulos.get("4-22"), 2), new LineaPedido(articulos.get("4-33"), 4)))));
+        pedidos.add(new Pedido("80580845T-003/2026", clientes.get("80580845T"), LocalDate.parse("2026-01-15"), new ArrayList<>(List.of(new LineaPedido(articulos.get("2-11"), 1), new LineaPedido(articulos.get("3-22"), 2)))));
+        pedidos.add(new Pedido("36347775R-001/2026", clientes.get("36347775R"), LocalDate.parse("2026-02-05"), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-22"), 1), new LineaPedido(articulos.get("2-22"), 3)))));
+        pedidos.add(new Pedido("36347775R-002/2026", clientes.get("36347775R"), LocalDate.parse("2026-02-10"), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-33"), 3), new LineaPedido(articulos.get("2-11"), 3)))));
+        pedidos.add(new Pedido("63921307Y-001/2026", clientes.get("63921307Y"), LocalDate.parse("2026-03-05"), new ArrayList<>(List.of(new LineaPedido(articulos.get("2-11"), 5), new LineaPedido(articulos.get("2-33"), 3), new LineaPedido(articulos.get("4-33"), 2)))));
     }
 
     /**
-     * Este método valora las posibles excepciones de stock
+     * Comprueba si hay stock de un artículo para realizar una compra.
+     * 
+     * Este método valora las posibles excepciones de stock. Valida dos posibles
+     * situaciones o que las unidades solicitadas sean superiores al stock
+     * disponibble. En ambos casos se lanzan excepciones personaizadas.
      *
-     * @param idArticulo
-     * @param unidades
-     * @throws StockCero
-     * @throws StockInsuficiente
+     * @param a artículo de que queremos comprobar el stock disponible
+     * @param unidades número de unidades solicitadas por el cliente
+     * @throws StockCero si el artículo no tiene existencias
+     * @throws StockInsuficiente si el stock es menor que las unidades solicitadas
      */
     public void stock(Articulo a, int unidades) throws StockCero, StockInsuficiente {//Lanza las excepciones que hemos creado, ve las unidades del articulo que le pidamos
 
@@ -156,19 +178,31 @@ public class Tienda2026 implements Serializable {
                     + a.getDescripcion());
         }
 
-        //Cuando nos piden más unidades de las que tenemos
+        //Cuando nos piden más unidades de las que tenemos lanzamos esta excepción
         if (a.getExistencias() < unidades) {
             throw new StockInsuficiente("Sólo hay " + a.getExistencias() + " unidades disponibles de: "
                     + a.getDescripcion());
         }
     }
 
+    /**
+     * Calcula el total de unidades vendidas de un artículo concreto.
+     *
+     * Recorre todos los pedidos de la tienda y suma las unidades de aquellas
+     * líneas de pedido cuyo artículo coincide con el artículo recibido.
+     * 
+     * @param a artículo del que queremos conocer las unidades vendidas
+     * @return total de unidades vendidas de ese artículo
+     */
     private int udsVendidas(Articulo a) {
         int total = 0;
-        for (Pedido p : pedidos) {
-            for (LineaPedido l : p.getCestaCompra()) {
+        
+        for (Pedido p : pedidos) { //Recorremos todos los pedidos de la tienda
+            for (LineaPedido l : p.getCestaCompra()) { //Recorremos cada línea de la cesta del pedido
+                
+                //Si la línea corresponde al artículo buscado, sumamos sus unidades
                 if (l.getArticulo().equals(a)) {
-                    total += l.getUnidades();
+                    total += l.getUnidades();                  
                 }
             }
         }
@@ -176,8 +210,19 @@ public class Tienda2026 implements Serializable {
 
     }
 
+    /**
+     * Calcula el importe total gastado por un cliente usando streams
+     * 
+     * Filtra los pedidos realizados por el cliente recibido como parámetro
+     * y suma el total monetario de cada pedido mediante el método auxiliar
+     * totalPedido().
+     * 
+     * @param c cliente de que queremos calcular el gasto total
+     * @return importe total gastado por el cliente
+     */
     //Total gastado por un Cliente
     public double totalCliente2(Cliente c) {
+        //Filtramos los pedidos del cliente y sumamos el total de cada uno con el .sum
         return pedidos.stream().filter(p -> p.getClientePedido().equals(c))
                 .mapToDouble(p -> totalPedido(p)).sum();
     }
@@ -362,7 +407,7 @@ public class Tienda2026 implements Serializable {
 //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Listado tradicional">
     /**
-     * Listado de colecciones con for each
+     * Listado de colecciones con for each.
      */
     public void listarColecciones() {
         System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
@@ -388,7 +433,7 @@ public class Tienda2026 implements Serializable {
 
     //<editor-fold defaultstate="collapsed" desc="Gestión Artículos">
     /**
-     * Agregamos un nuevo artículo a la tienda
+     * Agregamos un nuevo artículo a la tienda.
      */
     private void altaArticulo() {
         //DEBEMOS PEDIR LOS 4 ATRIBUTOS POR TECLADO Y LUEGO AÑADIRLO AL HASHMAP
@@ -432,16 +477,39 @@ public class Tienda2026 implements Serializable {
         articulos.put(idArticulo, a);
         System.out.println("SE HA AÑADIDO EL NUEVO ARTICULO CORRECTAMENTE");
     }
-
+    
+    /**
+     * Gestiona la baja lógica de un artículo del catálogo.
+     * 
+     * Este método está pensado para desactivar artículos en lugar de borrarlos
+     * físicamente, ya que puede interesar conservar su información para
+     * consultas históricas o pedidos antiguos.
+     */
     private void bajaArticulo() {
         /*Solo tiene sentido guardar la información de dichos artículos ya sean activos=se venden, inactivos=no se venden, porque nos intereza tener guardados los artículos que he vendio anteriormente
         más que borar esos datos, los desactivo y los almaceno en un histórico para estén accesibles en el caso de ser necesarios, aunque no estén en el catálogo de ventas actual*/
     }
-
+    
+    /**
+     * Reposición de existencias de un artículo de la tienda.
+     * 
+     * Este método debería pedir por teclado el identificador del artículo y
+     *  la cantidad de unidades a reponer, para después actualizar el stock
+     * almacenado en el HashMap de artículos.
+     */
     private void reposicionArticulo() {
-
+        //Aquí deberíamos pedir el id del artículo a reponer
+        //Después comprobar que exista en la tienda
+        //Finalmente sumar las nuevas unidades a las existencias actuales
     }
 
+    /**
+     * Muestra distintos listados de artículos de la tienda.
+     * 
+     * El método perminte listar artículos de una sección introducida por teclado,
+     * mostrar los artículos agrupados por secciones fijas y ordenarlos según
+     * el número de unidades vendidas.
+     */
     private void listarArticulos() {
         /*System.out.println("Vamos a mostrar los articulos de la tienda: ");
         for (Articulo a : articulos.values()) {
@@ -487,12 +555,13 @@ public class Tienda2026 implements Serializable {
                 System.out.println(a);
             }
         }*/
+        //Filtramos los artículos cuya sección coincide con la introducida
         articulos.values().stream()
                 .filter(a -> a.getIdArticulo().startsWith(seccion))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo))
                 .forEach(a -> System.out.println(a));
 
-        //EJERCICO DOS
+        //EJERCICO DOS: MOSTRAMOS LOS ARTÍCULOS AGRUPADOS POR CADA SECCIÓN
         System.out.println("\nPERIFERICOS");
         articulos.values().stream()
                 .filter(a -> a.getIdArticulo().startsWith("1"))
@@ -510,7 +579,7 @@ public class Tienda2026 implements Serializable {
                 .filter(a -> a.getIdArticulo().startsWith("4"))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
 
-        //EJERCICO CUATRO
+        //EJERCICO CUATRO: ORDENAMOS LOS ARTÍCULOS POR NÚMERO DE UNIDADES VENDIDAS
         System.out.println("\nLISTADO DE ARTICULOS - UNIDADES VENDIDAS:");
         articulos.values().stream()
                 .sorted(Comparator.comparing(a -> udsVendidas((Articulo) a)).reversed())
@@ -521,7 +590,7 @@ public class Tienda2026 implements Serializable {
 
     //EVOLUCIÓN DE PROGRAMACIÓN TRADICIONAL A FUNCIONAL PARA CALCULAR LAS UNIDADES VENDIDAS
     /**
-     * Calcula las unidades vendidas con bucles anidados
+     * Calcula las unidades vendidas con bucles anidados.
      *
      * @param a
      * @return c= unidades vendidas
@@ -541,7 +610,7 @@ public class Tienda2026 implements Serializable {
     }
 
     /**
-     * Calcula las unidades vendidas mediante streams, filter y mapToInt
+     * Calcula las unidades vendidas mediante streams, filter y mapToInt.
      *
      * @param a
      * @return total
@@ -560,7 +629,7 @@ public class Tienda2026 implements Serializable {
     }
 
     /**
-     * Calculamos las unidades vendidas aplanando el stream con flatMap
+     * Calculamos las unidades vendidas aplanando el stream con flatMap.
      *
      * @param a
      * @return
@@ -585,18 +654,50 @@ public class Tienda2026 implements Serializable {
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Gestión de Clientes">
+    /**
+     * Da de alta un nuevo cliente en la tienda.
+     * 
+     * Este método debe solicitar por teclado los datos del cliente, validarlos
+     * y añadir el nuevo objeto Cliente al HashMap clientes usando su DNI como clave.
+     */
     private void altaCliente() {
-
+        //Debemos pedir DNI, nombre, teléfono y email por teclado
+        //El DNI será la clave del HashMap clientes
+        //Antes de añadirlo, conviene comprobar que no exista ya en la colección
     }
-
+    
+    /**
+     * Da de baja un cliente de la tienda.
+     * 
+     * Este método debería solcitar el DNI del cliente, comprobar si existe en 
+     * la colección y eliminarlo o desactivarlo según el diseño elegido,
+     * preferiblemente desactivarlo para poder realizar consultas si es necesario.
+     */
     private void bajaCliente() {
-
+        //Debemos pedir DNI del cliente
+        //Comprobar si existe en el HashMap clientes
+        //Si existe, lo eliminamos o lo marcamos como inactivo
     }
 
+    /**
+     * Modifica los datos de un cliente ya existente.
+     * 
+     * Este método debería localizar al cliente por su DNI y permitir actualizar
+     * algunos de sus atributos, como nombre, teléfono o email.
+     */
     private void modificarDatos() {
-
+        //Debemos pedir DNI del cliente que queremos modificar
+        //Si el cliente existe, pedimos los nuevos datos
+        //Finalmente actualizamos sus atributos con los setters correspondientes
     }
 
+    /**
+     * Muestra la información relacionada con los clientes de la tienda.
+     * 
+     * En su estado actual, el método realiza dos ejercicios:
+     *  -Muestra los pedidos y el total gastado por un cliente concreto
+     *  -Lista los clientes que todavía no han realizado ningún pedido
+     */
     private void listarClientes() {
         /*System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
         for (Cliente c : clientes.values()) {
@@ -604,10 +705,12 @@ public class Tienda2026 implements Serializable {
             //System.out.print("\n" + l.getIsbn() + "/" + l.getTitulo() + "/" + l.getAutor() + "/" + l.getGenero());
         }*/
 
-        //EJERCICIO 3
+        //EJERCICIO 3: Pedimos el DNI del cliente que queremos consultar sus pedidos
         System.out.println("Introduce el DNI del cliente:");
         String dni = sc.next();
         double totalGastado = 0;
+        
+        //Mostramos todos los pedidos del cliente y vamos acumulando su gasto total
         System.out.println("\nPEDIDOS DEL CLIENTE " + dni);
         for (Pedido p : pedidos) {
             if (p.getClientePedido().getIdCliente().equalsIgnoreCase(dni)) {
@@ -616,6 +719,8 @@ public class Tienda2026 implements Serializable {
                 totalGastado += total;
             }
         }
+        
+        //Mostramos el importe total gastado por ese cliente
         System.out.println("\nTOTAL GASTADO POR EL CLIENTE: " + totalGastado + "euros");
 
         /*clientesAux.stream()
@@ -626,20 +731,26 @@ public class Tienda2026 implements Serializable {
                 .filter(c->c.getIdCliente().equalsIgnoreCase(dni))
                 .sorted(Comparator.comparing(Cliente::getIdCliente))
                 .forEach(c->System.out.println(c));*/
-        //EJERCICIO 5
+        
+        //EJERCICIO 5: Buscamos los clientes que no tienen ningún pedido asociado
         ArrayList<Cliente> clientesNoPedidos = new ArrayList<>();
         for (Cliente c : clientes.values()) {
             int contador = 0;
+            
+            //Recorremos los pedidos para comprobar si el cliente aparece en alguno
             for (Pedido p : pedidos) {
                 if (p.getClientePedido().getIdCliente().equalsIgnoreCase(c.getIdCliente())) {
                     contador++;
                 }
             }
-
+            
+            //Si el contador sigue a 0, ese cliente no ha hecho pedidos
             if (contador == 0) {
                 clientesNoPedidos.add(c);
             }
         }
+        
+        //Mostramos los clientes sin pedidos
         System.out.println("CLIENTE SIN PEDIDOS:");
         for (Cliente c : clientesNoPedidos) {
             System.out.println(c);
@@ -649,15 +760,18 @@ public class Tienda2026 implements Serializable {
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Gestión Pedidos">
     /**
-     * Generación de IdPedido
+     * Genera un identificador único para un nuevo pedido "IdPedido".
+     * 
+     * El formato del identificador es: DNI-XXX/AÑO, donde XXX representa
+     * el número de pedido del cliente con tres cifras.
      *
-     * @param idCliente
-     * @return
+     * @param idCliente identificador del cliente que realiza el pedido
+     * @return identificador generado para el nuevo pedido
      */
     public String generaIdPedido(String idCliente) {
         String nuevoId;
         int contador = 0;
-        //Calculo el numero de pedidos de la persona
+        //Calculo el número de pedidos de la persona, cuántos pedidos  tiene ya el cliente
         for (Pedido p : pedidos) {
             if (p.getClientePedido().getIdCliente().equalsIgnoreCase(idCliente)) {
                 contador++;
@@ -667,20 +781,29 @@ public class Tienda2026 implements Serializable {
 
         contador++;//Sumamos 1 al contador para el nuevo pedido
 
+        //Construimos el ID con el formato DNI-XXX/AÑO
         nuevoId = idCliente + "-" + String.format("%03d", contador) + "/" + LocalDate.now().getYear();
 
         return nuevoId;
     }
 
     /**
-     * Generamos un nuevo pedido teniendo en cuenta el método anterior
+     * Permite crear un nuevo pedido para un cliente de la tienda.
+     * 
+     * El método valida el cliente, permite añadir artículos de una cesta compra,
+     * comprueba el stock disponible mediante excepciones, muestra el resumen
+     * del pedido y, si el usuario confirma, guarda el pedido y actualiza
+     * las existencias de los artículos.
      */
     private void nuevoPedido() {
+        //Limpiamos el Buffer y pedimos el cliente por teclado
         sc.nextLine();
         String idCliente;
         do {
             System.out.println("DNI (id) CLIENTE:");
             idCliente = sc.next().toUpperCase();
+            
+            //Comprobamos si el cliente existe en la tienda
             if (!clientes.containsKey(idCliente)) {
                 System.out.println("No es cliente de la tienda."
                         + " Desea darse de alta o comprar como invitado ");
@@ -688,6 +811,7 @@ public class Tienda2026 implements Serializable {
         } while (!MetodosAuxiliares.validarDni(idCliente));
 
         //Controlamos que solo se pidan artículos de la tienda y de clientes de la tienda
+        //Creamos la cesta compra
         ArrayList<LineaPedido> cestaCompra = new ArrayList();
         String idArticulo;
         int unidades = 0;
@@ -695,15 +819,18 @@ public class Tienda2026 implements Serializable {
         System.out.print("\nTeclee el ID del articulo deseado (FIN para terminar la compra):");
         idArticulo = sc.next();
 
+        //Seguimos pidiendo artículos hasta que el usuario escriba FIN
         while (!idArticulo.equalsIgnoreCase("FIN")) {
             //Es mejor utilizar un while en lugar de un do while como en el commit anterior, con el do while estamos obligando a la persona a seguir con los atributos aunque no quiera comprar, se ve abajo del todo con do while
             System.out.print("\nTeclee las unidades deseadas: ");
             unidades = sc.nextInt();//Debemos valorar las execepciones llamando al método stock
 
+            //Control de stock y gestión de excepciones
             try {
                 stock(articulos.get(idArticulo), unidades); //Debemos darle a la penúltima sugenrecia
                 //CAMBIAMOS DE IDARTICULO A EL OBJETO COMPLETO COMO ARTICULO
 
+                //Si hay stock suficiente, añadimos la línea a la cesta
                 cestaCompra.add(new LineaPedido(articulos.get(idArticulo), unidades)); //Si no pasa nada de las excepciones añadimos la linea a cestaCompra
 
                 //Si damos por hecho que el pediddo se va cerrar, esto debería ir al final del código cuando estamnos seguros que se va afectuar el pedido
@@ -714,6 +841,8 @@ public class Tienda2026 implements Serializable {
                 System.out.println(ex.getMessage());//Aparte de mostrar el mensaje lo podemos matizar aún más
                 System.out.println("Las quieres (SI/NO)");
                 String respuesta = sc.next();
+                
+                //Si el cliente acepta, añadimos todas las unidades disponibles
                 if (respuesta.equalsIgnoreCase("SI")) {
                     cestaCompra.add(new LineaPedido(articulos.get(idArticulo), articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
                     //articulos.get(idArticulo).setExistencias(0);
@@ -724,6 +853,7 @@ public class Tienda2026 implements Serializable {
 
         }
 
+        //Si la cesta no está vacía, mostramos el resumen del pedido
         if (!cestaCompra.isEmpty()) {
             System.out.println("Este es tu pedido:\n");
             double totalLinea = 0;
@@ -742,6 +872,8 @@ public class Tienda2026 implements Serializable {
             if (respuesta.equalsIgnoreCase("SI")) {
                 pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente),
                         LocalDate.now(), cestaCompra));
+                
+                //Restamos del stock las unidades compradas
                 for (LineaPedido l : cestaCompra) {
                     articulos.get(l.getArticulo())
                             .setExistencias(articulos.get(l.getArticulo()).getExistencias() - l.getUnidades());
@@ -779,7 +911,7 @@ public class Tienda2026 implements Serializable {
     //pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra));
 
     /**
-     * Lista los pedidos con for each
+     * Lista los pedidos con for each.
      */
     private void listadoPedido() {
         System.out.println("Vamos a mostrar los pedidos de la tienda: ");
@@ -788,9 +920,21 @@ public class Tienda2026 implements Serializable {
         }
     }
 
+    /**
+     * Calcula el importe total de un pedido.
+     * 
+     * Recorre todas las líneas de pedido y suma el importe de cada una,
+     * multiplicando las unidades por el precio el artículo.
+     * 
+     * @param p pedido del que queremos calcular el total
+     * @return importe total del pedido
+     */
     public double totalPedido(Pedido p) { //Cambiamos a public para probarlo en los test de JUNIT 5
         double totalPedido = 0;
+        
+        //Recorremos todas las líneas del pedido
         for (LineaPedido l : p.getCestaCompra()) {
+            //Sumamos el importe de cada línea
             totalPedido += l.getUnidades() * l.getArticulo().getPvp(); //SE CAMBIA DE l.getIdArticulo a l.getArticulo porque cambiamos la clase de LineaPedido, NOS PERMITE ACCEDER AL ARTICULO DIRECTAMENTE
         }
         return totalPedido;
@@ -798,18 +942,28 @@ public class Tienda2026 implements Serializable {
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Listados con STREAM">
+    /**
+     * Realiza distintos listados de clientes, artículos y pedidos utilizando streams.
+     * 
+     * El método muestra ejemplos básicos de recorrido completo de colecciones con
+     * forEach, así como filtros y ordenaciones sencillas aplicadas sobre artículos
+     * y pedidos.
+     */
     private void listadosConStreams() {
+        //Lista todos los artículos con streams
         System.out.println("Vamos a listar articulos con streams");
         articulos.values().stream()
                 .forEach(a -> System.out.println(a));
-
+        
+        //Lista todos los clientes con streams
         System.out.println("\nVamos a listar clientes con streams");
         clientes.values().stream()
                 .forEach(c -> System.out.println(c));
-
+        
+        //Lista todos los pedidos con streams
         System.out.println("\nVamos a listar pedidos con streams");
         pedidos.stream()
-                .forEach(p -> System.out.println(pedidos));
+                .forEach(p -> System.out.println(p));
 
         //LISTADOS DE EDUARDO
         //EJEMPLOS SENCILLOS CON filter() - sorted() - forEach()
@@ -817,24 +971,24 @@ public class Tienda2026 implements Serializable {
         // ARTICULOS DE MENOS DE 100€ ORDENADOS POR PRECIO DE - A +
         System.out.println("Articulos de menos de 100 euros ordenados de - a +");
         articulos.values().stream()
-                .filter(a -> a.getPvp() < 100)
+                .filter(a -> a.getPvp() < 100) //Aplicamos un filtro y ordenación en el listado
                 .sorted(Comparator.comparing(Articulo::getPvp))
                 .forEach(a -> System.out.println(a));
 
         //PEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE - A + (usamos el método auxiliar totalPedido()) 
         System.out.println("\nPEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE - A + (usamos el método auxiliar totalPedido()");
-        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido(p)))
+        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido(p))) //Ordenamos los pedidos por el importe total
                 .forEach(p -> System.out.println(p + "- Total: " + totalPedido(p)));
 
         //PEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar totalPedido()) 
         System.out.println("\nPEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar totalPedido())");
-        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido) p)).reversed())
+        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido) p)).reversed()) //Ordenamos los pedidos por el importe de forma descendente
                 .forEach(p -> System.out.println(p + "- Total: " + totalPedido(p)));
 
         //PEDIDOS DE MÁS DE 1000€ (filter) ORDENADOS POR LA FECHA DEL PEDIDO DE - A + 
         System.out.println("\nPEDIDOS DE MÁS DE 1000€ (filter) ORDENADOS POR LA FECHA DEL PEDIDO DE - A +");
-        pedidos.stream().filter(p -> totalPedido(p) > 1000)
-                .sorted(Comparator.comparing(Pedido::getFechaPedido))
+        pedidos.stream().filter(p -> totalPedido(p) > 1000) //Aplicamos filtros por pedidos; pedidos de más de 1000 euros
+                .sorted(Comparator.comparing(Pedido::getFechaPedido)) //Ordenamos los pedidos por fecha
                 .forEach(p -> System.out.println(p + "- Total: " + p.getFechaPedido()));
 
     }
@@ -842,22 +996,31 @@ public class Tienda2026 implements Serializable {
 //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Ordenar con STREAMS">
     /**
-     * Ordenamos pedidos con streams y criterios de organización: atributo y
-     * método
+     * Ordenamos los pedidos utilizando criterios con streams.
+     * 
+     * -Criterios de organización: atributo y método
+     * 
+     * Se muestran ejemplos de ordenación por atributo, como identificador
+     * del pedido, y por valores calculados, como el importe del pedido.
      */
     private void ordenarConStream() {
+        
+        //Ordenamos los pedidos por ID de forma ascendente
         System.out.println("Listado de pedidos ordenados de menor a mayor total: ");
         pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido))//El criterio de ordenación es el que está en el paréntesis después del .comparing, en ese caso usamos un atributo como pedido
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
 
+        //Ordenamos los pedidos por ID de forma descendente
         System.out.println("\nListado de pedidos ordenados de mayor a menor total: ");
         pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido).reversed())
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
 
+        //Ordenamos los pedidos por importe total de menor a mayor
         System.out.println("\nListado de pedidos ordenados usando como criterio un método de - a +: ");
         pedidos.stream().sorted(Comparator.comparing(p -> totalPedido(p)))
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
 
+        //Ordenamos los pedidos por importe total de mayor a menor
         System.out.println("\nListado de pedidos ordenados usando como criterio un método de + a -: ");
         pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido) p)).reversed())
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
@@ -873,17 +1036,25 @@ public class Tienda2026 implements Serializable {
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Ejercicios del puente">
+    
+    /**
+     * Reúne ejercicios de prácticas con métodos puente de la API streams.
+     * 
+     * En este se trabajan operaciones como count(), mapToInt(),
+     * groupingBy() y counting(), aplicadas a clientes, pedidos y artículos.
+     */
     private void ejsPuente() {
 
         //EJERCICIOS CON MÉTODOS DEL API PARA REALIZAR CALCULOS count() map() mapToInt() .collect(Collectors.groupingBy) ...
         //CONTABILIZAR LOS PEDIDOS DE UN DETERMINADO CLIENTE - PODRÍA PEDIR NOMBRE O DNI POR TECLADO PERO LO HARÉ PARA UNO CONCRETO
         System.out.println("CONTABILIZAR LOS PEDIDOS DE UN DETERMINADO CLIENTE - PODRÍA PEDIR NOMBRE O DNI POR TECLADO PERO LO HARÉ PARA UNO CONCRETO");
         long numPedidos = pedidos.stream()
-                .filter(p -> p.getClientePedido().getIdCliente().equalsIgnoreCase("80580845T"))
-                .count();
+                .filter(p -> p.getClientePedido().getIdCliente().equalsIgnoreCase("80580845T"))//Aplicamos el filtro para que solo nos muestre este cliente
+                .count();//Contamos los pedidos del cliente con dicho DNI
         System.out.println("El cliente con DNI - 80580845T tiene: " + numPedidos + " pedidos");
         //LAS FUNCIONES TIPO count() counting() almacenan resultados en variables de tipo long
-
+        
+        //Repetimos el ejrcicio pero, pedimos el DNI por teclado
         System.out.println("\nVAMOS A CONTABILIZAR LOS PEDIDOS DE UN CLIENTE INTRODUCIENDO SU DNI POR TECLADO");
         System.out.println("Introduce el DNI del cliente:");
         sc.nextLine();//HACERLO SIEMPRE ANTES DE INTRODUCIR DATOS PARA ELIMINAR BASURA DEL TECLADO
@@ -893,6 +1064,7 @@ public class Tienda2026 implements Serializable {
                 .count();
         System.out.println("El cliente introducido tiene: " + numPedidos + " pedidos");
 
+        //En este caso en lugar de pedir el DNI usamos el nombre del cliente como filtro
         System.out.println("\nVAMOS A CONTABILIZAR LOS PEDIDOS DE UN CLIENTE INTRODUCIENDO SU NOMBRE POR TECLADO");
         System.out.println("Introduce el NOMBRE del cliente:");
         String nombre = sc.next();
@@ -902,6 +1074,7 @@ public class Tienda2026 implements Serializable {
         System.out.println("El cliente introducido tiene: " + numPedidos + " pedidos");
 
         //CONTABILIZAR CUANTOS PEDIDOS HAY POR CLIENTE - PARA LAS AGRUPACIONES SON IDEALES LOS MAPAS PORQUE PUEDEN CONTENER 2 DATOS
+        //Agrupamos pedidos por cliente en un Map<Cliente, Long>
         System.out.println("\nCONTABILIZAR CUANTOS PEDIDOS HAY POR CLIENTE - PARA LAS AGRUPACIONES SON IDEALES LOS MAPAS PORQUE PUEDEN CONTENER 2 DATOS");
         Map<Cliente, Long> numPedidosPorCliente
                 = pedidos.stream()
@@ -913,6 +1086,7 @@ public class Tienda2026 implements Serializable {
 
         // TOTAL DE UNIDADES VENDIDAS DE UN ARTICULO EN TODOS LOS PEDIDOS. PODEMOS APLICARLO AL 
         // MÉTODO UNIDADES VENDIDAS QUE HABÍA QUE HACER EN EL EJERCICIO 4 DE LA ÚLTIMA PRUEBA
+        //Calculamos las unidades vendidas de cada artículo
         System.out.println("\nTOTAL DE UNIDADES VENDIDAS DE UN ARTICULO EN TODOS LOS PEDIDOS");
         for (Articulo a : articulos.values()) {
             int total = 0;
@@ -925,6 +1099,12 @@ public class Tienda2026 implements Serializable {
 
     }
 
+    /**
+     * Reúne ejercicios de práctica con flatMap() sobre coleccciones anidadas.
+     * 
+     * Se utiliza faltMap para trabajar directamente con todas las líneas de pedido
+     * de todos los pedidos de la tienda, evitando el uso manual de bucles anidados.
+     */
     private void ejsFlatMap() {
         /**
          * *************************************************************************************
@@ -936,6 +1116,7 @@ public class Tienda2026 implements Serializable {
 
         // USUARIOS QUE HAN COMPRADO UN ARTÍCULO DETERMINADO
         // incluyendo cuántas unidades han comprado
+        //Mostramos qué clientes han comprado un artículo concreto y cuántas unidades
         System.out.println("\nUSUARIOS QUE HAN COMPRADO UN ARTÍCULO DETERMINADO\n");
 
         for (Cliente c : clientes.values()) {
@@ -952,10 +1133,12 @@ public class Tienda2026 implements Serializable {
         }
 
         //ESTE MÉTODO SE DEBE PODER HACER PIDIENDO INFORMACIÓN POR TECLADO, POR EJEMPLO; idArticulo o descripcion
+        //Repetimos el ejercicio pidiendo el artículo por teclado
         System.out.println("\nUSUARIOS QUE HAN COMPRADO UN ARTÍCULO DETERMINADO INTRODUCIENDO SU ID POR TECLADO");
         System.out.println("Introduce el ID del articulo:");
         sc.nextLine();
         var id = sc.nextLine();
+        
         // Comprobamos que el artículo exista
         Articulo articuloBuscado = articulos.get(id);
         if (articuloBuscado == null) {
@@ -977,6 +1160,7 @@ public class Tienda2026 implements Serializable {
             }
 
             // TODOS LOS ARTÍCULOS VENDIDOS (sin repetir)
+            //Obtenemos todos los artículos vendidos sin repetir usando un Set
             System.out.println("\nTODOS LOS ARTÍCULOS VENDIDOS\n");
 
             Set<Articulo> articulosVendidos = pedidos.stream()
@@ -987,6 +1171,7 @@ public class Tienda2026 implements Serializable {
             articulosVendidos.forEach(a -> System.out.println(a));
 
             // TOTAL DE UNIDADES VENDIDAS DE CADA ARTÍCULO
+            //Calculamos las unidades vendidas de cada artículo agrupando por clave
             System.out.println("\nTOTAL DE UNIDADES VENDIDAS POR ARTÍCULO\n");
 
             Map<Articulo, Integer> unidadesPorArticulo = pedidos.stream()
@@ -1044,6 +1229,13 @@ public class Tienda2026 implements Serializable {
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Examen 20/02">
+    
+    /**
+     * Muestra los clientes ordenados por el importe total gastado.
+     * 
+     * Utiliza streams para ordenar los clientes de mayor a menor
+     * según el gasto total calculado mediante el método totalCliente().
+     */
     private void uno() {
         System.out.println("\nCLIENTES ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar totalCliente())");
         clientes.values().stream()
@@ -1057,6 +1249,12 @@ public class Tienda2026 implements Serializable {
                 .forEach(c-> System.out.println(c + "\t\t Total GASTADO: " +  totalCliente(c))); */
     }
 
+    /**
+     * Calcula el importe total de los pedidos de un cliente.
+     * 
+     * @param c 
+     * @return 
+     */
     public double totalCliente(Cliente c) {
         return pedidos.stream().filter(p -> p.getClientePedido().equals(c))
                 .flatMap(p -> p.getCestaCompra().stream())
@@ -1064,11 +1262,20 @@ public class Tienda2026 implements Serializable {
 
     }
 
+    /**
+     * Muestra los artículos de una sección con existencias disponibles.
+     * 
+     * Filtra los artículos cuya sección con la introducida por teclado,
+     * comprueba que tengan stock y los ordena por precio de mayor a menor.
+     */
     private void dos() {
+        
+        //Pedimos la sección que queremos consultar
         System.out.println("\nSECCION A LISTAR: ");
         String seccion = sc.next();
         System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
 
+        //Filtramos por sección y por existencias, y ordenamos por precio descendente
         articulos.values().stream().filter(a -> a.getIdArticulo().startsWith(seccion) && a.getExistencias() > 0)
                 .sorted(Comparator.comparing(Articulo::getPvp).reversed())
                 .forEach(a -> System.out.println(a));
@@ -1091,17 +1298,28 @@ public class Tienda2026 implements Serializable {
          */
     }
 
+    /**
+     * Muestra los artículos que todavía no han sido vendidos.
+     * 
+     * Primero obtiene el conjunto de artículos vendidos en algún pedido y,
+     * a continuación, muestra aquellos artículos del catálogo que no aparecen
+     * en dicho conjunto.
+     */
     private void tres() {
         System.out.println("\nARTICULOS NO VENDIDOS");
+        
+        //Guardamos en un set los artículos que sí han sido vendidos
         Set<Articulo> vendidos = pedidos.stream()
                 .flatMap(p -> p.getCestaCompra().stream())
                 .map(LineaPedido::getArticulo)
                 .collect(Collectors.toSet());//Estamos guardando los datos en una nueva colección, en este caso el set no admite repeticiones
 
+        //Filtramos los artículos del catálogo que no están en el set de vendidos
         Set<Articulo> articulosNoVendidos = articulos.values().stream()
                 .filter(a -> !vendidos.contains(a))
                 .collect(Collectors.toSet());
 
+        //Mostramos los artículos no vendidos
         articulosNoVendidos.forEach(System.out::println);
 
         /*                                  SOLUCIÓN EDUARDO
@@ -1119,11 +1337,21 @@ public class Tienda2026 implements Serializable {
         noVendidos.stream().forEach(a -> System.out.println(a));*/
     }
 
+    
     //SE DEBE CORREGIR, CALCULAS MAL
+    /**
+     * Calcula el total facturado en los últimos cinco días
+     * 
+     * Filtra los pedidos cuya fecha sea posterior a la fecha límite calculada
+     * y suma el importe de todas sus líneas de pedido.
+     */
     private void cuatro() {
         System.out.println("\nTOTAL FACTURADO EN LOS ULTIMOS 5 DIAS:");
+        
+        //Calculamos la fecha límite
         LocalDate cincoD = LocalDate.now().minusDays(5);
 
+        //Sumamos el importe de los pedidos psoteriores a esa fecha
         double total5 = pedidos.stream().filter(p -> p.getFechaPedido().isAfter(cincoD))
                 .flatMap(p -> p.getCestaCompra().stream())
                 .mapToDouble(lp -> lp.getArticulo().getPvp() * lp.getUnidades()).sum();
@@ -1144,8 +1372,16 @@ public class Tienda2026 implements Serializable {
     }
 
     //EL DE EDU MEJOR
+    /**
+     * Calcula el importe medio de los pedidos de la tienda.
+     * 
+     * Obtiene el importe total de cada pedido mediante el método totalPedido()
+     * y calcula la media usando average().
+     */
     private void cinco() {
         System.out.println("\nIMPORTE MEDIO DE PEDIDOS DE LA TIENDA:");
+        
+        //Calculamos la media de los importes de todos los pedidos
         double medio = pedidos.stream()
                 .mapToDouble(this::totalPedido)
                 .average()
@@ -1163,7 +1399,16 @@ public class Tienda2026 implements Serializable {
 //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Colecciones-Almecenado">
+    
+    /**
+     * Realiza distintas operaciones avanzadas con colecciones.
+     * 
+     * Incluye ejemplos de ordenación, transformación a listas,
+     * uso de TreeMap, agrupaciones de datos y eliminación de elementos.
+     */
     private void coleccion() {
+        
+        //Guardamos los pedidos ordenados por fecha en una lista
         System.out.println("Pedidos ordenados por fecha de + reciente a - sin colección");
         List<Pedido> pedidosOrdenadosFecha //Pasamos de pedidos a esta lista
                 = pedidos.stream()
@@ -1175,6 +1420,7 @@ public class Tienda2026 implements Serializable {
         pedidosOrdenadosFecha.stream().forEach(p -> System.out.println(p.getIdPedido() + " [" + p.getFechaPedido() + "] "));
 
         //Tenemos que crear un mapa que tenga com clave el total del pedido y como value el pedido, coger pedido, calcular el total y pedir pedido como value
+        //Creamos un treemap con el total del pedido como clave
         System.out.println("\nVamos a listar pedidos en un mapa que tenga como clave el total del pedido y como value el pedido");
 
         //Si ponemos TREEMAP ordenamos la clave de - a + en el segundo bucle después de pedidosConTotales.
@@ -1201,6 +1447,8 @@ public class Tienda2026 implements Serializable {
             //forEach con claves, nos permiten acceder al value directamente
             System.out.println(pedidosConTotales.get(total).getIdPedido() + " - "+ total);//Mostramos la nueva colección
         }*/
+        
+        //Creamos un treemap de clientes con el total gastado como clave
         System.out.println("\nVamos a crear una colección de clientes en un mapa cuya clave sea el total y como value el cliente");
         TreeMap<Double, Cliente> clientesConTotales = new TreeMap();
         for (Cliente c : clientes.values()) { //Cogemos los values y los metemos en un TreeMap
@@ -1213,6 +1461,7 @@ public class Tienda2026 implements Serializable {
         }
 
         //Vamos hacer una lista para cada sección y llevamos los artículos correspondientes a sus respectivas listas
+        //Creamos una lista para cada sección de artículos
         System.out.println("\nCrear una colección List con los artículos de cada secciòn");
         List<Articulo> perifericos, almacenamiento, monitores, impresoras;
 
@@ -1252,7 +1501,7 @@ public class Tienda2026 implements Serializable {
         }
         System.out.println("\n" + perifericos + "\n" + almacenamiento + "\n" + impresoras + "\n" + monitores);
 
-        //Borrando elementos
+        //Borrando elementos; eliminamos los artículos de la sección impresora "3"
         articulos.values().removeIf(a -> a.getIdArticulo().startsWith("3")); //Borramos solo la condición, articulos de la sección impresoras
         System.out.println("\n");
         articulos.values().stream()
@@ -1283,8 +1532,17 @@ public class Tienda2026 implements Serializable {
 
 //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Archivos">
+    
+    /**
+     * Genera varios archivos de texto con información de la tienda y los lee.
+     * 
+     * El étodo crea archivos .txt y .csv con datos de clientes, artículos
+     * y pedidos, y después muesstra su contenido por pantalla para comprobar
+     * que la escritura se ha realizado correctamente.
+     */
     private void archivos() {
-
+        
+        //Creamos un archivo de texto con todos los clientes
         System.out.println("Vamos a almacenar los clientes en un archivo de texto");
         File f = new File("Clientes.txt");
 
@@ -1294,7 +1552,8 @@ public class Tienda2026 implements Serializable {
                 bw.write(c.toString());
                 bw.newLine();
             }
-
+            
+            //Mostramos información básica del archivo creado
             System.out.println("Nombre: " + f.getName());
             System.out.println("Ruta: " + f.getAbsolutePath());
             System.out.println("Tamaño en Bytes: " + f.length());
@@ -1303,7 +1562,8 @@ public class Tienda2026 implements Serializable {
         } catch (IOException e) {
             System.out.println("No se ha podido escribir en el fichero");
         }
-
+        
+        //Leemos el archivo de clientes para comprobar su contenido
         System.out.println("\nMostramos la lista de Clientes:");
         try (Scanner scf = new Scanner(new File("Clientes.txt"))) {
             while (scf.hasNextLine()) {
@@ -1313,6 +1573,8 @@ public class Tienda2026 implements Serializable {
             System.out.println("El archivo NO EXISTE");
 
         }
+        
+                        //REPETIMOS EL PROCESO PARA ARTÍCULOS Y PEDIDOS
 
         System.out.println("\nVamos almacenar los artículos en un archivo de texto");
         File g = new File("Articulos.txt");
@@ -1384,7 +1646,16 @@ public class Tienda2026 implements Serializable {
         System.out.println("");
     }
 
+    /**
+     * Lee archivos de clientes en formato de texto y CSV.
+     * 
+     * Primero muestra por pantalla el contenido del archivo clientes.txt y
+     * después reconstruye una nueva colección HashMap a parti del archivo
+     * clientes.cvs.
+     */
     private void leeCliente() {
+        
+        //Leemos línea a línea el archivo de texto plano
         System.out.println("Vamos a leer el archivo clientes.txt:");
 
         //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
@@ -1395,7 +1666,8 @@ public class Tienda2026 implements Serializable {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-
+        
+        //reconstruimos uan nueva colección de clientes a partir del CSV
         System.out.println("\n\n");
         //CREAR UNA NUEVA COLECCIÓN DE TIPO HASHMAP A PARTIR DEL ARCHIVO clientes.csv
         HashMap<String, Cliente> clientesAux = new HashMap();
@@ -1408,13 +1680,28 @@ public class Tienda2026 implements Serializable {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+        
+        //Mostramos la nueva colección reconstruida
         System.out.println("\nListado de Clientes del nuevo HashMap clientesAux\n");
         clientesAux.values().forEach(System.out::println);
         //Art de cada seccion a un archivo para cada sección dando una sola vuelta de articulos, 4 buffer writer separados por comas
     }
 
+    /**
+     * Guarda los artículos en cuatro archivos CSV separados por sección.
+     * 
+     * Crea un archivo distinto para periféricos, almacenamiento, impresoras
+     * y monitores. Después lee esos archivos t muestra su contenido.
+     */
     private void gauardaArtPorSeccion() {
-        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv")); BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv")); BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
+        
+        //Abrimos cuatro canales de escrituram, uno por cada sección, no hace falta poner la ruta directa del archivo 
+        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); 
+             BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv")); 
+             BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv")); 
+             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
+            
+            //Recorremos todos los artículos y los enviamos al archivo de su sección
             for (Articulo a : articulos.values()) {
                 switch (a.getIdArticulo().charAt(0)) {
                     case '1':
@@ -1439,6 +1726,7 @@ public class Tienda2026 implements Serializable {
             }
             System.out.println("Archivos creados correctamente");
         } catch (Exception e) {
+            //Si hay un error, eliminamos los archivos creados de forma incompleta
             System.out.println("No se han podido crear los archivos");
             File f = new File("perifericos.csv");//Borramos el archivo solo se ejecuta si hay algún problema en el try con la conexxión con esos archivos
             f.delete();
@@ -1449,6 +1737,8 @@ public class Tienda2026 implements Serializable {
             f = new File("monitores.csv");
             f.delete();
         }
+        
+        //Leemos lso cuatro archivos creados para comprobar su contenido
         System.out.println("\nAhora vamos a leer cada archivo de sección");
 
         //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
@@ -1478,12 +1768,26 @@ public class Tienda2026 implements Serializable {
         }
     }
 
+    /**
+     * Lee los archivos CVS de artículos por sección y reconstruye un HashMap.
+     * 
+     * Además de mostrar por pantalla el contenido de cada archivo, este método
+     * vuleve a crear una colección auxiliar de artículos a partir de los datos
+     * leídos desde texto.
+     */
     private void leeArticulosPorSeccion() {
+        
+        //Colección auxiliar deonde iremos guradando los artículos reconstruidos
         HashMap<String, Articulo> articulosAux = new HashMap();
         String lineaArchivo; //para ir leyendo cada línea en los archivos
         String[] atributos; //Para "romper" cada línea en los atributos separados por ,
 
-        try (Scanner scPerifericos = new Scanner(new File("perifericos.csv")); Scanner scAlmacenamiento = new Scanner(new File("almacenamiento.csv")); Scanner scImpresoras = new Scanner(new File("impresoras.csv")); Scanner scMonitores = new Scanner(new File("monitores.csv"))) {
+        try (Scanner scPerifericos = new Scanner(new File("perifericos.csv")); 
+             Scanner scAlmacenamiento = new Scanner(new File("almacenamiento.csv")); 
+             Scanner scImpresoras = new Scanner(new File("impresoras.csv")); 
+             Scanner scMonitores = new Scanner(new File("monitores.csv"))) {
+            
+            //Leemos cada arcivo línea a línea, mostramos su contenido y creamos los objetos
             /* ADEMÁS DE MOSTRAR POR PANTALLA EL CONTENIDO DE LOS 4 ARCHIVOS CREADOS
             APROVECHAMOS PARA RECONSTRUIR UN HashMap CON LOS ARTICULOS DE LOS 4 ARCHIVOS */
 
@@ -1535,9 +1839,16 @@ public class Tienda2026 implements Serializable {
         }
     }
 
+    /**
+     * Exporta las colecciones principales de la tienda a archivos binarios.
+     * 
+     * Serializa artículos, clientes y pedidos en tres archivos .dat distintos
+     * para poder recuperarlos más adelante mediante ObjectInpuntStream.
+     */
     public void exportarColecciones() {
 
         //Para poder serializarlos debemos añadir implements Serilizable en las clases de las colecciones de que queremos guardar
+        //Abrimos un flujo binario distinto para cada colección
         try (ObjectOutputStream oosArticulos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\articulos.dat"));//OOS= ObjectOutputStream
                 ObjectOutputStream oosClientes = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.dat"));//1
                 ObjectOutputStream oosPedidos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\pedidos.dat"))) {
@@ -1548,10 +1859,12 @@ public class Tienda2026 implements Serializable {
                 oosArticulos.writeObject(a);
             }
 
+            //Escribimos todos los clientes en su archivo binario
             for (Cliente c : clientes.values()) {
                 oosClientes.writeObject(c);
             }
 
+            //Escribimos todos los pedidos en su archivo binario
             for (Pedido p : pedidos) {
                 oosPedidos.writeObject(p);
             }
@@ -1559,6 +1872,7 @@ public class Tienda2026 implements Serializable {
 
             //IOException para cualquier cosa rara.
         } catch (IOException ex) {
+            //Si falla la exportación, eliminamos los archivos para no dejar copias corruptas
             System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
             File f = new File("articulos.dat");
             f.delete();
@@ -1569,12 +1883,20 @@ public class Tienda2026 implements Serializable {
         }
     }
 
+    /**
+     * Importa las colecciones principales desde archivos binarios
+     * 
+     * Lee artículos, clientes y pedidos desde sus respectivos archivos .dat y
+     *  reconstruye las colecciones en memoria. Cada archivo se lee por separado
+     * para controlar correctamente la EOFException.
+     */
     public void importarColecciones() {
         /* HAY QUE LEER DESDE CADA ARCHIVO POR SEPARADO PORQUE SI INTENTAMOS METERLO TODO EN EL MISMO
         TRY-CATCH AL LLEGAR AL FINAL DEL PRIMER ARCHIVO SE PRODUCE LA EOFException Y SÓLO SE 
         LEERÍA BIEN EL PRIMER ARCHIVO, EL RESTO NO */
 
         // A la hora de la lectura hay que hacerlo archivo a archivo, es decir un try catch para cada archivo con su respectivo bucle
+        //Leemos el archivo de artículos y reconstruimos el HashMap artículos
         try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\articulos.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisArticulos.readObject()) != null) {
@@ -1591,6 +1913,7 @@ public class Tienda2026 implements Serializable {
             System.out.println(e.toString());
         }
 
+                    //REPETIMOS EL PROCESO PARA CLIENTES Y PEDIDOS
         try (ObjectInputStream oisClientes = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.dat"))) {
             Cliente c;
             while ((c = (Cliente) oisClientes.readObject()) != null) {
@@ -1626,13 +1949,21 @@ public class Tienda2026 implements Serializable {
 
     //VAMOS A CREAR POSIBLES EJEMPLOS DE ARCHIVOS SERIALIZABLES PARA EL EXAMEN
     //Guardar en 4 archivos cada una de las secciones en .dat esto no se ejecuta si no salimos del menú, hasta que no salga del menú no se exportan los archivos ni pide la sección por teclado
+    /**
+     * Exporta los artículo de cada sección a archivos binarios indenpendientes.
+     * 
+     * Crea un archivo .dat para cada sección de artículos y, al finalizar,
+     * permite comprobar por pantalla el contenido de uno de esos archivos.
+     */
     public void exportarSeccion() {
 
+        //Abrimos cuatro flujos de salida, uno para cada sección
         try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"));//OOS= ObjectOutputStream, solo hace falta poner el nombre del archivo
                 ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.dat")); 
                 ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.dat"));
                 ObjectOutputStream oosMonitores = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.dat"))) {
 
+            //Recorremos todos los artículos y los enviamos al archivo de su sección
             //Nos conectamos objeto a objeto y los empaquetamos en 3 archivos de distintos, accede a la referencia en la memoria y los empaqueta.
             //En el examen solo tendremos que agregar nuevos archivos siguiendo los criterios de los ejercicios que nos harán cambiar los bucles por dentro para acceder a información más específica. ejemplo archivo con clientes con pedidos superiores a 100 euros
             for (Articulo a : articulos.values()) {
@@ -1662,6 +1993,7 @@ public class Tienda2026 implements Serializable {
 
             //IOException para cualquier cosa rara.
         } catch (IOException ex) {
+            //Si algo falla, borramos los archivos generados
             System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
             File f = new File("periferico.dat");
             f.delete();
@@ -1679,6 +2011,7 @@ public class Tienda2026 implements Serializable {
         */
         }
         
+        //Pedimos una sección por teclado y leemos su archivo para comprobarlo
         System.out.println("Teclea la Seccion de los articulos CUYO ARCHIVO QUIERES COMPROBAR:");
         char seccion = sc.next().charAt(0);
         String nombreArchivo = null;
@@ -1711,45 +2044,63 @@ public class Tienda2026 implements Serializable {
     }
     
     //No se ejecuta hasta que salgamos del menú
+    /**
+     * Lee por pantalla el archivo binario correspondiente a una sección.
+     * 
+     * Solicita al usuario la sección deseada, localiza el archivo .dat asociado
+     * y muestra todos los artículos almacenados en él.
+     */
     public void leerSeccion() {
-    System.out.println("Teclea la Seccion de los articulos CUYO ARCHIVO QUIERES COMPROBAR:");
-    String seccion = sc.next();
+        
+        //Pedimos la sección cuyo archivo queremos consultar
+        System.out.println("Teclea la Seccion de los articulos CUYO ARCHIVO QUIERES COMPROBAR:");
+        String seccion = sc.next();
 
-    String nombreArchivo = "";
+        //Asociamos la sección al nombre del archivo
+        String nombreArchivo = "";
 
-    switch (seccion) {
-        case "1":
-            nombreArchivo = "perifericos.dat";
-            break;
-        case "2":
-            nombreArchivo = "almacenamiento.dat";
-            break;
-        case "3":
-            nombreArchivo = "impresoras.dat";
-            break;
-        case "4":
-            nombreArchivo = "monitores.dat";
-            break;
-        default:
-            System.out.println("Sección no válida");
-            return;
-    }
-
-    try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
-
-        while (true) {
-            Articulo a = (Articulo) ois.readObject();
-            System.out.println(a);
+        switch (seccion) {
+            case "1":
+                nombreArchivo = "perifericos.dat";
+                break;
+            case "2":
+                nombreArchivo = "almacenamiento.dat";
+                break;
+            case "3":
+                nombreArchivo = "impresoras.dat";
+                break;
+            case "4":
+                nombreArchivo = "monitores.dat";
+                break;
+            default:
+                System.out.println("Sección no válida");
+                return;
         }
 
-    } catch (EOFException e) {
-        System.out.println("Fin del archivo");
-    } catch (Exception e) {
-        System.out.println("Error al leer el archivo");
-    }
+        //Leemos secuencialmente todos los artículos del archivo elegido
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
+
+            while (true) {
+                Articulo a = (Articulo) ois.readObject();
+                System.out.println(a);
+            }
+
+        } catch (EOFException e) {
+            System.out.println("Fin del archivo");
+        } catch (Exception e) {
+            System.out.println("Error al leer el archivo");
+        }
 }
     
+    /**
+     * Importa los artículos de todas las secciones desde archivos binarios.
+     * 
+     * Lee los archivos .dat de periféricos, almacenamiento, impresoras y
+     * monitores, y reconstruye el HashMap artículos en memoria.
+     */
     public void importarSeccion(){
+        
+        //Importamos los artículos de la sección periféricos
         try (ObjectInputStream oisPerifericos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisPerifericos.readObject()) != null) {
@@ -1766,6 +2117,7 @@ public class Tienda2026 implements Serializable {
             System.out.println(e.toString());
         }
 
+                    //REPETIMOS EL PROCESO PARA ALMACENAMIENTO, IMPRESORAS Y MONITORES
         try (ObjectInputStream oisAlmacenamiento = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisAlmacenamiento.readObject()) != null) {
@@ -1848,5 +2200,232 @@ public class Tienda2026 implements Serializable {
         } while (opcion != 9);
     }*/
 
+//</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Examen 19/03/26">
+    /**
+     * Guarda los clientes ordenados alfabéticamente en un archivo de texto.
+     * 
+     * Utiliza streams para ordenar los clientes por nombre antes de escribirlos
+     * en un archivo .txt, y después uestra el contenido del archivo por pantalla.
+     */
+    private void uno1(){
+        //Creamos el archivo de salida
+        System.out.println("Vamos a almacenar los clientes alfabéticamente en un archivo de texto");
+        File f = new File("clientesOrdenados.txt");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
+            //Ordenamos los clientes alfabétcamente ignorando mayúsculas/minúsculas
+            clientes.values().stream().sorted(Comparator.comparing(c->c.getNombre().toLowerCase())).forEach(c-> {
+                try {bw.write(c.toString());
+                bw.newLine();
+                    
+                } catch (IOException e) {
+                    System.out.println("Error escirbiendo cliente");
+                }
+            });
+            System.out.println("Archivo creado correctamente");
+
+        } catch (IOException e) {
+            System.out.println("No se ha podido escribir en el fichero");
+        }
+
+        //Leemos el archivo para comprobar su contenido
+        System.out.println("\nMostramos la lista de Clientes:");
+        try (Scanner scf = new Scanner(new File("clientesOrdenados.txt"))) {
+            while (scf.hasNextLine()) {
+                System.out.println(scf.nextLine());
+            }
+        } catch (FileNotFoundException E) {
+            System.out.println("El archivo NO EXISTE");
+
+        }
+
+    }
+    
+    /**
+     * Genera archivos binarios de pedidos separados por mes.
+     * 
+     * Recorre todos los pedidos de la tienda y guarda cada uno en el archivo
+     * correspondiente a su mes de realización.
+     */
+    private void dos2(){
+        System.out.println("Vamos a crear archivos de los pedidos de cada mes de la tienda");
+       
+        try (ObjectOutputStream oosEnero = new ObjectOutputStream(new FileOutputStream("pedidosEnero2026.dat"));//coment1
+             ObjectOutputStream oosFebrero = new ObjectOutputStream(new FileOutputStream("pedidosFebrero2026.dat"));//comnt2
+             ObjectOutputStream oosMarzo = new ObjectOutputStream(new FileOutputStream("pedidosMarzo2026.dat"));) {
+            
+            //Recorremos todos los pedidos y los clasificamos por mes
+            for (Pedido p : pedidos) {
+                int mes= p.getFechaPedido().getMonthValue();
+                switch (mes) {
+                    case 1:
+                        oosEnero.writeObject(p);
+                        break;
+                        
+                    case 2:
+                        oosFebrero.writeObject(p);
+                        break;
+                    
+                    case 3:
+                        oosMarzo.writeObject(p);
+                        break;
+                }
+            }
+            System.out.println("Archivo creado correctamente");
+
+        } catch (IOException e) {
+            //Si falla la escritura, borramos los archivos generados
+                        System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
+            File f = new File("pedidosEnero2026.dat");
+            f.delete();
+            f = new File("pedidosFebrero2026.dat");
+            f.delete();
+            f = new File("pedidosMarzo2026.dat");
+            f.delete();            
+        }
+        
+/*        System.out.println("Teclea el MES CUYO ARCHIVO QUIERES COMPROBAR:"+ "\n1=Enero" + "\n2=Febrero" + "\n3=Febrero");
+        char seccion = sc.next().charAt(0);
+        String nombreArchivo = null;
+        switch (seccion) {
+            case '1':
+                nombreArchivo = "pedidosEnero2026.dat";
+                break;
+            case '2':
+                nombreArchivo = "pedidosFebrero2026.dat";
+                break;
+            case '3':
+                nombreArchivo = "pedidosMarzo2026.dat";
+                break;
+        }
+        Articulo a;
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
+            while ((a = (Articulo) oisArticulos.readObject()) != null) {
+                System.out.println(a);
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println(e.toString());
+        } catch (EOFException e) {
+
+        } catch (ClassNotFoundException | IOException e) {
+            System.out.println(e.toString());
+        }*/
+    }
+    
+    /**
+     * Lee varios archivos binarios de pedidos mensuales y reconstruye una lista.
+     * 
+     * Importa los pedidos almacenados por meses en archivos .dat y los reúne en
+     * un ArrayList auxiliar para mostrarlos posteriormente por pantalla.
+     */
+    public void tres3() {
+        //Lista auxiliar donde reunimos todos los pedidos leídos de los archivos
+        ArrayList<Pedido> pedidosPorMeses = new ArrayList<>();
+
+        //Array todos los archivos y leemos su contenido
+        String[] archivos = {
+            "pedidosEnero2026.dat",
+            "pedidosFebrero2026.dat",
+            "pedidosMarzo2026.dat"};
+
+        //Recorremos todos los archivos y leemos su contenido
+        for (String archivo : archivos) {
+            try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
+                while (true) {
+                    Pedido p = (Pedido) ois.readObject();
+                    pedidosPorMeses.add(p);
+                }
+         
+            } catch (EOFException e) {
+                System.out.println("Finalizada lectura pedidos" + archivo);
+            } catch (Exception ex) {
+                System.out.println("Error leyendo: " + archivo);
+            }
+
+            
+        }
+            //Mostramos la nueva lista conjunta de pedidos
+            System.out.println("\nLISTADO ARRAYLIST pedidosPorMeses");
+            for (Pedido p : pedidosPorMeses) {
+                System.out.println(p + " - Total:" + totalPedido(p));
+                
+            } 
+    }
+    
+    /**
+     * Crea un archivo de texto por cada cliente con sus pedidos.
+     * 
+     * Para cada cliente se genera un archivo individual con sus pedidos y el
+     * importe de cada uno. Si un cliente no tiene pedidos, su archivo se elimina.
+     */
+    public void cuatro4(){
+        System.out.println("Vamos a crear archivos de pedidos por cliente");
+        
+        //Recorremos todos los clientes de la tienda
+        for (Cliente c : clientes.values()) {
+            boolean tienePedidos= false;
+            
+            //Creamos el archivo asociado al cliente actual
+            try (BufferedWriter bw= new BufferedWriter(new FileWriter("pedidos_"+ c.getNombre().toLowerCase() + ".txt"))){
+                
+                //Escribimos únicamente los pedidos de ese cliente
+                for (Pedido p : pedidos) {
+                    if (p.getClientePedido().getIdCliente().equalsIgnoreCase(c.getIdCliente())) {
+                        tienePedidos=true;
+                        bw.write(p.getIdPedido() + "/" + p.getFechaPedido() + "," + totalPedido(p));
+                        bw.newLine();
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("Error al escribir el archivo de " + c.getNombre());
+            }
+            
+            //Si el cliente no tiene pedidos, borramos el archivo vacío
+            if (!tienePedidos) {
+                File f=new File("pedidos_"+ c.getNombre().toLowerCase() + ".txt");
+                f.delete();
+            }
+        }
+        System.out.println("Archivos creados correctamente");
+    }
+    
+    /**
+     * Calcula el total gastado por un cliente a partit de su archivo de pedidos.
+     * 
+     * Solicita el nombre del cliente , lee su archivo de texto y suma
+     * los importes de todos los pedidos almacenados en él.
+     */
+    public void cinco5(){
+        sc.nextLine();//Limpiamos el buffer y pedimos el nombre del cliente
+        System.out.println("Introduce el nombre del cliente (Ana, Edu, Juan)");
+        String nombre= sc.nextLine().trim().toLowerCase();
+        
+        //Construimos el nombre del archivo del cliente
+        String nombreArchivo= "pedidos_" + nombre + ".txt";
+        double totalGastado=0;
+        
+        try (Scanner scf=new Scanner(new File(nombreArchivo))){
+            //Leemos el archivo línea a línea y vamos sumando de cada pedido
+            while (sc.hasNextLine()) {
+                String linea = scf.nextLine();
+                
+                //Separamos los datos de cada línea
+                String[] partes = linea.split(",");
+                
+                //Mostramos el total acumulado del cliente
+                double totalPedido = Double.parseDouble(partes[2].trim());
+                totalGastado+=totalPedido;
+                
+            }
+            
+            //Mostramos el total acumulado del cliente
+            System.out.println("TOTAL GASTADO POR "+ nombre.toUpperCase()+ ": " + totalGastado + "euros");
+        } catch (FileNotFoundException e) {
+            System.out.println("El cliente no existe o no tiene pedidos");
+        }
+    }
+    
 //</editor-fold>
 }
