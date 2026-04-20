@@ -15,13 +15,24 @@ public class Articulo implements Serializable{
     private String descripcion;
     private int existencias;
     private double pvp;
+    private boolean activo;
 
     public Articulo(String idArticulo, String descripcion, int existencias, double pvp) {
         this.idArticulo = idArticulo;
         this.descripcion = descripcion;
         this.existencias = existencias;
         this.pvp = pvp;
+        this.activo= true;
     }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+    
 
     public String getIdArticulo() {
         return idArticulo;
@@ -57,7 +68,7 @@ public class Articulo implements Serializable{
 
     @Override
     public String toString() {
-        return idArticulo + " / " + descripcion + " / " + existencias + " uds / " + pvp + " euros";
+        return idArticulo + " / " + descripcion + " / " + existencias + " uds / " + pvp + " euros /" + (activo ? "ACTIVO" : "INACTIVO");
     }
 
 }
