@@ -80,7 +80,7 @@ public class Tienda2026 implements Serializable {
         //t.gauardaArtPorSeccion();
         //t.leeArticulosPorSeccion();
         //t.importarColecciones(); hay que descomentarlos luego
-        //t.menu(); hay que descomentarlos luego
+        t.menu(); //hay que descomentarlos luego
         //t.exportarColecciones(); hay que descomentarlos luego
         //t.importarSeccion();
         //t.leerSecciones();
@@ -98,10 +98,10 @@ public class Tienda2026 implements Serializable {
         }
          */
         //t.uno1();
-        t.dos2();
-        t.tres3();
-        t.cuatro4();
-        t.cinco5();
+        //t.dos2();
+        //t.tres3();
+        //t.cuatro4();
+        //t.cinco5();
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
@@ -410,6 +410,9 @@ public class Tienda2026 implements Serializable {
      * Listado de colecciones con for each.
      */
     public void listarColecciones() {
+                for (Articulo a : articulos.values()) {
+            System.out.println(a);
+        }
         System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
         for (Cliente c : clientes.values()) {
             System.out.println(c);
@@ -417,6 +420,7 @@ public class Tienda2026 implements Serializable {
         }
         System.out.println("");
 
+        //Mostramos todos los artículos de la tienda, activos e inactivods
         System.out.println("Vamos a mostrar los articulos de la tienda: ");
         for (Articulo a : articulos.values()) {
             System.out.println(a);
@@ -474,6 +478,7 @@ public class Tienda2026 implements Serializable {
         //YA HEMOS VALIDADO LOS ATRIBUTOS, AHORA AÑADIMOS EL NUEVO ARTICULO A LA COLECCIÓN
         Articulo a = new Articulo(idArticulo, descripción,
                 Integer.parseInt(existencias), Double.parseDouble(pvp));//DEBEMOS PONER EL Integer.parseInt y el Double para convertir la validación de los Strings al dato que de verdad queremos almacenar
+        
         articulos.put(idArticulo, a);
         System.out.println("SE HA AÑADIDO EL NUEVO ARTICULO CORRECTAMENTE");
     }
@@ -488,19 +493,130 @@ public class Tienda2026 implements Serializable {
     private void bajaArticulo() {
         /*Solo tiene sentido guardar la información de dichos artículos ya sean activos=se venden, inactivos=no se venden, porque nos intereza tener guardados los artículos que he vendio anteriormente
         más que borar esos datos, los desactivo y los almaceno en un histórico para estén accesibles en el caso de ser necesarios, aunque no estén en el catálogo de ventas actual*/
+        
+        // Pedimos el identificador del artículo
+        System.out.println("ID DEL ARTICULO A DAR DE BAJA:");
+        String idArticulo = sc.next();
+
+        // Comprobamos si el artículo existe
+        if (!articulos.containsKey(idArticulo)) {
+            System.out.println("Ese artículo no existe en la tienda");
+        } else {
+
+            Articulo a = articulos.get(idArticulo);
+
+            // Si ya está inactivo, avisamos
+            if (!a.isActivo()) {
+                System.out.println("Ese artículo ya estaba dado de baja");
+            } else {
+
+                // Si tiene stock, pedimos confirmación antes de darlo de baja
+                if (a.getExistencias() > 0) {
+                    System.out.println("El artículo todavía tiene stock disponible.");
+                    System.out.println("¿Seguro que quieres darlo de baja? (SI/NO)");
+                    String respuesta = sc.next();
+
+                    if (!respuesta.equalsIgnoreCase("SI")) {
+                        System.out.println("Operación cancelada");
+                        return;
+                    }
+                }
+
+                // Marcamos el artículo como inactivo
+                a.setActivo(false);
+                System.out.println("Artículo dado de baja correctamente");
+            }
+        }
+        
+        
+        
+        
+        /*      ESTE MÉTODO BORRA DEFINITIVAMENTE UN ARTÍCULO PARA TENER UN CONTROL DE LA TIENDA NO ES MUY RECOMENDADO
+        PARA PODER CREAR UNA BAJA LÓGICA ES NECESARIO AGREGAR NUEVOS ATRIBUTOS EN LA CLASE ARTÍCULO QUE NOS PERMITA SABER 
+        QUÉ ARTÍCULOS ESTÁN ACTIVOS/DISPONIBLES
+        //Primero pedimos el id del artículo que queremos dar de baja
+        System.out.print("\nTeclea el id del ARTICULO a dar de baja (primeros dígitos del articulo; x-y): ");
+        String idArticulo = sc.next();
+        
+        //Comprobamos si el artículo existe en la tienda
+        if (!articulos.containsKey(idArticulo)){
+            System.out.println("Este artículo existe en la tienda");
+        } else{
+            
+            boolean apareceEnPedidos=false;
+            
+            //Recorremos todos los pedidos de la tienda
+            for (Pedido p : pedidos) {
+                //Recorremos todas las líneas de cada pedido
+                for (LineaPedido l : p.getCestaCompra()) {
+                    //Si el artículo aparece en algún pedido, no debemos borrarlo
+                    if (l.getArticulo().getIdArticulo().equalsIgnoreCase(idArticulo)) {
+                        apareceEnPedidos= true;
+                        break;
+                    }
+                }
+                //Si ya apareció en un pedido, no hace falta seguir buscando
+                if (apareceEnPedidos){
+                    break;
+                }
+            }
+            //Si aparece en pedidos, no lo eliminamos
+            if (apareceEnPedidos){
+                System.out.println("No se puede dar de baja el artículo porque ya aparece en pedidos");
+            } else{
+                articulos.remove(idArticulo);
+                System.out.println("Articul eliminado correctamente");
+            }
+        }*/
     }
     
     /**
      * Reposición de existencias de un artículo de la tienda.
      * 
-     * Este método debería pedir por teclado el identificador del artículo y
-     *  la cantidad de unidades a reponer, para después actualizar el stock
-     * almacenado en el HashMap de artículos.
+     * El método solicita el identificador del artículo y el número de unidades
+     * a añadir. Si tras la reposición el stock es mayor que 0, el artículo
+     * se marca automáticamente como activo.
      */
     private void reposicionArticulo() {
-        //Aquí deberíamos pedir el id del artículo a reponer
-        //Después comprobar que exista en la tienda
-        //Finalmente sumar las nuevas unidades a las existencias actuales
+        /*  -Aquí deberíamos pedir el id del artículo a reponer
+            -Después comprobar que exista en la tienda
+            -Finalmente sumar las nuevas unidades a las existencias actuales*/
+        
+        //Pedimos el id del artículo a reponer
+        System.out.println("ID del artículo a reponer:");
+        String idArticulo= sc.next();
+        
+        //Comprobamos si el artículo eiste en la tienda
+        if (!articulos.containsKey(idArticulo)) {
+            System.out.println("Este artículo no existe en la tienda");
+        }   else{
+            Articulo a=articulos.get(idArticulo);
+            
+            //Si el artículo está inactivo, preguntamos si se qeuire reactivar
+            if (!a.isActivo()) {
+                System.out.println("Este artículo está dado de baja.");
+                System.out.println("¿Deseas reactivarlo y reponer stock? (SI/NO)");
+                String respuesta=sc.next();
+                
+                if (!respuesta.equalsIgnoreCase("SI")) {
+                    System.out.println("Operación cancelada");
+                    return;
+                }
+                
+                a.setActivo(true);
+            }
+            
+            System.out.println("UNIDADES a añadir:");
+            int unidades =sc.nextInt();
+            
+            a.setExistencias(a.getExistencias()+unidades);
+            
+            //Reactivamos el artículo cuando vuelve a tener stock= a.getExistencias()>0
+            if (a.getExistencias()>0) {
+                a.setActivo(true);
+            }
+            System.out.println("Reposición realizada correctamente");
+        }
     }
 
     /**
@@ -546,7 +662,7 @@ public class Tienda2026 implements Serializable {
         String[] Secciones={"", "PERIFERICOS", "ALMACENAMIENTO", "MONITORES", "IMPRESORAS"};*/
         System.out.println("SECCION A LISTAR: ");
         String seccion = sc.next();
-        System.out.println("ARTICULOS DE LA SECCION" + " " + seccion);
+        System.out.println("ARTICULOS ACTIVOS E INACTIVOS DE LA SECCION" + " " + seccion);
 
         /*
         SOLUCIÓN EDU
@@ -557,35 +673,74 @@ public class Tienda2026 implements Serializable {
         }*/
         //Filtramos los artículos cuya sección coincide con la introducida
         articulos.values().stream()
+                .filter(a->a.isActivo())
                 .filter(a -> a.getIdArticulo().startsWith(seccion))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo))
                 .forEach(a -> System.out.println(a));
 
         //EJERCICO DOS: MOSTRAMOS LOS ARTÍCULOS AGRUPADOS POR CADA SECCIÓN
-        System.out.println("\nPERIFERICOS");
+        System.out.println("\nPERIFERICOS ACTIVOS");
         articulos.values().stream()
+                .filter(a->a.isActivo())
                 .filter(a -> a.getIdArticulo().startsWith("1"))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
-        System.out.println("\nALMACENAMIENTO");
+        System.out.println("\nALMACENAMIENTO ACTIVOS");
         articulos.values().stream()
+                .filter(a->a.isActivo())
                 .filter(a -> a.getIdArticulo().startsWith("2"))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
-        System.out.println("\nIMPRESORAS");
+        System.out.println("\nIMPRESORAS ACTIVOS");
         articulos.values().stream()
+                .filter(a->a.isActivo())
                 .filter(a -> a.getIdArticulo().startsWith("3"))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
-        System.out.println("\nMONITORES");
+        System.out.println("\nMONITORES ACTIVOS");
         articulos.values().stream()
+                .filter(a->a.isActivo())
                 .filter(a -> a.getIdArticulo().startsWith("4"))
                 .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
 
         //EJERCICO CUATRO: ORDENAMOS LOS ARTÍCULOS POR NÚMERO DE UNIDADES VENDIDAS
-        System.out.println("\nLISTADO DE ARTICULOS - UNIDADES VENDIDAS:");
+        System.out.println("\nLISTADO DE ARTICULOS ACTIVOS- UNIDADES VENDIDAS:");
         articulos.values().stream()
+                .filter(a->a.isActivo())
                 .sorted(Comparator.comparing(a -> udsVendidas((Articulo) a)).reversed())
                 .forEach(a -> System.out.println(
                 a.getIdArticulo() + " - "
                 + a.getDescripcion() + " - vendidas " + udsVendidas(a)));
+        
+        //EMPEZAR LISTADO DE ARTICULOS DADOS DE BAJA, INCLUYE ARTICULOS ACTIVOS Y NO ACTIVOS
+                System.out.println("\nPERIFERICOS ACTIVOS E INACTIVOS");
+        articulos.values().stream()
+                
+                .filter(a -> a.getIdArticulo().startsWith("1"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+        System.out.println("\nALMACENAMIENTO ACTIVOS E INACTIVOS");
+        articulos.values().stream()
+                
+                .filter(a -> a.getIdArticulo().startsWith("2"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+        System.out.println("\nIMPRESORAS ACTIVOS E INACTIVOS");
+        articulos.values().stream()
+                
+                .filter(a -> a.getIdArticulo().startsWith("3"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+        System.out.println("\nMONITORES ACTIVOS E INACTIVOS");
+        articulos.values().stream()
+                
+                .filter(a -> a.getIdArticulo().startsWith("4"))
+                .sorted(Comparator.comparing(Articulo::getIdArticulo)).forEach(a -> System.out.println(a));
+
+        //EJERCICO CUATRO: ORDENAMOS LOS ARTÍCULOS POR NÚMERO DE UNIDADES VENDIDAS
+        System.out.println("\nLISTADO DE ARTICULOS ACTIVOS E INACTIVOS- UNIDADES VENDIDAS:");
+        articulos.values().stream()
+                
+                .sorted(Comparator.comparing(a -> udsVendidas((Articulo) a)).reversed())
+                .forEach(a -> System.out.println(
+                a.getIdArticulo() + " - "
+                + a.getDescripcion() + " - vendidas " + udsVendidas(a)));
+        
+        
     }
 
     //EVOLUCIÓN DE PROGRAMACIÓN TRADICIONAL A FUNCIONAL PARA CALCULAR LAS UNIDADES VENDIDAS
@@ -799,6 +954,7 @@ public class Tienda2026 implements Serializable {
         //Limpiamos el Buffer y pedimos el cliente por teclado
         sc.nextLine();
         String idCliente;
+        
         do {
             System.out.println("DNI (id) CLIENTE:");
             idCliente = sc.next().toUpperCase();
@@ -821,6 +977,22 @@ public class Tienda2026 implements Serializable {
 
         //Seguimos pidiendo artículos hasta que el usuario escriba FIN
         while (!idArticulo.equalsIgnoreCase("FIN")) {
+            
+            //Comprobamos si el artículo existe en la tienda
+            if (!articulos.containsKey(idArticulo)) {
+                System.out.println("Este artículo no existe en la tienda");
+                System.out.println("\nTeclee el ID del artículo deseado (FIN para teminar la compra)");
+            }
+            
+            //Comprobamos que e artículo esté activo
+            if (!articulos.get(idArticulo).isActivo()) {
+                System.out.println("Ese artículo está dado de baja y no se puede vender");
+                System.out.println("\nTeclee el ID del artículo deseado (FIN para terminar la compra)");
+                idArticulo = sc.next();
+                continue;
+            }
+
+
             //Es mejor utilizar un while en lugar de un do while como en el commit anterior, con el do while estamos obligando a la persona a seguir con los atributos aunque no quiera comprar, se ve abajo del todo con do while
             System.out.print("\nTeclee las unidades deseadas: ");
             unidades = sc.nextInt();//Debemos valorar las execepciones llamando al método stock
@@ -844,7 +1016,9 @@ public class Tienda2026 implements Serializable {
                 
                 //Si el cliente acepta, añadimos todas las unidades disponibles
                 if (respuesta.equalsIgnoreCase("SI")) {
-                    cestaCompra.add(new LineaPedido(articulos.get(idArticulo), articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
+                    cestaCompra.add(new LineaPedido(
+                            articulos.get(idArticulo), 
+                            articulos.get(idArticulo).getExistencias()));//Le estamos dando las unidades que hay
                     //articulos.get(idArticulo).setExistencias(0);
                 }
             }
@@ -875,9 +1049,35 @@ public class Tienda2026 implements Serializable {
                 
                 //Restamos del stock las unidades compradas
                 for (LineaPedido l : cestaCompra) {
+                    l.getArticulo().setExistencias(
+                            l.getArticulo().getExistencias() - l.getUnidades());
+
+                    // Si el stock llega a 0, damos de baja lógica el artículo
+                    if (l.getArticulo().getExistencias() == 0) {
+                        l.getArticulo().setActivo(false);
+                    }
+                }
+                
+                /*Tras comprobar el stock hay 2 vías que podemos seguir:
+                Opción A; activo= "forma parte del catálogo", por lo tanto:
+                    -Un articulo puede estar activo y con stock=0
+                    -El artículo sale como agotado
+                    -No lo damos de baja automáticamente
+                Dejamos el forEach de arriba sin colocar una condición
+                
+                Opción B; activo="Está disponible para la venta", por lo tanto cuando el stock llega a 0:
+                    -Artículo pasa a estar inactivo
+                    -Lo damos de baja automáticamente
+                Agregamos una condición if al forEach para que automatice la baja del artículo:
+                        // Si el stock llega a 0, damos de baja lógica el artículo
+                        if (l.getArticulo().getExistencias() == 0) {
+                            l.getArticulo().setActivo(false);
+                        }
+                */
+                /*for (LineaPedido l : cestaCompra) {
                     articulos.get(l.getArticulo())
                             .setExistencias(articulos.get(l.getArticulo()).getExistencias() - l.getUnidades());
-                }
+                }*/
             }
             //pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente), LocalDate.now(), cestaCompra));
         }
@@ -953,6 +1153,12 @@ public class Tienda2026 implements Serializable {
         //Lista todos los artículos con streams
         System.out.println("Vamos a listar articulos con streams");
         articulos.values().stream()
+                //.filter(a->a.isActivo())Muestra solo los activos
+                .forEach(a -> System.out.println(a));
+        
+        System.out.println("Vamos a listar articulos ACTIVOS con streams");
+        articulos.values().stream()
+                .filter(a->a.isActivo())
                 .forEach(a -> System.out.println(a));
         
         //Lista todos los clientes con streams
@@ -975,22 +1181,34 @@ public class Tienda2026 implements Serializable {
                 .sorted(Comparator.comparing(Articulo::getPvp))
                 .forEach(a -> System.out.println(a));
 
+        
+                    //ESTOS LISTADOS NO TIENEN EN CUENTA EL ESTADO DE ACTIVO/INACTIVO DEL ARTÍCULO
         //PEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE - A + (usamos el método auxiliar totalPedido()) 
         System.out.println("\nPEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE - A + (usamos el método auxiliar totalPedido()");
-        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido(p))) //Ordenamos los pedidos por el importe total
+        pedidos.stream()
+                .sorted(Comparator.comparing(p -> totalPedido(p))) //Ordenamos los pedidos por el importe total
                 .forEach(p -> System.out.println(p + "- Total: " + totalPedido(p)));
 
         //PEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar totalPedido()) 
         System.out.println("\nPEDIDOS ORDENADOS POR EL IMPORTE TOTAL DEL PEDIDO DE + A - (usamos el método auxiliar totalPedido())");
-        pedidos.stream().sorted(Comparator.comparing(p -> totalPedido((Pedido) p)).reversed()) //Ordenamos los pedidos por el importe de forma descendente
+        pedidos.stream()
+                .sorted(Comparator.comparing(p -> totalPedido((Pedido) p)).reversed()) //Ordenamos los pedidos por el importe de forma descendente
                 .forEach(p -> System.out.println(p + "- Total: " + totalPedido(p)));
 
         //PEDIDOS DE MÁS DE 1000€ (filter) ORDENADOS POR LA FECHA DEL PEDIDO DE - A + 
         System.out.println("\nPEDIDOS DE MÁS DE 1000€ (filter) ORDENADOS POR LA FECHA DEL PEDIDO DE - A +");
-        pedidos.stream().filter(p -> totalPedido(p) > 1000) //Aplicamos filtros por pedidos; pedidos de más de 1000 euros
+        pedidos.stream()
+                .filter(p -> totalPedido(p) > 1000) //Aplicamos filtros por pedidos; pedidos de más de 1000 euros
                 .sorted(Comparator.comparing(Pedido::getFechaPedido)) //Ordenamos los pedidos por fecha
                 .forEach(p -> System.out.println(p + "- Total: " + p.getFechaPedido()));
 
+                    //TENIENDO EN CUENTA EL ESTADO DEL ARTÍCULO
+        System.out.println("\nArticulos activos de menos de 100 euros ordenados de - a +");
+        articulos.values().stream()
+                .filter(a -> a.isActivo())
+                .filter(a -> a.getPvp() < 100)
+                .sorted(Comparator.comparing(Articulo::getPvp))
+                .forEach(a -> System.out.println(a));      
     }
 
 //</editor-fold>
@@ -1580,7 +1798,9 @@ public class Tienda2026 implements Serializable {
         File g = new File("Articulos.txt");
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(g))) {
-
+            
+            /*Guardamos todos los artículos estén activos o inactivos, ya que a estos archivos solo pueden acceder los empleados de la tienda
+            se puede hacer un método que solo guarde los activos en caso de que un cliente necesite un archivo con dichos artículos*/
             for (Articulo a : articulos.values()) {
                 bw.write(a.getIdArticulo() + " - " + a.getDescripcion() + "= " + a.getPvp() + " euros");
                 bw.newLine();
@@ -1621,6 +1841,39 @@ public class Tienda2026 implements Serializable {
             System.out.println("Fecha Última modificación: " + new Date(h.lastModified()));*/
         } catch (IOException e) {
             System.out.println("No se ha podido escribir en el fichero");
+        }
+        
+            //ARCHIVO PARA CLIENTES QUE SOLO QUIEREN LOS ARTÍCULOS ACTIVOS
+            System.out.println("\nVamos almacenar los artículos activos en un archivo de texto");
+        File h = new File("ArticulosActivos.txt");
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(g))) {
+
+            // Guardamos solo los artículos activos porque representan el catálogo actual
+            for (Articulo a : articulos.values()) {
+                if (a.isActivo()) {
+                    bw.write(a.getIdArticulo() + " - " + a.getDescripcion()
+                            + " = " + a.getPvp() + " euros");
+                    bw.newLine();
+                }
+            }
+
+            System.out.println("Nombre: " + g.getName());
+            System.out.println("Ruta: " + g.getAbsolutePath());
+            System.out.println("Tamaño en Bytes: " + g.length());
+            System.out.println("Fecha Última modificación: " + new Date(g.lastModified()));
+
+        } catch (IOException e) {
+            System.out.println("No se ha podido escribir en el fichero");
+        }
+
+        System.out.println("\nMostramos la lista de Articulos activos:");
+        try (Scanner scf = new Scanner(new File("ArticulosActivos.txt"))) {
+            while (scf.hasNextLine()) {
+                System.out.println(scf.nextLine());
+            }
+        } catch (FileNotFoundException E) {
+            System.out.println("El archivo NO EXISTE");
         }
 
         System.out.println("\nMostramos la lista de Pedidos:");
@@ -1695,6 +1948,7 @@ public class Tienda2026 implements Serializable {
      */
     private void gauardaArtPorSeccion() {
         
+                //GUARDAMOS TODOS LOS ARTÍCULO, ACTIVOS Y NO ACTIVOS
         //Abrimos cuatro canales de escrituram, uno por cada sección, no hace falta poner la ruta directa del archivo 
         try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); 
              BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv")); 
@@ -1766,6 +2020,68 @@ public class Tienda2026 implements Serializable {
         } catch (Exception e) {
             System.out.println(e.toString());
         }
+        
+                //GUARDAMOS SOLO AQUELLOS QUE ESTÁN ACTIVOS
+                try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericosActv.csv"));
+                        BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamientoActv.csv")); 
+                        BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresorasActv.csv")); 
+                        BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitoresActv.csv"))) {
+
+            // Recorremos todos los artículos, pero exportamos solo los activos
+            for (Articulo a : articulos.values()) {
+
+                //Comprobamos que el artículo está activo
+                if (a.isActivo()) {
+                    switch (a.getIdArticulo().charAt(0)) {
+                        case '1':
+                            bwPerifericos.write(a.getIdArticulo() + ","
+                                    + a.getDescripcion() + ","
+                                    + a.getExistencias() + ","
+                                    + a.getPvp());
+                            bwPerifericos.newLine();
+                            break;
+
+                        case '2':
+                            bwAlmacenamiento.write(a.getIdArticulo() + ","
+                                    + a.getDescripcion() + ","
+                                    + a.getExistencias() + ","
+                                    + a.getPvp());
+                            bwAlmacenamiento.newLine();
+                            break;
+
+                        case '3':
+                            bwImpresoras.write(a.getIdArticulo() + ","
+                                    + a.getDescripcion() + ","
+                                    + a.getExistencias() + ","
+                                    + a.getPvp());
+                            bwImpresoras.newLine();
+                            break;
+
+                        case '4':
+                            bwMonitores.write(a.getIdArticulo() + ","
+                                    + a.getDescripcion() + ","
+                                    + a.getExistencias() + ","
+                                    + a.getPvp());
+                            bwMonitores.newLine();
+                            break;
+                    }
+                }
+            }
+
+            System.out.println("Archivos creados correctamente");
+
+        } catch (Exception e) {
+            System.out.println("No se han podido crear los archivos");
+            File f = new File("perifericosActv.csv");
+            f.delete();
+            f = new File("almacenamientoActv.csv");
+            f.delete();
+            f = new File("impresorasActv.csv");
+            f.delete();
+            f = new File("monitoresActv.csv");
+            f.delete();
+        }
+                
     }
 
     /**
@@ -1855,6 +2171,7 @@ public class Tienda2026 implements Serializable {
 
             //Nos conectamos objeto a objeto y los empaquetamos en 3 archivos de distintos, accede a la referencia en la memoria y los empaqueta.
             //En el examen solo tendremos que agregar nuevos archivos siguiendo los criterios de los ejercicios que nos harán cambiar los bucles por dentro para acceder a información más específica. ejemplo archivo con clientes con pedidos superiores a 100 euros
+            //GUARDAMOS TODOS LOS ARTÍCULOS, ESTÉN ACTIVOS O INACTIVOS
             for (Articulo a : articulos.values()) {
                 oosArticulos.writeObject(a);
             }
@@ -1952,7 +2269,8 @@ public class Tienda2026 implements Serializable {
     /**
      * Exporta los artículo de cada sección a archivos binarios indenpendientes.
      * 
-     * Crea un archivo .dat para cada sección de artículos y, al finalizar,
+     * Crea un archivo .dat para cada sección de artículos que están activos, ya que
+     * son loa  que siguen disponibles para la venta. Al finalizar,
      * permite comprobar por pantalla el contenido de uno de esos archivos.
      */
     public void exportarSeccion() {
