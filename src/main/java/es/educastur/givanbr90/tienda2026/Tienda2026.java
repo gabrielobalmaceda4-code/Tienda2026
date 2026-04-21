@@ -72,20 +72,20 @@ public class Tienda2026 implements Serializable {
  /*
         1-t.cargaDatos con importar comentado
         2-exportar siempre lo último para evitar guardar las collecciones sin datos
-        3-Una vez hehco el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
+        3-Una vez hecho el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
-        t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
+        //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
+        //t.importarColecciones(); //hay que descomentarlos luego
         //t.archivos();
-        //t.leeCliente();
+        t.leeCliente();
         //t.gauardaArtPorSeccion();
-        //t.leeArticulosPorSeccion();
-        //t.importarColecciones(); hay que descomentarlos luego
-        t.menu(); //hay que descomentarlos luego
-        //t.exportarColecciones(); hay que descomentarlos luego
+        t.leeArticulosPorSeccion();
+        //t.menu(); //hay que descomentarlos luego
+        //t.exportarColecciones(); //hay que descomentarlos luego
         //t.importarSeccion();
-        //t.leerSecciones();
-        //t.exportarSeccion(); hay que descomentarlos luego
-        //t.leerSeccion(); hay que descomentarlos luego
+        t.leerSeccion();
+        //t.exportarSeccion(); //hay que descomentarlos luego
+        //t.leerSeccion(); //hay que descomentarlos luego
         /*t.uno();
         t.dos();
         t.tres();
@@ -99,16 +99,16 @@ public class Tienda2026 implements Serializable {
          */
         //t.uno1();
         //t.dos2();
-        //t.tres3();
+        t.tres3();
         //t.cuatro4();
-        //t.cinco5();
+        t.cinco5();
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
 
  /*Persistencia de toda la tienda, archivos binarios que empaquetan todas las referencias de memoria de todos los objetos de la tienda, es demasiado tosco hacerlo todo de una vez, es mejor hacerlo de objeto a objeto
-        Esto no es recomendable porque se pueden perder datos por el camino haciendo que pueda fallar el ejercicio*/
-        try (ObjectOutputStream oosTienda = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\tienda.dat"))) {
+        Esto no es recomendable porque se pueden perder datos por el camino haciendo que pueda fallar el ejercicio
+        try (ObjectOutputStream oosTienda = new ObjectOutputStream(new FileOutputStream("tienda.dat"))) {
             oosTienda.writeObject(t);
             System.out.println("TODO OK");
 
@@ -116,7 +116,7 @@ public class Tienda2026 implements Serializable {
             System.out.println("No se ha podido realizar la copia de Seguridad correspodiente, " + "revisa unidades de almacenamiento de nuevo");
             File f = new File("tienda.dat");
             f.delete();
-        }
+        }*/
     }
 
     //<editor-fold defaultstate="collapsed" desc="Métodos auxiliares">
@@ -410,25 +410,35 @@ public class Tienda2026 implements Serializable {
      * Listado de colecciones con for each.
      */
     public void listarColecciones() {
-                for (Articulo a : articulos.values()) {
+        
+        /*System.out.println("Vamos a mostrar todos los artículos de la tienda");
+        for (Articulo a : articulos.values()) {
             System.out.println(a);
-        }
-        System.out.println("Vamos a mostrar todos los clientes de la tienda: ");
+        }*/
+        
+        System.out.println("\nVamos a mostrar todos los clientes de la tienda: ");
         for (Cliente c : clientes.values()) {
             System.out.println(c);
             //System.out.print("\n" + l.getIsbn() + "/" + l.getTitulo() + "/" + l.getAutor() + "/" + l.getGenero());
         }
-        System.out.println("");
-
-        //Mostramos todos los artículos de la tienda, activos e inactivods
-        System.out.println("Vamos a mostrar los articulos de la tienda: ");
+        
+        //Mostramos todos los artículos de la tienda, activos e inactivos
+        System.out.println("\nVamos a mostrar todos los articulos de la tienda: ");
         for (Articulo a : articulos.values()) {
             System.out.println(a);
             //System.out.print("\n" + a.getidArticulo() + "/" + a.getdescripción() + "/" + a.getexistencias() + "/" + a.getpvp());
         }
-        System.out.println("");
-
-        System.out.println("Vamos a mostrar los pedidos de la tienda: ");
+        
+        ////Mostramos los artículos activos de la tienda
+        System.out.println("\nVamos a mostrar los articulos activos de la tienda: ");
+        for (Articulo a : articulos.values()) {
+            if (a.isActivo()) {
+                System.out.println(a);
+                //System.out.print("\n" + a.getidArticulo() + "/" + a.getdescripción() + "/" + a.getexistencias() + "/" + a.getpvp());
+            }
+        }
+        
+        System.out.println("\nVamos a mostrar los pedidos de la tienda: ");
         for (Pedido p : pedidos) {
             System.out.println(p);
         }
@@ -662,7 +672,7 @@ public class Tienda2026 implements Serializable {
         String[] Secciones={"", "PERIFERICOS", "ALMACENAMIENTO", "MONITORES", "IMPRESORAS"};*/
         System.out.println("SECCION A LISTAR: ");
         String seccion = sc.next();
-        System.out.println("ARTICULOS ACTIVOS E INACTIVOS DE LA SECCION" + " " + seccion);
+        System.out.println("ARTICULOS ACTIVOS DE LA SECCION" + " " + seccion);
 
         /*
         SOLUCIÓN EDU
@@ -1151,12 +1161,12 @@ public class Tienda2026 implements Serializable {
      */
     private void listadosConStreams() {
         //Lista todos los artículos con streams
-        System.out.println("Vamos a listar articulos con streams");
+        System.out.println("\nVamos a listar articulos con streams");
         articulos.values().stream()
                 //.filter(a->a.isActivo())Muestra solo los activos
                 .forEach(a -> System.out.println(a));
         
-        System.out.println("Vamos a listar articulos ACTIVOS con streams");
+        System.out.println("\nVamos a listar articulos ACTIVOS con streams");
         articulos.values().stream()
                 .filter(a->a.isActivo())
                 .forEach(a -> System.out.println(a));
@@ -1224,12 +1234,12 @@ public class Tienda2026 implements Serializable {
     private void ordenarConStream() {
         
         //Ordenamos los pedidos por ID de forma ascendente
-        System.out.println("Listado de pedidos ordenados de menor a mayor total: ");
+        System.out.println("Listado de pedidos ordenados por ID de menor a mayor total: ");
         pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido))//El criterio de ordenación es el que está en el paréntesis después del .comparing, en ese caso usamos un atributo como pedido
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
 
         //Ordenamos los pedidos por ID de forma descendente
-        System.out.println("\nListado de pedidos ordenados de mayor a menor total: ");
+        System.out.println("\nListado de pedidos ordenados por ID de mayor a menor total: ");
         pedidos.stream().sorted(Comparator.comparing(Pedido::getIdPedido).reversed())
                 .forEach(p -> System.out.println(p + " - " + totalPedido(p)));
 
@@ -1627,7 +1637,7 @@ public class Tienda2026 implements Serializable {
     private void coleccion() {
         
         //Guardamos los pedidos ordenados por fecha en una lista
-        System.out.println("Pedidos ordenados por fecha de + reciente a - sin colección");
+        System.out.println("Pedidos ordenados por fecha de - reciente a + sin colección");
         List<Pedido> pedidosOrdenadosFecha //Pasamos de pedidos a esta lista
                 = pedidos.stream()
                         .sorted(Comparator.comparing(Pedido::getFechaPedido).reversed())
@@ -1703,7 +1713,7 @@ public class Tienda2026 implements Serializable {
         for (Articulo a : articulos.values()) {
             //Para que funcione el switch debemos declarar 4 ArrayList diferentes para cada sección, ahora funciona porque ya están declaradas las listas de arriba con streams, sin los stream son necesarios los Array
             switch (a.getIdArticulo().charAt(0)) {
-                case 'l':
+                case '1':
                     perifericos.add(a);
                     break;
                 case '2':
@@ -1720,7 +1730,7 @@ public class Tienda2026 implements Serializable {
         System.out.println("\n" + perifericos + "\n" + almacenamiento + "\n" + impresoras + "\n" + monitores);
 
         //Borrando elementos; eliminamos los artículos de la sección impresora "3"
-        articulos.values().removeIf(a -> a.getIdArticulo().startsWith("3")); //Borramos solo la condición, articulos de la sección impresoras
+        //articulos.values().removeIf(a -> a.getIdArticulo().startsWith("3")); //Borramos solo la condición, articulos de la sección impresoras
         System.out.println("\n");
         articulos.values().stream()
                 .forEach(a -> System.out.println(a));
@@ -1835,19 +1845,29 @@ public class Tienda2026 implements Serializable {
                 bw.newLine();
             }
 
-            /*System.out.println("Nombre: " + h.getName());
-            System.out.println("Ruta: " + h.getAbsolutePath());
-            System.out.println("Tamaño en Bytes: " + h.length());
-            System.out.println("Fecha Última modificación: " + new Date(h.lastModified()));*/
+            System.out.println("Nombre: " + g.getName());
+            System.out.println("Ruta: " + g.getAbsolutePath());
+            System.out.println("Tamaño en Bytes: " + g.length());
+            System.out.println("Fecha Última modificación: " + new Date(g.lastModified()));
         } catch (IOException e) {
             System.out.println("No se ha podido escribir en el fichero");
+        }
+        
+        System.out.println("\nMostramos la lista de Pedidos:");
+        try (Scanner scf = new Scanner(new File("Pedidos.txt"))) {
+            while (scf.hasNextLine()) {
+                System.out.println(scf.nextLine());
+            }
+        } catch (FileNotFoundException E) {
+            System.out.println("El archivo NO EXISTE");
+
         }
         
             //ARCHIVO PARA CLIENTES QUE SOLO QUIEREN LOS ARTÍCULOS ACTIVOS
             System.out.println("\nVamos almacenar los artículos activos en un archivo de texto");
         File h = new File("ArticulosActivos.txt");
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(g))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(h))) {
 
             // Guardamos solo los artículos activos porque representan el catálogo actual
             for (Articulo a : articulos.values()) {
@@ -1858,10 +1878,10 @@ public class Tienda2026 implements Serializable {
                 }
             }
 
-            System.out.println("Nombre: " + g.getName());
-            System.out.println("Ruta: " + g.getAbsolutePath());
-            System.out.println("Tamaño en Bytes: " + g.length());
-            System.out.println("Fecha Última modificación: " + new Date(g.lastModified()));
+            System.out.println("Nombre: " + h.getName());
+            System.out.println("Ruta: " + h.getAbsolutePath());
+            System.out.println("Tamaño en Bytes: " + h.length());
+            System.out.println("Fecha Última modificación: " + new Date(h.lastModified()));
 
         } catch (IOException e) {
             System.out.println("No se ha podido escribir en el fichero");
@@ -1876,19 +1896,10 @@ public class Tienda2026 implements Serializable {
             System.out.println("El archivo NO EXISTE");
         }
 
-        System.out.println("\nMostramos la lista de Pedidos:");
-        try (Scanner scf = new Scanner(new File("Pedidos.txt"))) {
-            while (scf.hasNextLine()) {
-                System.out.println(scf.nextLine());
-            }
-        } catch (FileNotFoundException E) {
-            System.out.println("El archivo NO EXISTE");
-
-        }
         System.out.println("");
 
         //Debemos copiar y pegar la dirección de memoria dónde querenos crear el archivo
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.csv"))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("clientes.csv"))) {
             for (Cliente c : clientes.values()) {
                 bw.write(c.getIdCliente() + ", " + c.getNombre() + ", " + c.getTelefono() + ", " + c.getEmail() + "\n");
             }
@@ -1912,7 +1923,7 @@ public class Tienda2026 implements Serializable {
         System.out.println("Vamos a leer el archivo clientes.txt:");
 
         //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
-        try (Scanner scClientes = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.txt"))) {
+        try (Scanner scClientes = new Scanner(new File("clientes.txt"))) {
             while (scClientes.hasNextLine()) {
                 System.out.println(scClientes.nextLine());
             }
@@ -1924,7 +1935,7 @@ public class Tienda2026 implements Serializable {
         System.out.println("\n\n");
         //CREAR UNA NUEVA COLECCIÓN DE TIPO HASHMAP A PARTIR DEL ARCHIVO clientes.csv
         HashMap<String, Cliente> clientesAux = new HashMap();
-        try (Scanner scClientes = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.csv"))) {
+        try (Scanner scClientes = new Scanner(new File("clientes.csv"))) {
             while (scClientes.hasNextLine()) {
                 String[] atributos = scClientes.nextLine().split("[,]");
                 Cliente c = new Cliente(atributos[0], atributos[1], atributos[2], atributos[3]);
@@ -1950,10 +1961,10 @@ public class Tienda2026 implements Serializable {
         
                 //GUARDAMOS TODOS LOS ARTÍCULO, ACTIVOS Y NO ACTIVOS
         //Abrimos cuatro canales de escrituram, uno por cada sección, no hace falta poner la ruta directa del archivo 
-        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); 
-             BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv")); 
-             BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv")); 
-             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
+        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("perifericos.csv")); 
+             BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("almacenamiento.csv")); 
+             BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("impresoras.csv")); 
+             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("monitores.csv"))) {
             
             //Recorremos todos los artículos y los enviamos al archivo de su sección
             for (Articulo a : articulos.values()) {
@@ -1996,7 +2007,10 @@ public class Tienda2026 implements Serializable {
         System.out.println("\nAhora vamos a leer cada archivo de sección");
 
         //LEE LAS LÍNEAS DEL ARCHIVO clientes.txt Y MUESTRA POR PANTALLA
-        try (Scanner scPerifericos = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.csv")); Scanner scAlmacenamiento = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.csv")); Scanner scImpresoras = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.csv")); Scanner scMonitores = new Scanner(new File("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.csv"))) {
+        try (Scanner scPerifericos = new Scanner(new File("perifericos.csv")); 
+             Scanner scAlmacenamiento = new Scanner(new File("almacenamiento.csv"));
+             Scanner scImpresoras = new Scanner(new File("impresoras.csv"));
+             Scanner scMonitores = new Scanner(new File("monitores.csv"))) {
 
             System.out.println("\nPeriféricos:");
             while (scPerifericos.hasNextLine()) {
@@ -2022,10 +2036,10 @@ public class Tienda2026 implements Serializable {
         }
         
                 //GUARDAMOS SOLO AQUELLOS QUE ESTÁN ACTIVOS
-                try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericosActv.csv"));
-                        BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamientoActv.csv")); 
-                        BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresorasActv.csv")); 
-                        BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitoresActv.csv"))) {
+                try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("perifericosActv.csv"));
+                        BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("almacenamientoActv.csv")); 
+                        BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("impresorasActv.csv")); 
+                        BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("monitoresActv.csv"))) {
 
             // Recorremos todos los artículos, pero exportamos solo los activos
             for (Articulo a : articulos.values()) {
@@ -2068,7 +2082,7 @@ public class Tienda2026 implements Serializable {
                 }
             }
 
-            System.out.println("Archivos creados correctamente");
+            System.out.println("\nArchivos creados correctamente");
 
         } catch (Exception e) {
             System.out.println("No se han podido crear los archivos");
@@ -2165,9 +2179,9 @@ public class Tienda2026 implements Serializable {
 
         //Para poder serializarlos debemos añadir implements Serilizable en las clases de las colecciones de que queremos guardar
         //Abrimos un flujo binario distinto para cada colección
-        try (ObjectOutputStream oosArticulos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\articulos.dat"));//OOS= ObjectOutputStream
-                ObjectOutputStream oosClientes = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.dat"));//1
-                ObjectOutputStream oosPedidos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\pedidos.dat"))) {
+        try (ObjectOutputStream oosArticulos = new ObjectOutputStream(new FileOutputStream("articulos.dat"));//OOS= ObjectOutputStream
+                ObjectOutputStream oosClientes = new ObjectOutputStream(new FileOutputStream("clientes.dat"));//1
+                ObjectOutputStream oosPedidos = new ObjectOutputStream(new FileOutputStream("pedidos.dat"))) {
 
             //Nos conectamos objeto a objeto y los empaquetamos en 3 archivos de distintos, accede a la referencia en la memoria y los empaqueta.
             //En el examen solo tendremos que agregar nuevos archivos siguiendo los criterios de los ejercicios que nos harán cambiar los bucles por dentro para acceder a información más específica. ejemplo archivo con clientes con pedidos superiores a 100 euros
@@ -2214,7 +2228,7 @@ public class Tienda2026 implements Serializable {
 
         // A la hora de la lectura hay que hacerlo archivo a archivo, es decir un try catch para cada archivo con su respectivo bucle
         //Leemos el archivo de artículos y reconstruimos el HashMap artículos
-        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\articulos.dat"))) {
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("articulos.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisArticulos.readObject()) != null) {
                 articulos.put(a.getIdArticulo(), a);
@@ -2231,7 +2245,7 @@ public class Tienda2026 implements Serializable {
         }
 
                     //REPETIMOS EL PROCESO PARA CLIENTES Y PEDIDOS
-        try (ObjectInputStream oisClientes = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\clientes.dat"))) {
+        try (ObjectInputStream oisClientes = new ObjectInputStream(new FileInputStream("clientes.dat"))) {
             Cliente c;
             while ((c = (Cliente) oisClientes.readObject()) != null) {
                 clientes.put(c.getIdCliente(), c);
@@ -2244,7 +2258,7 @@ public class Tienda2026 implements Serializable {
             System.out.println(e.toString());
         }
 
-        try (ObjectInputStream oisPedidos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\pedidos.dat"))) {
+        try (ObjectInputStream oisPedidos = new ObjectInputStream(new FileInputStream("pedidos.dat"))) {
             Pedido p;
             while ((p = (Pedido) oisPedidos.readObject()) != null) {
                 pedidos.add(p);
@@ -2276,10 +2290,10 @@ public class Tienda2026 implements Serializable {
     public void exportarSeccion() {
 
         //Abrimos cuatro flujos de salida, uno para cada sección
-        try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"));//OOS= ObjectOutputStream, solo hace falta poner el nombre del archivo
-                ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.dat")); 
-                ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.dat"));
-                ObjectOutputStream oosMonitores = new ObjectOutputStream(new FileOutputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.dat"))) {
+        try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream("perifericos.dat"));//OOS= ObjectOutputStream, solo hace falta poner el nombre del archivo
+                ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream("almacenamiento.dat")); 
+                ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream("impresoras.dat"));
+                ObjectOutputStream oosMonitores = new ObjectOutputStream(new FileOutputStream("monitores.dat"))) {
 
             //Recorremos todos los artículos y los enviamos al archivo de su sección
             //Nos conectamos objeto a objeto y los empaquetamos en 3 archivos de distintos, accede a la referencia en la memoria y los empaqueta.
@@ -2335,16 +2349,16 @@ public class Tienda2026 implements Serializable {
         String nombreArchivo = null;
         switch (seccion) {
             case '1':
-                nombreArchivo = "Perifericos.dat";
+                nombreArchivo = "perifericos.dat";
                 break;
             case '2':
-                nombreArchivo = "Almacenamiento.dat";
+                nombreArchivo = "almacenamiento.dat";
                 break;
             case '3':
-                nombreArchivo = "Impresoras.dat";
+                nombreArchivo = "impresoras.dat";
                 break;
             case '4':
-                nombreArchivo = "Monitores.dat";
+                nombreArchivo = "monitores.dat";
                 break;
         }
         Articulo a;
@@ -2419,7 +2433,7 @@ public class Tienda2026 implements Serializable {
     public void importarSeccion(){
         
         //Importamos los artículos de la sección periféricos
-        try (ObjectInputStream oisPerifericos = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\perifericos.dat"))) {
+        try (ObjectInputStream oisPerifericos = new ObjectInputStream(new FileInputStream("perifericos.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisPerifericos.readObject()) != null) {
                 articulos.put(a.getIdArticulo(), a);
@@ -2436,7 +2450,7 @@ public class Tienda2026 implements Serializable {
         }
 
                     //REPETIMOS EL PROCESO PARA ALMACENAMIENTO, IMPRESORAS Y MONITORES
-        try (ObjectInputStream oisAlmacenamiento = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\almacenamiento.dat"))) {
+        try (ObjectInputStream oisAlmacenamiento = new ObjectInputStream(new FileInputStream("almacenamiento.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisAlmacenamiento.readObject()) != null) {
                 articulos.put(a.getIdArticulo(), a);
@@ -2449,7 +2463,7 @@ public class Tienda2026 implements Serializable {
             System.out.println(e.toString());
         }
 
-        try (ObjectInputStream oisImpresoras = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\impresoras.dat"))) {
+        try (ObjectInputStream oisImpresoras = new ObjectInputStream(new FileInputStream("impresoras.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisImpresoras.readObject()) != null) {
                 articulos.put(a.getIdArticulo(), a);
@@ -2462,7 +2476,7 @@ public class Tienda2026 implements Serializable {
             System.out.println(e.toString());
         }
         
-        try (ObjectInputStream oisMonitores = new ObjectInputStream(new FileInputStream("C:\\Users\\1dawd17\\OneDrive - Consejería de Educación\\DAW\\Programación\\Proyectos\\NetBeansProjects\\Tienda2026\\monitores.dat"))) {
+        try (ObjectInputStream oisMonitores = new ObjectInputStream(new FileInputStream("monitores.dat"))) {
             Articulo a;
             while ((a = (Articulo) oisMonitores.readObject()) != null) {
                 articulos.put(a.getIdArticulo(), a);
