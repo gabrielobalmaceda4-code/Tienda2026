@@ -77,13 +77,13 @@ public class Tienda2026 implements Serializable {
         //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
         //t.importarColecciones(); //hay que descomentarlos luego
         //t.archivos();
-        t.leeCliente();
+        //t.leeCliente();
         //t.gauardaArtPorSeccion();
-        t.leeArticulosPorSeccion();
-        //t.menu(); //hay que descomentarlos luego
+        //t.leeArticulosPorSeccion();
+        t.importarSeccion();
+        t.menu(); //hay que descomentarlos luego
         //t.exportarColecciones(); //hay que descomentarlos luego
-        //t.importarSeccion();
-        t.leerSeccion();
+        //t.leerSeccion();
         //t.exportarSeccion(); //hay que descomentarlos luego
         //t.leerSeccion(); //hay que descomentarlos luego
         /*t.uno();
@@ -99,9 +99,9 @@ public class Tienda2026 implements Serializable {
          */
         //t.uno1();
         //t.dos2();
-        t.tres3();
+        //t.tres3();
         //t.cuatro4();
-        t.cinco5();
+        //t.cinco5();
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
@@ -1695,16 +1695,16 @@ public class Tienda2026 implements Serializable {
 
         //Forma actualizada con streams y collect
         perifericos = articulos.values().stream()
-                .filter(a -> a.getIdArticulo().startsWith("1"))
+                .filter(a -> a.getIdArticulo().startsWith("1-"))
                 .collect(Collectors.toList());
         almacenamiento = articulos.values().stream()
-                .filter(a -> a.getIdArticulo().startsWith("2"))
+                .filter(a -> a.getIdArticulo().startsWith("2-"))
                 .collect(Collectors.toList());
         impresoras = articulos.values().stream()
-                .filter(a -> a.getIdArticulo().startsWith("3"))
+                .filter(a -> a.getIdArticulo().startsWith("3-"))
                 .collect(Collectors.toList());
         monitores = articulos.values().stream()
-                .filter(a -> a.getIdArticulo().startsWith("4"))
+                .filter(a -> a.getIdArticulo().startsWith("4-"))
                 .collect(Collectors.toList());
 
         System.out.println("\n" + perifericos + "\n" + almacenamiento + "\n" + impresoras + "\n" + monitores);
@@ -1970,19 +1970,23 @@ public class Tienda2026 implements Serializable {
             for (Articulo a : articulos.values()) {
                 switch (a.getIdArticulo().charAt(0)) {
                     case '1':
-                        bwPerifericos.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
+                        bwPerifericos.write(a.getIdArticulo() + "," + a.getDescripcion() + "," + a.getExistencias() + "," + a.getPvp());
+                        bwPerifericos.newLine();
                         break;
 
                     case '2':
-                        bwAlmacenamiento.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
+                        bwAlmacenamiento.write(a.getIdArticulo() + "," + a.getDescripcion() + "," + a.getExistencias() + "," + a.getPvp());
+                        bwAlmacenamiento.newLine();
                         break;
 
                     case '3':
-                        bwImpresoras.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
+                        bwImpresoras.write(a.getIdArticulo() + "," + a.getDescripcion() + "," + a.getExistencias() + "," + a.getPvp());
+                        bwImpresoras.newLine();
                         break;
 
                     case '4':
-                        bwMonitores.write(a.getIdArticulo() + ", " + a.getDescripcion() + ", " + a.getExistencias() + " uds, " + a.getPvp() + " euros\n");
+                        bwMonitores.write(a.getIdArticulo() + "," + a.getDescripcion() + "," + a.getExistencias() + "," + a.getPvp());
+                        bwMonitores.newLine();
                         break;
                     default:
                         throw new AssertionError();
@@ -2164,8 +2168,44 @@ public class Tienda2026 implements Serializable {
 
         //MOSTRAMOS POR PANTALLA EL CONTENIDO DEL HASHMAP articulosAux QUE HEMOS IDO CREANDO CON LOS ARTICULOS DE LOS 4 ARCHIVOS
         System.out.println("");
+        System.out.println("MOSTRAMOS POR PANTALLA EL CONTENIDO DEL HASHMAP articulosAux QUE HEMOS IDO CREANDO CON LOS ARTICULOS DE LOS 4 ARCHIVOS");
         for (Articulo a : articulosAux.values()) {
             System.out.println(a);
+        }
+        
+        System.out.println("\nLECTURA DE ARCHIVOS DE ARTÍCULOS ACTIVOS");
+
+        try (Scanner scPerifericos = new Scanner(new File("perifericosActv.csv"));//
+             Scanner scAlmacenamiento = new Scanner(new File("almacenamientoActv.csv"));//
+             Scanner scImpresoras = new Scanner(new File("impresorasActv.csv"));//
+             Scanner scMonitores = new Scanner(new File("monitoresActv.csv"))) {
+
+            // PERIFÉRICOS ACTIVOS
+            System.out.println("\nPERIFÉRICOS ACTIVOS:");
+            while (scPerifericos.hasNextLine()) {
+                System.out.println(scPerifericos.nextLine());
+            }
+
+            // ALMACENAMIENTO ACTIVO
+            System.out.println("\nALMACENAMIENTO ACTIVO:");
+            while (scAlmacenamiento.hasNextLine()) {
+                System.out.println(scAlmacenamiento.nextLine());
+            }
+
+            // IMPRESORAS ACTIVAS
+            System.out.println("\nIMPRESORAS ACTIVAS:");
+            while (scImpresoras.hasNextLine()) {
+                System.out.println(scImpresoras.nextLine());
+            }
+
+            // MONITORES ACTIVOS
+            System.out.println("\nMONITORES ACTIVOS:");
+            while (scMonitores.hasNextLine()) {
+                System.out.println(scMonitores.nextLine());
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Error al leer los archivos de artículos activos. Verifica que existen.");
         }
     }
 
