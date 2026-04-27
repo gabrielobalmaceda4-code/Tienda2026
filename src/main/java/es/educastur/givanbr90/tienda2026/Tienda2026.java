@@ -75,14 +75,13 @@ public class Tienda2026 implements Serializable {
         3-Una vez hecho el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
         //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
-        t.importarColecciones(); //hay que descomentarlos luego
+        //t.importarColecciones(); //hay que descomentarlos luego
         //t.archivos();
         //t.leeCliente();
         //t.gauardaArtPorSeccion();
         //t.leeArticulosPorSeccion();
         //t.importarSeccion();
         //t.menu(); //hay que descomentarlos luego
-        //t.exportarColecciones(); //hay que descomentarlos luego
         //t.leerSeccion();
         //t.exportarSeccion(); //hay que descomentarlos luego
         //t.leerSeccion(); //hay que descomentarlos luego
@@ -100,8 +99,9 @@ public class Tienda2026 implements Serializable {
         //t.uno1();
         //t.dos2();
         //t.tres3();
-        t.cuatro4();
-        t.cinco5();
+        //t.cuatro4();
+        //t.cinco5();
+        //t.exportarColecciones(); //hay que descomentarlos luego
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
@@ -2626,7 +2626,8 @@ public class Tienda2026 implements Serializable {
        
         try (ObjectOutputStream oosEnero = new ObjectOutputStream(new FileOutputStream("pedidosEnero2026.dat"));//coment1
              ObjectOutputStream oosFebrero = new ObjectOutputStream(new FileOutputStream("pedidosFebrero2026.dat"));//comnt2
-             ObjectOutputStream oosMarzo = new ObjectOutputStream(new FileOutputStream("pedidosMarzo2026.dat"));) {
+             ObjectOutputStream oosMarzo = new ObjectOutputStream(new FileOutputStream("pedidosMarzo2026.dat"));
+             ObjectOutputStream oosAbril = new ObjectOutputStream(new FileOutputStream("pedidosAbril2026.dat"));) {
             
             //Recorremos todos los pedidos y los clasificamos por mes
             for (Pedido p : pedidos) {
@@ -2643,6 +2644,10 @@ public class Tienda2026 implements Serializable {
                     case 3:
                         oosMarzo.writeObject(p);
                         break;
+                        
+                    case 4:
+                        oosAbril.writeObject(p);
+                        break;
                 }
             }
             System.out.println("Archivo creado correctamente");
@@ -2655,7 +2660,9 @@ public class Tienda2026 implements Serializable {
             f = new File("pedidosFebrero2026.dat");
             f.delete();
             f = new File("pedidosMarzo2026.dat");
-            f.delete();            
+            f.delete();
+            f = new File ("peidosAbril2026.dat");
+            f.delete();
         }
         
 /*        System.out.println("Teclea el MES CUYO ARCHIVO QUIERES COMPROBAR:"+ "\n1=Enero" + "\n2=Febrero" + "\n3=Febrero");
@@ -2700,13 +2707,17 @@ public class Tienda2026 implements Serializable {
         String[] archivos = {
             "pedidosEnero2026.dat",
             "pedidosFebrero2026.dat",
-            "pedidosMarzo2026.dat"};
+            "pedidosMarzo2026.dat",
+            "pedidosAbril2026.dat"
+};
+            
 
         //Recorremos todos los archivos y leemos su contenido
         for (String archivo : archivos) {
             try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(archivo))) {
                 while (true) {
                     Pedido p = (Pedido) ois.readObject();
+                    System.out.println(p + " - Total:" + totalPedido(p));
                     pedidosPorMeses.add(p);
                 }
          
