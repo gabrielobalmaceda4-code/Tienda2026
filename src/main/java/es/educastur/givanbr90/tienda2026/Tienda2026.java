@@ -75,13 +75,25 @@ public class Tienda2026 implements Serializable {
         3-Una vez hecho el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
         //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
-        //t.importarColecciones(); //hay que descomentarlos luego
+        t.importarColecciones(); //hay que descomentarlos luego
+
+        System.out.println("DESPUÉS DE IMPORTAR:");
+        System.out.println("Clientes: " + t.getClientes().size());
+        System.out.println("Artículos: " + t.getArticulos().size());
+        System.out.println("Pedidos: " + t.getPedidos().size());
+        
         //t.archivos();
         //t.leeCliente();
         //t.gauardaArtPorSeccion();
         //t.leeArticulosPorSeccion();
         //t.importarSeccion();
-        //t.menu(); //hay que descomentarlos luego
+        t.menu(); //hay que descomentarlos luego
+        
+        System.out.println("ANTES DE EXPORTAR:");
+        System.out.println("Clientes: " + t.getClientes().size());
+        System.out.println("Artículos: " + t.getArticulos().size());
+        System.out.println("Pedidos: " + t.getPedidos().size());
+        
         //t.leerSeccion();
         //t.exportarSeccion(); //hay que descomentarlos luego
         //t.leerSeccion(); //hay que descomentarlos luego
@@ -101,7 +113,7 @@ public class Tienda2026 implements Serializable {
         //t.tres3();
         //t.cuatro4();
         //t.cinco5();
-        //t.exportarColecciones(); //hay que descomentarlos luego
+        t.exportarColecciones(); //hay que descomentarlos luego
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
