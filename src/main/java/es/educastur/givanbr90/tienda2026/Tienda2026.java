@@ -75,13 +75,13 @@ public class Tienda2026 implements Serializable {
         3-Una vez hecho el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
         //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
-        //t.importarColecciones(); //hay que descomentarlos luego
+        t.importarColecciones(); //hay que descomentarlos luego
         //t.archivos();
         //t.leeCliente();
         //t.gauardaArtPorSeccion();
         //t.leeArticulosPorSeccion();
-        t.importarSeccion();
-        t.menu(); //hay que descomentarlos luego
+        //t.importarSeccion();
+        //t.menu(); //hay que descomentarlos luego
         //t.exportarColecciones(); //hay que descomentarlos luego
         //t.leerSeccion();
         //t.exportarSeccion(); //hay que descomentarlos luego
@@ -100,8 +100,8 @@ public class Tienda2026 implements Serializable {
         //t.uno1();
         //t.dos2();
         //t.tres3();
-        //t.cuatro4();
-        //t.cinco5();
+        t.cuatro4();
+        t.cinco5();
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
@@ -2770,30 +2770,36 @@ public class Tienda2026 implements Serializable {
      * los importes de todos los pedidos almacenados en él.
      */
     public void cinco5(){
-        sc.nextLine();//Limpiamos el buffer y pedimos el nombre del cliente
-        System.out.println("Introduce el nombre del cliente (Ana, Edu, Juan)");
-        String nombre= sc.nextLine().trim().toLowerCase();
+        //sc.nextLine();//Limpiamos el buffer y pedimos el nombre del cliente
+        System.out.println("Introduce el nombre del cliente (Ana, Edu, Juan, Lola)");
+        String nombre= sc.next().trim().toLowerCase();
         
         //Construimos el nombre del archivo del cliente
         String nombreArchivo= "pedidos_" + nombre + ".txt";
         double totalGastado=0;
         
         try (Scanner scf=new Scanner(new File(nombreArchivo))){
+            
+            /*if (!scf.hasNextLine()) {
+                System.out.println("El archivo está vacío");
+                return;
+            }*/
+
             //Leemos el archivo línea a línea y vamos sumando de cada pedido
-            while (sc.hasNextLine()) {
+            while (scf.hasNextLine()) {
                 String linea = scf.nextLine();
                 
                 //Separamos los datos de cada línea
                 String[] partes = linea.split(",");
                 
                 //Mostramos el total acumulado del cliente
-                double totalPedido = Double.parseDouble(partes[2].trim());
+                double totalPedido = Double.parseDouble(partes[1].trim());
                 totalGastado+=totalPedido;
                 
             }
             
             //Mostramos el total acumulado del cliente
-            System.out.println("TOTAL GASTADO POR "+ nombre.toUpperCase()+ ": " + totalGastado + "euros");
+            System.out.println("TOTAL GASTADO POR "+ nombre.toUpperCase()+ ": " + totalGastado + " euros");
         } catch (FileNotFoundException e) {
             System.out.println("El cliente no existe o no tiene pedidos");
         }
