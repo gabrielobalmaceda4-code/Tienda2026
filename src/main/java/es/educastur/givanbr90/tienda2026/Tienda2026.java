@@ -113,7 +113,7 @@ public class Tienda2026 implements Serializable {
         //t.tres3();
         //t.cuatro4();
         //t.cinco5();
-        t.exportarColecciones(); //hay que descomentarlos luego
+        //t.exportarColecciones(); //hay que descomentarlos luego
  /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
