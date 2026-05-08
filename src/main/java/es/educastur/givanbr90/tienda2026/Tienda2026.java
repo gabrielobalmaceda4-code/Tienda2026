@@ -16,7 +16,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.SQLOutput;
+import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -74,25 +78,25 @@ public class Tienda2026 implements Serializable {
         2-exportar siempre lo último para evitar guardar las collecciones sin datos
         3-Una vez hecho el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
-        //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
-        t.importarColecciones(); //hay que descomentarlos luego
+        t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
+        //t.importarColecciones(); //hay que descomentarlos luego
 
-        System.out.println("DESPUÉS DE IMPORTAR:");
+        /*System.out.println("DESPUÉS DE IMPORTAR:");
         System.out.println("Clientes: " + t.getClientes().size());
         System.out.println("Artículos: " + t.getArticulos().size());
-        System.out.println("Pedidos: " + t.getPedidos().size());
+        System.out.println("Pedidos: " + t.getPedidos().size());*/
         
         //t.archivos();
         //t.leeCliente();
         //t.gauardaArtPorSeccion();
         //t.leeArticulosPorSeccion();
         //t.importarSeccion();
-        t.menu(); //hay que descomentarlos luego
+        //t.menu(); //hay que descomentarlos luego
         
-        System.out.println("ANTES DE EXPORTAR:");
+        /*System.out.println("ANTES DE EXPORTAR:");
         System.out.println("Clientes: " + t.getClientes().size());
         System.out.println("Artículos: " + t.getArticulos().size());
-        System.out.println("Pedidos: " + t.getPedidos().size());
+        System.out.println("Pedidos: " + t.getPedidos().size());*/
         
         //t.leerSeccion();
         //t.exportarSeccion(); //hay que descomentarlos luego
@@ -114,7 +118,14 @@ public class Tienda2026 implements Serializable {
         //t.cuatro4();
         //t.cinco5();
         //t.exportarColecciones(); //hay que descomentarlos luego
- /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
+        
+        //t.jdbcGuardaArticulos();
+        //t.jdbcLeeArticulos();
+        t.jdbcGuardaClientes();
+        t.jdbcLeeClientes();
+        
+        
+        /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas2(t.articulos.get("4-33")));
         System.out.println(t.udsVendidas3(t.articulos.get("4-33")));*/
 
@@ -2829,4 +2840,99 @@ public class Tienda2026 implements Serializable {
     }
     
 //</editor-fold>
+    
+    private void jdbcGuardaArticulos() {
+        String consulta;
+
+        for (Articulo a : articulos.values()) {
+            consulta = "INSERT INTO `articulos` (`idArticulo`, `descripcion`, `existencias`, `pvp`)"
+                    + " VALUES ('" + a.getIdArticulo() + "', '" + a.getDescripcion() + "', '" + a.getExistencias() + "', '" + a.getPvp() + "')";
+            try {
+                PreparedStatement ps = Conexion.obtener().prepareStatement(consulta);
+                ps.executeUpdate();
+            } catch (ClassNotFoundException | SQLException e) {
+                System.out.println(e.toString());
+            }
+        }
+        System.out.println("ARTICULOS exportados a MySQL correctamente");
+    }
+    
+    private void jdbcLeeArticulos() {
+        Statement sentencia;
+        ArrayList<Articulo> articulosAux = new ArrayList();
+
+        //Leer articulos desde la base de datos, preparas una 1-conexión, obtienes la cone y creas un 2-statement y lanzas la 3-consulta
+        String consultaSQL = "SELECT * FROM articulos";
+        try {
+            /* Usando la clase Conexion SE CREA UN OBJETO DE TIPO Statement sobre el que se van 
+            a lanzar consultas SQL.
+               Despues se lanza la consulta SQL a traves del Statement y se recogen los registros
+            en un ResultSet (Conjunto de registros resultado de una consulta SQL)
+             */
+            sentencia = Conexion.obtener().createStatement();
+            ResultSet rs = sentencia.executeQuery(consultaSQL);
+            while (rs.next()) {
+                articulosAux.add(new Articulo(rs.getString(1), rs.getString(2), rs.getInt(3), rs.getDouble(4)));
+                /*si uso mi persistencia debería:
+                    -descomentar el importarColecciones
+                    -agregar rs.getBoolean(5) aquí
+                    -agregar el atributo en el jdbcGuardarArticulos
+                PARA SIMPLICARLO ME CARGO ESTE ATRIBUTO Y SOLO USAMOS cargaDatos
+                 */
+            }
+            System.out.println("ARTICULOS importados desde MySQL correctamente");
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e.toString());
+        }
+
+        articulosAux.stream().forEach(System.out::println);
+    }
+
+    private void jdbcGuardaClientes() {
+        String consulta;
+
+        for (Cliente c : clientes.values()) {
+            consulta = "INSERT INTO `clientes` (`idCliente`, `nombre`, `telefono`, `email`)"
+                    + " VALUES ('" + c.getIdCliente() + "', '" + c.getNombre() + "', '" + c.getTelefono() + "', '" + c.getEmail() + "')";
+            try {
+                PreparedStatement ps = Conexion.obtener().prepareStatement(consulta);
+                ps.executeUpdate();
+            } catch (ClassNotFoundException | SQLException e) {
+                System.out.println(e.toString());
+            }
+        }
+        System.out.println("CLIENTES exportados a MySQL correctamente");
+    }
+    
+    private void jdbcLeeClientes() {
+        Statement sentencia;
+        ArrayList<Cliente> clientesAux = new ArrayList();
+
+        //Leer articulos desde la base de datos, preparas una 1-conexión, obtienes la cone y creas un 2-statement y lanzas la 3-consulta
+        String consultaSQL = "SELECT * FROM clientes";
+        try {
+            /* Usando la clase Conexion SE CREA UN OBJETO DE TIPO Statement sobre el que se van 
+            a lanzar consultas SQL.
+               Despues se lanza la consulta SQL a traves del Statement y se recogen los registros
+            en un ResultSet (Conjunto de registros resultado de una consulta SQL)
+             */
+            sentencia = Conexion.obtener().createStatement();
+            ResultSet rs = sentencia.executeQuery(consultaSQL);
+            while (rs.next()) {
+                clientesAux.add(new Cliente(rs.getString(1), rs.getString(2), rs.getString(3), rs.getString(4)));
+                /*si uso mi persistencia debería:
+                    -descomentar el importarColecciones
+                    -agregar rs.getBoolean(5) aquí
+                    -agregar el atributo en el jdbcGuardarArticulos
+                PARA SIMPLICARLO ME CARGO ESTE ATRIBUTO Y SOLO USAMOS cargaDatos
+                 */
+            }
+            System.out.println("CLIENTES importados desde MySQL correctamente");
+        } catch (ClassNotFoundException | SQLException e) {
+            System.out.println(e.toString());
+        }
+
+        clientesAux.stream().forEach(System.out::println);
+    }
+    
 }
