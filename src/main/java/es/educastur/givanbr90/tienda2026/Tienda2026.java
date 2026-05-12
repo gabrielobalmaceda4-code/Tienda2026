@@ -78,7 +78,7 @@ public class Tienda2026 implements Serializable {
         2-exportar siempre lo último para evitar guardar las collecciones sin datos
         3-Una vez hecho el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
-        t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
+        //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
         //t.importarColecciones(); //hay que descomentarlos luego
 
         /*System.out.println("DESPUÉS DE IMPORTAR:");
@@ -121,8 +121,9 @@ public class Tienda2026 implements Serializable {
         
         //t.jdbcGuardaArticulos();
         //t.jdbcLeeArticulos();
-        t.jdbcGuardaClientes();
-        t.jdbcLeeClientes();
+        //t.jdbcGuardaClientes();
+        //t.jdbcLeeClientes();
+        //t.jdbcGuardaPedidos();
         
         
         /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
@@ -2938,6 +2939,15 @@ public class Tienda2026 implements Serializable {
         }
 
         clientesAux.stream().forEach(System.out::println);
+    }
+    
+    private void jdbcGuardaPedidos(){
+        for (Pedido p : pedidos) {
+            String consulta1= "INSERT INTO `pedidos` (`idPedido`, `clientePedido`, `fechaPedido`) " 
+                    + "VALUES ";
+            
+            //primero debo lanzar 2 select, 1 para lanzar los pedidos y el siguiente el de lineaPedido
+        }
     }
     //</editor-fold>
     
