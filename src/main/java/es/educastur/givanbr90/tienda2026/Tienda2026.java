@@ -2841,6 +2841,11 @@ public class Tienda2026 implements Serializable {
     
 //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="JDBC Base de datos">
+    
+    /**
+     * 
+     */
     private void jdbcGuardaArticulos() {
         String consulta;
 
@@ -2848,7 +2853,7 @@ public class Tienda2026 implements Serializable {
             consulta = "INSERT INTO `articulos` (`idArticulo`, `descripcion`, `existencias`, `pvp`)"
                     + " VALUES ('" + a.getIdArticulo() + "', '" + a.getDescripcion() + "', '" + a.getExistencias() + "', '" + a.getPvp() + "')";
             try {
-                PreparedStatement ps = Conexion.obtener().prepareStatement(consulta);
+                PreparedStatement ps = Conexion.obtener().prepareStatement(consulta);//Prepara una sentencia de SQL
                 ps.executeUpdate();
             } catch (ClassNotFoundException | SQLException e) {
                 System.out.println(e.toString());
@@ -2934,5 +2939,6 @@ public class Tienda2026 implements Serializable {
 
         clientesAux.stream().forEach(System.out::println);
     }
+    //</editor-fold>
     
 }
