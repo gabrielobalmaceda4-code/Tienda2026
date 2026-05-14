@@ -78,7 +78,7 @@ public class Tienda2026 implements Serializable {
         2-exportar siempre lo último para evitar guardar las collecciones sin datos
         3-Una vez hecho el exportar ejecutamos de nuevo con el carga datos comentado y el importar descomentado
         De esta manera ya no necesitamso el carga datos ya que accedemos a los datos mendiante las colecciones ya creadas en binario*/
-        //t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
+        t.cargaDatos(); //Se cambia el cargaDatos para hacer el examen
         //t.importarColecciones(); //hay que descomentarlos luego
 
         /*System.out.println("DESPUÉS DE IMPORTAR:");
@@ -119,11 +119,15 @@ public class Tienda2026 implements Serializable {
         //t.cinco5();
         //t.exportarColecciones(); //hay que descomentarlos luego
         
+        //ESTOS MÉTODOS SE AGRUPAN EN EXPORTAR DATOS LOS DE GUARDAR E IMPORTAR LOS DE DE LEER
+        //t.exportarDatos();
+        //t.importarDatos();
         //t.jdbcGuardaArticulos();
         //t.jdbcLeeArticulos();
         //t.jdbcGuardaClientes();
         //t.jdbcLeeClientes();
-        //t.jdbcGuardaPedidos();
+        t.jdbcLeePedidos();
+        t.jdbcGuardaPedidos();
         
         
         /*System.out.println(t.udsVendidas1(t.articulos.get("4-33")));
@@ -2915,6 +2919,7 @@ public class Tienda2026 implements Serializable {
         ArrayList<Cliente> clientesAux = new ArrayList();
 
         //Leer articulos desde la base de datos, preparas una 1-conexión, obtienes la cone y creas un 2-statement y lanzas la 3-consulta
+        /*LEER CLIENTES DESDE LA BD Y regenerar el HashMap CLIENTES - "SELECT * FROM clientes" */
         String consultaSQL = "SELECT * FROM clientes";
         try {
             /* Usando la clase Conexion SE CREA UN OBJETO DE TIPO Statement sobre el que se van 
@@ -2922,6 +2927,12 @@ public class Tienda2026 implements Serializable {
                Despues se lanza la consulta SQL a traves del Statement y se recogen los registros
             en un ResultSet (Conjunto de registros resultado de una consulta SQL)
              */
+            
+            /* Usando la clase Conexion SE CREA UN OBJETO DE TIPO Statement sobre el que se van 
+            a lanzar consultas SQL.
+               Despues se lanza la consulta SQL a traves del Statement y se recogen los registros
+            en un ResultSet (Conjunto de registros resultado de una consulta SQL)
+            */ 
             sentencia = Conexion.obtener().createStatement();
             ResultSet rs = sentencia.executeQuery(consultaSQL);
             while (rs.next()) {
@@ -2937,18 +2948,119 @@ public class Tienda2026 implements Serializable {
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println(e.toString());
         }
-
-        clientesAux.stream().forEach(System.out::println);
+        
+        /* Imprimo el HashMap para verificar la correcta importación */
+        System.out.println("\nLISTADO CLIENTES IMPORTADOS DESDE LA BASE DE DATOS");
+        clientes.values().stream().forEach(System.out::println);
+        
     }
     
     private void jdbcGuardaPedidos(){
-        for (Pedido p : pedidos) {
-            String consulta1= "INSERT INTO `pedidos` (`idPedido`, `clientePedido`, `fechaPedido`) " 
-                    + "VALUES ";
-            
-            //primero debo lanzar 2 select, 1 para lanzar los pedidos y el siguiente el de lineaPedido
+        /* LOS OBJETOS SON MÁS RICOS QUE EL MODELO RELACIONAL, Y NUESTRA CLASE Pedido LA HEMOS HECHO ASÍ PARA 
+        EXPLICAR Y ENTENDER LAS RELACIONES DE AGREGACIÓN Y COMPOSICIÓN ENTRE CLASES.
+        PARA LLEVAR NUESTROS PEDIDOS "java" A UNA BD RELACIONAL, Y GUARDAR TODA LA INFO DE CADA PEDIDO 
+        DEL ARRAYLIST JAVA HEMOS DE UTILIZAR 2 TABLAS POR SEPARADO EN LA BD */
+        
+          for (Pedido p:pedidos){
+            String consulta1= "INSERT INTO `pedidos` (`idPedido`, `clientePedido`, `fechaPedido`)"
+                    + " VALUES ('" + p.getIdPedido()+"', '"+p.getClientePedido().getIdCliente()+"','"+p.getFechaPedido()+"')";
+            for (LineaPedido l:p.getCestaCompra()){
+                String consulta2= "INSERT INTO `lineaspedidos` (`idPedido`, `idArticulo`, `unidades`)"
+                    + " VALUES ('" + p.getIdPedido()+"', '"+l.getArticulo().getIdArticulo()+"','"+l.getUnidades()+"')";
+                try {
+                    PreparedStatement ps = Conexion.obtener().prepareStatement(consulta2);
+                    ps.executeUpdate();
+                } catch (ClassNotFoundException | SQLException e) {
+                    System.out.println(e.toString());
+                }
+            }
+            try {
+                PreparedStatement ps = Conexion.obtener().prepareStatement(consulta1);
+                ps.executeUpdate();
+            } catch (ClassNotFoundException | SQLException e) {
+                System.out.println(e.toString());
+            }
         }
+        System.out.println("PEDIDOS exportados a MySQL correctamente");
     }
+    
+      /******************************************************************************************
+     *  MÉTODOS PARA PASAR LOS DATOS DESDE LAS COLECCIONES JAVA A LAS TABLAS DE LA TIENDA MYSQL
+    *******************************************************************************************/
+    public void exportarDatos(){
+
+        /* ARTICULOS Y CLIENTES ES SENCILLO LLEVARLOS A LA BASES DE DATOS
+        PORQUE PASAMOS LAS COLECCIONES OBJETO A OBJETO,HACIENDO UN INSERT PARA
+        TRANSFORMAR CADA OBJETO EN UNA TUPLA DE LA TABLA CORRESPONDIENTE EN LA BD 
+        Lo hecemos en los métodos jdbcGuardaarticulos() y jdbcGuardaClientes() */
+       jdbcGuardaArticulos();
+       jdbcGuardaClientes();
+
+
+        /* PEDIDOS ES MÁS COMPLEJO PUES HAY QUE "ROMPER" LA COLECCIÓN PEDIDOS EN 2 TABLAS:
+        pedidos y lineaspedido - lo hacemos en el método jdbcGuardaPedidos */
+       jdbcGuardaPedidos();
+    }   
+    
+    /******************************************************************************************
+     *  MÉTODO PARA TRAER LOS DATOS DESDE LAS TABLAS DE LA TIENDA MYSQL A LAS COLECCIONES JAVA
+    *******************************************************************************************/        
+    public void importarDatos(){
+        jdbcLeeArticulos();
+        jdbcLeeClientes();
+        jdbcLeePedidos();
+    }
+
+    private void jdbcLeePedidos(){
+        Statement sentenciaPedidos,sentenciaLp;
+        
+        /*LEER LOS PEDIDOS DESDE LA BD Y CREAR EL ARRAYLIST PEDIDOS. 
+        ES MÁS COMPLICADO PUES LA INFORMACIÓN ESTÁ EN 2 TABLAS  */
+       
+        String consultaPedidos ="SELECT * FROM pedidos";
+        try {
+            sentenciaPedidos = Conexion.obtener().createStatement();
+            ResultSet rsPedidos=sentenciaPedidos.executeQuery(consultaPedidos);
+            while (rsPedidos.next())
+            {
+                ArrayList <LineaPedido> cestaCompra = new ArrayList();
+                String consultaLp ="SELECT * FROM lineaspedidos WHERE idPedido='"+ rsPedidos.getString(1)+"'";
+                sentenciaLp = Conexion.obtener().createStatement();
+                ResultSet rsLp=sentenciaLp.executeQuery(consultaLp);
+                while (rsLp.next())
+                {
+                   cestaCompra.add(new LineaPedido(articulos.get(rsLp.getString(2)),rsLp.getInt(3)));
+                }
+                pedidos.add(new Pedido(rsPedidos.getString(1),clientes.get(rsPedidos.getString(2))
+                        ,LocalDate.parse(rsPedidos.getString(3)),cestaCompra));
+            }
+            System.out.println("\nPEDIDOS importados desde MySQL correctamente");
+        }catch (ClassNotFoundException | SQLException e) {
+                System.out.println(e.toString());
+        }
+        
+        /* MOSTRAMOS LA COLECCION POR PANTALLA PARA VERIFICAR QUE SE HA IMPORTADO CORRECTAMENTE */
+          
+        System.out.println("\nLISTADO PEDIDOS IMPORTADOS DESDE LA B.D:");
+        pedidos.stream().forEach(System.out::println);
+    }
+    
+    /*   ******************** OTRAS FUNCIONES **************************
+          
+        PODÉIS PROBAR A EJECUTAR DISTINTOS TIPOS DE CONSULTAS SQL HACÍA LA BASE DE DATOS Y 
+        COMPROBAR LOS RESULTADOS.
+        
+        EJEMPLOS:
+        1. CODIGO PARA BORRAR UNA TABLA COMPLETA DE LA BASE DE DATOS (articulos)
+            
+        consulta="DELETE FROM articulos";
+        try {  
+            sentencia.executeUpdate(consulta);
+            sentencia.close();
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+        }*/
+    
     //</editor-fold>
     
 }
